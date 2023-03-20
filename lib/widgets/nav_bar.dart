@@ -21,10 +21,13 @@ class NavBarState extends State<NavBar> {
   @override
   Widget build(BuildContext context) {
     return BottomNavigationBar(
+      selectedFontSize: 16,
+      unselectedFontSize: 16,
+      showUnselectedLabels: true,
       currentIndex: widget.selectedIndex,
       onTap: widget.onItemSelected,
       selectedItemColor: Colors.black,
-      unselectedItemColor: Colors.black,
+      unselectedItemColor: Colours.darkGray,
       items: const [
         BottomNavigationBarItem(
           icon: Icon(Icons.home),
