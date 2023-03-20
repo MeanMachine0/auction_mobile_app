@@ -5,6 +5,7 @@ import 'package:my_rest_api/pages/item_detail.dart';
 import 'package:my_rest_api/pages/list_an_item.dart';
 import 'package:my_rest_api/pages/my_bids.dart';
 import 'package:my_rest_api/services/api_service.dart';
+import 'package:my_rest_api/colours.dart';
 import 'package:my_rest_api/pages/home.dart';
 import 'package:my_rest_api/widgets/nav_bar.dart';
 
@@ -59,9 +60,8 @@ class _BrowseState extends State<Browse> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Active Items'),
-        backgroundColor: Colors.lightBlue,
-      ),
+          title: const Text('Active Items'),
+          backgroundColor: Colours.lightBlue),
       body: _itemsModel == null || _itemsModel!.isEmpty
           ? const Center(
               child: CircularProgressIndicator(),
@@ -78,6 +78,7 @@ class _BrowseState extends State<Browse> {
                                 ItemDetail(itemId: _itemsModel![index].id)));
                       },
                       child: Card(
+                        margin: const EdgeInsets.all(5),
                         child: Column(
                           children: [
                             Row(

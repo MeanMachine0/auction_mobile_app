@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:my_rest_api/colours.dart';
 import 'package:my_rest_api/models/accounts_model.dart';
 import 'package:my_rest_api/pages/my_bids.dart';
 import 'package:my_rest_api/services/api_service.dart';
@@ -58,34 +59,36 @@ class _HomeState extends State<Home> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Recently Sold Items'),
-        backgroundColor: Colors.lightBlue,
-      ),
+          title: const Text('Recently Sold Items'),
+          backgroundColor: Colours.lightBlue),
       body: _accountsModel == null || _accountsModel!.isEmpty
           ? const Center(
               child: CircularProgressIndicator(),
             )
           : SingleChildScrollView(
               scrollDirection: Axis.horizontal,
-              child: DataTable(
-                columns: const [
-                  DataColumn(label: Text('Id')),
-                  DataColumn(label: Text('Username')),
-                  DataColumn(label: Text('Balance (£)')),
-                  DataColumn(label: Text('Address')),
-                ],
-                rows: _accountsModel!
-                    .map(
-                      (account) => DataRow(
-                        cells: [
-                          DataCell(Text(account.id.toString())),
-                          DataCell(Text(account.user)),
-                          DataCell(Text(account.balance.toString())),
-                          DataCell(Text(account.address)),
-                        ],
-                      ),
-                    )
-                    .toList(),
+              child: Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: DataTable(
+                  columns: const [
+                    DataColumn(label: Text('Id')),
+                    DataColumn(label: Text('Username')),
+                    DataColumn(label: Text('Balance (£)')),
+                    DataColumn(label: Text('Address')),
+                  ],
+                  rows: _accountsModel!
+                      .map(
+                        (account) => DataRow(
+                          cells: [
+                            DataCell(Text(account.id.toString())),
+                            DataCell(Text(account.user)),
+                            DataCell(Text(account.balance.toString())),
+                            DataCell(Text(account.address)),
+                          ],
+                        ),
+                      )
+                      .toList(),
+                ),
               ),
             ),
       bottomNavigationBar: NavBar(

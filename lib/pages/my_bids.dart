@@ -6,6 +6,7 @@ import 'package:my_rest_api/services/api_service.dart';
 import 'package:my_rest_api/pages/home.dart';
 import 'package:my_rest_api/widgets/nav_bar.dart';
 import 'package:my_rest_api/pages/browse.dart';
+import 'package:my_rest_api/colours.dart';
 
 class MyBids extends StatefulWidget {
   const MyBids({Key? key}) : super(key: key);
@@ -58,9 +59,7 @@ class _MyBidsState extends State<MyBids> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('My Bids'),
-        backgroundColor: Colors.lightBlue,
-      ),
+          title: const Text('My Bids'), backgroundColor: Colours.lightBlue),
       body: _itemsModel == null || _itemsModel!.isEmpty
           ? const Center(
               child: CircularProgressIndicator(),

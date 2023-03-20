@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:my_rest_api/colours.dart';
 import 'package:my_rest_api/pages/browse.dart';
 import 'package:my_rest_api/pages/home.dart';
 
@@ -28,22 +29,22 @@ class NavBarState extends State<NavBar> {
         BottomNavigationBarItem(
           icon: Icon(Icons.home),
           label: 'Home',
-          backgroundColor: Colors.lightBlue,
+          backgroundColor: Colours.lightBlue,
         ),
         BottomNavigationBarItem(
           icon: Icon(Icons.search),
           label: 'Browse',
-          backgroundColor: Colors.lightBlue,
+          backgroundColor: Colours.lightBlue,
         ),
         BottomNavigationBarItem(
           icon: Icon(Icons.currency_pound),
           label: 'List an Item',
-          backgroundColor: Colors.lightBlue,
+          backgroundColor: Colours.lightBlue,
         ),
         BottomNavigationBarItem(
           icon: Icon(Icons.list),
           label: 'My Bids',
-          backgroundColor: Colors.lightBlue,
+          backgroundColor: Colours.lightBlue,
         ),
       ],
     );

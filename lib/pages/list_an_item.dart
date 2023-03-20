@@ -6,6 +6,7 @@ import 'package:my_rest_api/services/api_service.dart';
 import 'package:my_rest_api/pages/home.dart';
 import 'package:my_rest_api/widgets/nav_bar.dart';
 import 'package:my_rest_api/pages/browse.dart';
+import 'package:my_rest_api/colours.dart';
 
 class ListAnItem extends StatefulWidget {
   const ListAnItem({Key? key}) : super(key: key);
@@ -58,9 +59,8 @@ class _ListAnItemState extends State<ListAnItem> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Your New Listing'),
-        backgroundColor: Colors.lightBlue,
-      ),
+          title: const Text('Your New Listing'),
+          backgroundColor: Colours.lightBlue),
       body: _itemsModel == null || _itemsModel!.isEmpty
           ? const Center(
               child: CircularProgressIndicator(),

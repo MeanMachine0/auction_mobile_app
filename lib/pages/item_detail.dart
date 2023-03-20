@@ -8,6 +8,7 @@ import 'package:my_rest_api/pages/home.dart';
 import 'package:my_rest_api/widgets/nav_bar.dart';
 import 'package:my_rest_api/pages/browse.dart';
 import 'package:intl/intl.dart';
+import 'package:my_rest_api/colours.dart';
 
 class ItemDetail extends StatefulWidget {
   final int _itemId;
@@ -69,60 +70,77 @@ class _ItemDetailState extends State<ItemDetail> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(itemModel?.name ?? 'Item Not Found'),
-        backgroundColor: Colors.lightBlue,
-      ),
+          title: Text(itemModel?.name ?? 'Item Not Found'),
+          backgroundColor: Colours.lightBlue),
       body: itemModel == null
           ? const Center(
               child: CircularProgressIndicator(),
             )
-          : Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.start,
-                children: [
-                  Row(
-                    children: [
-                      Text('Price: £${itemModel!.price}'),
-                    ],
+          : Column(
+              children: [
+                Center(
+                  child: Container(
+                    margin: const EdgeInsets.only(top: 20),
+                    width: 250,
+                    child: Card(
+                      child: Padding(
+                        padding: const EdgeInsets.all(10),
+                        child: Column(
+                          children: [
+                            Row(
+                              children: [
+                                Text(
+                                  'Price: £${itemModel!.price}',
+                                ),
+                              ],
+                            ),
+                            Row(
+                              children: [
+                                Text(
+                                  'P&P: £${itemModel!.postageCost}',
+                                )
+                              ],
+                            ),
+                            Row(
+                              children: [
+                                Text(
+                                    'Bid Increment: £${itemModel!.bidIncrement}'),
+                              ],
+                            ),
+                            Row(
+                              children: [
+                                Text('Condition: ${itemModel!.condition}'),
+                              ],
+                            ),
+                            Row(
+                              children: [
+                                Text(
+                                    'Ends on ${formatDateTime(itemModel!.endDateTime)}'),
+                              ],
+                            ),
+                            Row(
+                              children: [
+                                Text(
+                                    'Accepts Returns: ${itemModel!.acceptReturns}'),
+                              ],
+                            ),
+                            Row(
+                              children: [
+                                Text('Bids: ${itemModel!.numBids}'),
+                              ],
+                            ),
+                            Row(
+                              children: [
+                                Text('Seller: ${itemModel!.sellerId}'),
+                              ],
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
                   ),
-                  Row(
-                    children: [
-                      Text('P&P: £${itemModel!.postageCost}'),
-                    ],
-                  ),
-                  Row(
-                    children: [
-                      Text('Bid Increment: £${itemModel!.bidIncrement}'),
-                    ],
-                  ),
-                  Row(
-                    children: [
-                      Text('Condition: ${itemModel!.condition}'),
-                    ],
-                  ),
-                  Row(
-                    children: [
-                      Text('Ends on ${formatDateTime(itemModel!.endDateTime)}'),
-                    ],
-                  ),
-                  Row(
-                    children: [
-                      Text('Accepts Returns: ${itemModel!.acceptReturns}'),
-                    ],
-                  ),
-                  Row(
-                    children: [
-                      Text('Bids: ${itemModel!.numBids}'),
-                    ],
-                  ),
-                  Row(
-                    children: [
-                      Text('Seller: ${itemModel!.sellerId}'),
-                    ],
-                  ),
-                ],
-              ),
+                ),
+              ],
             ),
       bottomNavigationBar: NavBar(
         selectedIndex: _selectedIndex,
