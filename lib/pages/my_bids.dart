@@ -58,7 +58,8 @@ class _MyBidsState extends State<MyBids> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Auction App'),
+        title: const Text('My Bids'),
+        backgroundColor: Colors.lightBlue,
       ),
       body: _itemsModel == null || _itemsModel!.isEmpty
           ? const Center(

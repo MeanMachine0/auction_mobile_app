@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import 'package:my_rest_api/models/items_model.dart';
+import 'package:my_rest_api/pages/item_detail.dart';
 import 'package:my_rest_api/pages/list_an_item.dart';
 import 'package:my_rest_api/pages/my_bids.dart';
 import 'package:my_rest_api/services/api_service.dart';
@@ -58,40 +59,39 @@ class _BrowseState extends State<Browse> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Auction App'),
+        title: const Text('Active Items'),
+        backgroundColor: Colors.lightBlue,
       ),
       body: _itemsModel == null || _itemsModel!.isEmpty
           ? const Center(
               child: CircularProgressIndicator(),
             )
-          : ListView.builder(
-              itemCount: _itemsModel!.length,
-              itemBuilder: (context, index) {
-                return Card(
-                  child: Column(
-                    children: [
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                        children: [
-                          Text('Item: ${_itemsModel![index].name}'),
-                          Text(
-                              'Current Price: £${_itemsModel![index].price.toString()}'),
-                        ],
-                      ),
-                      const SizedBox(
-                        height: 20.0,
-                      ),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                        children: [
-                          Text(_itemsModel![index].description),
-                          Text(_itemsModel![index].sellerId.toString()),
-                        ],
-                      ),
-                    ],
-                  ),
-                );
-              },
+          : Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: ListView.builder(
+                itemCount: _itemsModel!.length,
+                itemBuilder: (context, index) {
+                  return GestureDetector(
+                      onTap: () {
+                        Navigator.of(context).push(MaterialPageRoute(
+                            builder: (_) =>
+                                ItemDetail(itemId: _itemsModel![index].id)));
+                      },
+                      child: Card(
+                        child: Column(
+                          children: [
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Text(
+                                    '${_itemsModel![index].name} - £${_itemsModel![index].price.toString()}'),
+                              ],
+                            ),
+                          ],
+                        ),
+                      ));
+                },
+              ),
             ),
       bottomNavigationBar: NavBar(
         selectedIndex: _selectedIndex,

@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:developer';
 
 import 'package:http/http.dart' as http;
@@ -33,6 +34,24 @@ class ApiService {
     } catch (e) {
       log(e.toString());
     }
+  }
+
+  Future<ItemsModel?> getItem(int itemId) async {
+    try {
+      var url = Uri.parse(
+          '${ApiConstants.baseUrl}${ApiConstants.itemsEndpoint}/$itemId');
+      var response = await http.get(url);
+
+      if (response.statusCode == 200) {
+        var jsonResponse = json.decode(response.body);
+        ItemsModel item = ItemsModel.fromJson(jsonResponse);
+        return item;
+      }
+    } catch (e) {
+      log(e.toString());
+    }
+
+    return null;
   }
 
   Future<List<ItemsModel>?> getItems() async {

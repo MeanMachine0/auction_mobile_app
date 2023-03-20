@@ -8,9 +8,14 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const MaterialApp(
-      title: 'Material App',
-      home: Home(),
+    return MaterialApp(
+      title: 'Auction App',
+      theme: ThemeData(
+        useMaterial3: false,
+        brightness: Brightness.dark,
+        primaryColor: Colors.black,
+      ),
+      home: const Home(),
     );
   }
 }

@@ -58,39 +58,35 @@ class _HomeState extends State<Home> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Auction App'),
+        title: const Text('Recently Sold Items'),
+        backgroundColor: Colors.lightBlue,
       ),
       body: _accountsModel == null || _accountsModel!.isEmpty
           ? const Center(
               child: CircularProgressIndicator(),
             )
-          : ListView.builder(
-              itemCount: _accountsModel!.length,
-              itemBuilder: (context, index) {
-                return Card(
-                  child: Column(
-                    children: [
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                        children: [
-                          Text(_accountsModel![index].id.toString()),
-                          Text(_accountsModel![index].balance.toString()),
+          : SingleChildScrollView(
+              scrollDirection: Axis.horizontal,
+              child: DataTable(
+                columns: const [
+                  DataColumn(label: Text('Id')),
+                  DataColumn(label: Text('Username')),
+                  DataColumn(label: Text('Balance (£)')),
+                  DataColumn(label: Text('Address')),
+                ],
+                rows: _accountsModel!
+                    .map(
+                      (account) => DataRow(
+                        cells: [
+                          DataCell(Text(account.id.toString())),
+                          DataCell(Text(account.user)),
+                          DataCell(Text(account.balance.toString())),
+                          DataCell(Text(account.address)),
                         ],
                       ),
-                      const SizedBox(
-                        height: 20.0,
-                      ),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                        children: [
-                          Text(_accountsModel![index].address),
-                          Text(_accountsModel![index].user),
-                        ],
-                      ),
-                    ],
-                  ),
-                );
-              },
+                    )
+                    .toList(),
+              ),
             ),
       bottomNavigationBar: NavBar(
         selectedIndex: _selectedIndex,
