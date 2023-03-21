@@ -16,7 +16,7 @@ class MyApp extends StatelessWidget {
         brightness: Brightness.dark,
         scaffoldBackgroundColor: Colours.dimGray,
         cardTheme: const CardTheme(
-          color: Colours.lightGray,
+          color: Colours.lightBlue,
           elevation: 5,
         ),
         textTheme: const TextTheme(

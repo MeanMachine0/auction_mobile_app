@@ -1,23 +1,23 @@
 import 'package:flutter/material.dart';
 import 'package:my_rest_api/elements.dart';
 
-import 'package:my_rest_api/models/items_model.dart';
+import 'package:my_rest_api/models/ended_items_model.dart';
 import 'package:my_rest_api/services/api_service.dart';
 import 'package:intl/intl.dart';
 import 'package:my_rest_api/colours.dart';
 
-class ItemDetail extends StatefulWidget {
-  final int _itemId;
-  const ItemDetail({Key? key, required int itemId})
-      : _itemId = itemId,
+class EndedItemDetail extends StatefulWidget {
+  final int _endedItemId;
+  const EndedItemDetail({Key? key, required int endedItemId})
+      : _endedItemId = endedItemId,
         super(key: key);
 
   @override
-  _ItemDetailState createState() => _ItemDetailState();
+  _EndedItemDetailState createState() => _EndedItemDetailState();
 }
 
-class _ItemDetailState extends State<ItemDetail> {
-  ItemsModel? itemModel;
+class _EndedItemDetailState extends State<EndedItemDetail> {
+  EndedItemsModel? endedItemModel;
 
   @override
   void initState() {
@@ -26,7 +26,7 @@ class _ItemDetailState extends State<ItemDetail> {
   }
 
   void _getData() async {
-    itemModel = (await ApiService().getItem(widget._itemId)) as ItemsModel?;
+    endedItemModel = (await ApiService().getEndedItem(widget._endedItemId));
     setState(() {});
   }
 
@@ -39,9 +39,9 @@ class _ItemDetailState extends State<ItemDetail> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-          title: Text(itemModel?.name ?? 'Item Not Found'),
+          title: Text(endedItemModel?.name ?? 'Item Not Found'),
           backgroundColor: Colours.lightBlue),
-      body: itemModel == null
+      body: endedItemModel == null
           ? const Center(
               child: CircularProgressIndicator(),
             )
@@ -67,48 +67,48 @@ class _ItemDetailState extends State<ItemDetail> {
                             Row(
                               children: [
                                 Text(
-                                  'Price: £${itemModel!.price}',
+                                  'Price: £${endedItemModel!.salePrice}',
                                 ),
                               ],
                             ),
                             Row(
                               children: [
                                 Text(
-                                  'P&P: £${itemModel!.postageCost}',
+                                  'P&P: £${endedItemModel!.postageCost}',
                                 )
                               ],
                             ),
                             Row(
                               children: [
                                 Text(
-                                    'Bid Increment: £${itemModel!.bidIncrement}'),
+                                    'Bid Increment: £${endedItemModel!.bidIncrement}'),
                               ],
                             ),
                             Row(
                               children: [
-                                Text('Condition: ${itemModel!.condition}'),
-                              ],
-                            ),
-                            Row(
-                              children: [
-                                Text(
-                                    'Ends on ${formatDateTime(itemModel!.endDateTime)}'),
+                                Text('Condition: ${endedItemModel!.condition}'),
                               ],
                             ),
                             Row(
                               children: [
                                 Text(
-                                    'Accepts Returns: ${itemModel!.acceptReturns}'),
+                                    'Ended on ${formatDateTime(endedItemModel!.endDateTime)}'),
                               ],
                             ),
                             Row(
                               children: [
-                                Text('Bids: ${itemModel!.numBids}'),
+                                Text(
+                                    'Accepts Returns: ${endedItemModel!.acceptReturns}'),
                               ],
                             ),
                             Row(
                               children: [
-                                Text('Seller: ${itemModel!.sellerId}'),
+                                Text('Bids: ${endedItemModel!.numBids}'),
+                              ],
+                            ),
+                            Row(
+                              children: [
+                                Text('Seller: ${endedItemModel!.sellerId}'),
                               ],
                             ),
                           ],
@@ -136,7 +136,7 @@ class _ItemDetailState extends State<ItemDetail> {
                             ),
                             const SizedBox(height: 5),
                             Text(
-                              itemModel!.description,
+                              endedItemModel!.description,
                             ),
                           ],
                         ),

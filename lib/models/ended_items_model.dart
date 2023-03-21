@@ -1,10 +1,10 @@
 import 'dart:convert';
 
-List<EndedItemsModel> EndedItemsModelFromJson(String str) =>
+List<EndedItemsModel> endedItemsModelFromJson(String str) =>
     List<EndedItemsModel>.from(
         json.decode(str).map((x) => EndedItemsModel.fromJson(x)));
 
-String EndedItemsModelToJson(List<EndedItemsModel> data) =>
+String endedItemsModelToJson(List<EndedItemsModel> data) =>
     json.encode(List<dynamic>.from(data.map((x) => x.toJson())));
 
 class EndedItemsModel {
@@ -21,9 +21,9 @@ class EndedItemsModel {
     required this.numBids,
     required this.bidders,
     required this.sold,
-    required this.buyerId,
+    this.buyerId,
     required this.sellerId,
-    required this.destinationAddress,
+    this.destinationAddress,
   });
 
   int id;
@@ -38,9 +38,9 @@ class EndedItemsModel {
   int numBids;
   String bidders;
   bool sold;
-  int buyerId;
+  int? buyerId;
   int sellerId;
-  String destinationAddress;
+  String? destinationAddress;
 
   factory EndedItemsModel.fromJson(Map<String, dynamic> json) =>
       EndedItemsModel(

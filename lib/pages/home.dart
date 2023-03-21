@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
 
-import 'package:my_rest_api/models/endedItems_model.dart';
-import 'package:my_rest_api/models/items_model.dart';
-import 'package:my_rest_api/pages/item_detail.dart';
+import 'package:my_rest_api/models/ended_items_model.dart';
+import 'package:my_rest_api/pages/ended_item_detail.dart';
 import 'package:my_rest_api/services/api_service.dart';
 import 'package:my_rest_api/colours.dart';
 
@@ -14,7 +13,7 @@ class Home extends StatefulWidget {
 }
 
 class _HomeState extends State<Home> {
-  late List<ItemsModel>? _itemsModel = [];
+  late List<EndedItemsModel>? _EndedItemsModel = [];
   @override
   void initState() {
     super.initState();
@@ -22,7 +21,7 @@ class _HomeState extends State<Home> {
   }
 
   void _getData() async {
-    _itemsModel = (await ApiService().getItems());
+    _EndedItemsModel = (await ApiService().getEndedItems());
     setState(() {});
   }
 
@@ -30,32 +29,40 @@ class _HomeState extends State<Home> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-          title: const Text('Active Items'),
+          title: const Text('Recently Sold Items'),
           backgroundColor: Colours.lightBlue),
-      body: _itemsModel == null || _itemsModel!.isEmpty
+      body: _EndedItemsModel == null || _EndedItemsModel!.isEmpty
           ? const Center(
               child: CircularProgressIndicator(),
             )
           : Padding(
               padding: const EdgeInsets.all(8.0),
               child: ListView.builder(
-                itemCount: _itemsModel!.length,
+                itemCount: _EndedItemsModel!.where((item) => item.sold).length,
                 itemBuilder: (context, index) {
+                  EndedItemsModel item = _EndedItemsModel!
+                      .where((item) => item.sold)
+                      .toList()[index];
                   return GestureDetector(
                       onTap: () {
                         Navigator.of(context).push(MaterialPageRoute(
                             builder: (_) =>
-                                ItemDetail(itemId: _itemsModel![index].id)));
+                                EndedItemDetail(endedItemId: item.id)));
                       },
                       child: Card(
+                        color: Colours.lightGray,
                         margin: const EdgeInsets.all(5),
                         child: Column(
                           children: [
                             Row(
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
-                                Text(
-                                    '${_itemsModel![index].name} - £${_itemsModel![index].price.toString()}'),
+                                Padding(
+                                  padding:
+                                      const EdgeInsets.symmetric(vertical: 8.0),
+                                  child: Text(
+                                      '${item.name} - £${item.salePrice.toString()}'),
+                                ),
                               ],
                             ),
                           ],

@@ -47,14 +47,19 @@ class _BrowseState extends State<Browse> {
                                 ItemDetail(itemId: _itemsModel![index].id)));
                       },
                       child: Card(
+                        color: Colours.lightGray,
                         margin: const EdgeInsets.all(5),
                         child: Column(
                           children: [
                             Row(
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
-                                Text(
-                                    '${_itemsModel![index].name} - £${_itemsModel![index].price.toString()}'),
+                                Padding(
+                                  padding:
+                                      const EdgeInsets.symmetric(vertical: 8.0),
+                                  child: Text(
+                                      '${_itemsModel![index].name} - £${_itemsModel![index].price.toString()}'),
+                                ),
                               ],
                             ),
                           ],

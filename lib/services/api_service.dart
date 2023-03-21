@@ -5,9 +5,8 @@ import 'package:http/http.dart' as http;
 import 'package:my_rest_api/models/user_model.dart';
 import 'package:my_rest_api/models/accounts_model.dart';
 import 'package:my_rest_api/models/items_model.dart';
-import 'package:my_rest_api/models/endedItems_model.dart';
+import 'package:my_rest_api/models/ended_items_model.dart';
 import 'package:my_rest_api/constants.dart';
-import 'dart:io';
 
 class ApiService {
   Future<List<UserModel>?> getUsers() async {
@@ -59,12 +58,30 @@ class ApiService {
       var url = Uri.parse(ApiConstants.baseUrl + ApiConstants.itemsEndpoint);
       var response = await http.get(url);
       if (response.statusCode == 200) {
-        List<ItemsModel> _model = ItemsModelFromJson(response.body);
+        List<ItemsModel> _model = itemsModelFromJson(response.body);
         return _model;
       }
     } catch (e) {
       log(e.toString());
     }
+  }
+
+  Future<EndedItemsModel?> getEndedItem(int itemId) async {
+    try {
+      var url = Uri.parse(
+          '${ApiConstants.baseUrl}${ApiConstants.endedItemsEndpoint}/$itemId');
+      var response = await http.get(url);
+
+      if (response.statusCode == 200) {
+        var jsonResponse = json.decode(response.body);
+        EndedItemsModel item = EndedItemsModel.fromJson(jsonResponse);
+        return item;
+      }
+    } catch (e) {
+      log(e.toString());
+    }
+
+    return null;
   }
 
   Future<List<EndedItemsModel>?> getEndedItems() async {
@@ -73,7 +90,7 @@ class ApiService {
           Uri.parse(ApiConstants.baseUrl + ApiConstants.endedItemsEndpoint);
       var response = await http.get(url);
       if (response.statusCode == 200) {
-        List<EndedItemsModel> _model = EndedItemsModelFromJson(response.body);
+        List<EndedItemsModel> _model = endedItemsModelFromJson(response.body);
         return _model;
       }
     } catch (e) {
