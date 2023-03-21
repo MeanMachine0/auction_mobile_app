@@ -1,11 +1,7 @@
 import 'package:flutter/material.dart';
 
 import 'package:my_rest_api/models/items_model.dart';
-import 'package:my_rest_api/pages/my_bids.dart';
 import 'package:my_rest_api/services/api_service.dart';
-import 'package:my_rest_api/pages/home.dart';
-import 'package:my_rest_api/widgets/nav_bar.dart';
-import 'package:my_rest_api/pages/browse.dart';
 import 'package:my_rest_api/colours.dart';
 
 class ListAnItem extends StatefulWidget {
@@ -17,7 +13,6 @@ class ListAnItem extends StatefulWidget {
 
 class _ListAnItemState extends State<ListAnItem> {
   late List<ItemsModel>? _itemsModel = [];
-  int _selectedIndex = 2;
   @override
   void initState() {
     super.initState();
@@ -27,32 +22,6 @@ class _ListAnItemState extends State<ListAnItem> {
   void _getData() async {
     _itemsModel = (await ApiService().getItems());
     setState(() {});
-  }
-
-  void _onNavigationItemSelected(int index) {
-    setState(() {
-      _selectedIndex = index;
-    });
-
-    Widget page;
-    switch (_selectedIndex) {
-      case 0:
-        page = const Home();
-        break;
-      case 1:
-        page = const Browse();
-        break;
-      case 2:
-        page = const ListAnItem();
-        break;
-      case 3:
-        page = const MyBids();
-        break;
-      default:
-        throw UnimplementedError('No widget for $_selectedIndex');
-    }
-
-    Navigator.of(context).push(MaterialPageRoute(builder: (_) => page));
   }
 
   @override
@@ -95,10 +64,6 @@ class _ListAnItemState extends State<ListAnItem> {
                 );
               },
             ),
-      bottomNavigationBar: NavBar(
-        selectedIndex: _selectedIndex,
-        onItemSelected: _onNavigationItemSelected,
-      ),
     );
   }
 }

@@ -1,11 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:my_rest_api/colours.dart';
-import 'package:my_rest_api/models/accounts_model.dart';
-import 'package:my_rest_api/pages/my_bids.dart';
+
+import 'package:my_rest_api/models/endedItems_model.dart';
+import 'package:my_rest_api/models/items_model.dart';
+import 'package:my_rest_api/pages/item_detail.dart';
 import 'package:my_rest_api/services/api_service.dart';
-import 'package:my_rest_api/widgets/nav_bar.dart';
-import 'package:my_rest_api/pages/browse.dart';
-import 'package:my_rest_api/pages/list_an_item.dart';
+import 'package:my_rest_api/colours.dart';
 
 class Home extends StatefulWidget {
   const Home({Key? key}) : super(key: key);
@@ -15,9 +14,7 @@ class Home extends StatefulWidget {
 }
 
 class _HomeState extends State<Home> {
-  List<AccountsModel>? _accountsModel;
-  int _selectedIndex = 0;
-
+  late List<ItemsModel>? _itemsModel = [];
   @override
   void initState() {
     super.initState();
@@ -25,76 +22,48 @@ class _HomeState extends State<Home> {
   }
 
   void _getData() async {
-    _accountsModel = await ApiService().getAccounts();
+    _itemsModel = (await ApiService().getItems());
     setState(() {});
-  }
-
-  void _onNavigationItemSelected(int index) {
-    setState(() {
-      _selectedIndex = index;
-    });
-
-    Widget page;
-    switch (_selectedIndex) {
-      case 0:
-        page = const Home();
-        break;
-      case 1:
-        page = const Browse();
-        break;
-      case 2:
-        page = const ListAnItem();
-        break;
-      case 3:
-        page = const MyBids();
-        break;
-      default:
-        throw UnimplementedError('No widget for $_selectedIndex');
-    }
-
-    Navigator.of(context).push(MaterialPageRoute(builder: (_) => page));
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-          title: const Text('Recently Sold Items'),
+          title: const Text('Active Items'),
           backgroundColor: Colours.lightBlue),
-      body: _accountsModel == null || _accountsModel!.isEmpty
+      body: _itemsModel == null || _itemsModel!.isEmpty
           ? const Center(
               child: CircularProgressIndicator(),
             )
-          : SingleChildScrollView(
-              scrollDirection: Axis.horizontal,
-              child: Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: DataTable(
-                  columns: const [
-                    DataColumn(label: Text('Id')),
-                    DataColumn(label: Text('Username')),
-                    DataColumn(label: Text('Balance (£)')),
-                    DataColumn(label: Text('Address')),
-                  ],
-                  rows: _accountsModel!
-                      .map(
-                        (account) => DataRow(
-                          cells: [
-                            DataCell(Text(account.id.toString())),
-                            DataCell(Text(account.user)),
-                            DataCell(Text(account.balance.toString())),
-                            DataCell(Text(account.address)),
+          : Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: ListView.builder(
+                itemCount: _itemsModel!.length,
+                itemBuilder: (context, index) {
+                  return GestureDetector(
+                      onTap: () {
+                        Navigator.of(context).push(MaterialPageRoute(
+                            builder: (_) =>
+                                ItemDetail(itemId: _itemsModel![index].id)));
+                      },
+                      child: Card(
+                        margin: const EdgeInsets.all(5),
+                        child: Column(
+                          children: [
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Text(
+                                    '${_itemsModel![index].name} - £${_itemsModel![index].price.toString()}'),
+                              ],
+                            ),
                           ],
                         ),
-                      )
-                      .toList(),
-                ),
+                      ));
+                },
               ),
             ),
-      bottomNavigationBar: NavBar(
-        selectedIndex: _selectedIndex,
-        onItemSelected: _onNavigationItemSelected,
-      ),
     );
   }
 }

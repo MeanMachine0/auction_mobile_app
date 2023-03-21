@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:my_rest_api/pages/home.dart';
+import 'package:my_rest_api/pages/base.dart';
 import 'package:my_rest_api/colours.dart';
 
 void main() => runApp(const MyApp());
@@ -47,7 +47,7 @@ class MyApp extends StatelessWidget {
           tileColor: Colours.lightGray,
         ),
       ),
-      home: const Home(),
+      home: const Base(),
     );
   }
 }
