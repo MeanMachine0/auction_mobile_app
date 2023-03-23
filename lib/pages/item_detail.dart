@@ -5,6 +5,7 @@ import 'package:my_rest_api/models/items_model.dart';
 import 'package:my_rest_api/services/api_service.dart';
 import 'package:intl/intl.dart';
 import 'package:my_rest_api/colours.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class ItemDetail extends StatefulWidget {
   final int _itemId;
@@ -39,8 +40,8 @@ class _ItemDetailState extends State<ItemDetail> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-          title: Text(itemModel?.name ?? 'Item Not Found'),
-          backgroundColor: Colours.lightBlue),
+        title: Text(itemModel?.name ?? 'Item Not Found'),
+      ),
       body: itemModel == null
           ? const Center(
               child: CircularProgressIndicator(),

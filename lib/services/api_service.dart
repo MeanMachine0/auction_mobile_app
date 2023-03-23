@@ -9,6 +9,38 @@ import 'package:my_rest_api/models/ended_items_model.dart';
 import 'package:my_rest_api/constants.dart';
 
 class ApiService {
+  Future<List<String>?> getIdToken(String username, String password) async {
+    try {
+      Map<String, dynamic> data = {'username': username, 'password': password};
+      var url =
+          Uri.parse(ApiConstants.baseUrl + ApiConstants.authTokenEndpoint);
+      var response = await http.post(url,
+          body: jsonEncode(data),
+          headers: {'Content-Type': 'application/json'});
+      if (response.statusCode == 200) {
+        var jsonResponse = jsonDecode(response.body);
+        String userId = jsonResponse['userId'].toString();
+        String token = jsonResponse['token'];
+        List<String> IdToken = [userId, token];
+        return IdToken;
+      }
+    } catch (e) {
+      log(e.toString());
+    }
+  }
+
+  void login(String username, String password) async {
+    try {
+      Map<String, dynamic> data = {'username': username, 'password': password};
+      var url = Uri.parse(ApiConstants.baseUrl + ApiConstants.loginEndpoint);
+      await http.post(url,
+          body: json.encode(data),
+          headers: {'Content-Type': 'application/json'});
+    } catch (e) {
+      log(e.toString());
+    }
+  }
+
   Future<List<UserModel>?> getUsers() async {
     try {
       var url = Uri.parse(ApiConstants.baseUrl + ApiConstants.usersEndpoint);
@@ -38,7 +70,7 @@ class ApiService {
   Future<ItemsModel?> getItem(int itemId) async {
     try {
       var url = Uri.parse(
-          '${ApiConstants.baseUrl}${ApiConstants.itemsEndpoint}/$itemId');
+          '${ApiConstants.baseUrl}${ApiConstants.itemsEndpoint}$itemId/');
       var response = await http.get(url);
 
       if (response.statusCode == 200) {
@@ -69,7 +101,7 @@ class ApiService {
   Future<EndedItemsModel?> getEndedItem(int itemId) async {
     try {
       var url = Uri.parse(
-          '${ApiConstants.baseUrl}${ApiConstants.endedItemsEndpoint}/$itemId');
+          '${ApiConstants.baseUrl}${ApiConstants.endedItemsEndpoint}$itemId/');
       var response = await http.get(url);
 
       if (response.statusCode == 200) {

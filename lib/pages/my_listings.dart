@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:my_rest_api/models/items_model.dart';
 import 'package:my_rest_api/services/api_service.dart';
 import 'package:my_rest_api/colours.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class MyListings extends StatefulWidget {
   const MyListings({Key? key}) : super(key: key);
@@ -28,7 +29,8 @@ class _MyListingsState extends State<MyListings> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-          title: const Text('My Bids'), backgroundColor: Colours.lightBlue),
+        title: const Text('My Bids'),
+      ),
       body: _itemsModel == null || _itemsModel!.isEmpty
           ? const Center(
               child: CircularProgressIndicator(),

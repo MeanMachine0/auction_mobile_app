@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:my_rest_api/models/items_model.dart';
 import 'package:my_rest_api/services/api_service.dart';
 import 'package:my_rest_api/colours.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class ListAnItem extends StatefulWidget {
   const ListAnItem({Key? key}) : super(key: key);
@@ -28,8 +29,8 @@ class _ListAnItemState extends State<ListAnItem> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-          title: const Text('Your New Listing'),
-          backgroundColor: Colours.lightBlue),
+        title: const Text('Your New Listing'),
+      ),
       body: _itemsModel == null || _itemsModel!.isEmpty
           ? const Center(
               child: CircularProgressIndicator(),

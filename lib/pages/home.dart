@@ -28,9 +28,6 @@ class _HomeState extends State<Home> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-          title: const Text('Recently Sold Items'),
-          backgroundColor: Colours.lightBlue),
       body: _EndedItemsModel == null || _EndedItemsModel!.isEmpty
           ? const Center(
               child: CircularProgressIndicator(),
@@ -50,7 +47,6 @@ class _HomeState extends State<Home> {
                                 EndedItemDetail(endedItemId: item.id)));
                       },
                       child: Card(
-                        color: Colours.lightGray,
                         margin: const EdgeInsets.all(5),
                         child: Column(
                           children: [

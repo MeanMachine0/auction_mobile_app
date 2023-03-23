@@ -39,8 +39,8 @@ class _EndedItemDetailState extends State<EndedItemDetail> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-          title: Text(endedItemModel?.name ?? 'Item Not Found'),
-          backgroundColor: Colours.lightBlue),
+        title: Text(endedItemModel?.name ?? 'Item Not Found'),
+      ),
       body: endedItemModel == null
           ? const Center(
               child: CircularProgressIndicator(),

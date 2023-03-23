@@ -4,6 +4,7 @@ import 'package:my_rest_api/models/items_model.dart';
 import 'package:my_rest_api/pages/item_detail.dart';
 import 'package:my_rest_api/services/api_service.dart';
 import 'package:my_rest_api/colours.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class Browse extends StatefulWidget {
   const Browse({Key? key}) : super(key: key);
@@ -29,8 +30,8 @@ class _BrowseState extends State<Browse> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-          title: const Text('Active Items'),
-          backgroundColor: Colours.lightBlue),
+        title: const Text('Active Items'),
+      ),
       body: _itemsModel == null || _itemsModel!.isEmpty
           ? const Center(
               child: CircularProgressIndicator(),
@@ -47,7 +48,6 @@ class _BrowseState extends State<Browse> {
                                 ItemDetail(itemId: _itemsModel![index].id)));
                       },
                       child: Card(
-                        color: Colours.lightGray,
                         margin: const EdgeInsets.all(5),
                         child: Column(
                           children: [
