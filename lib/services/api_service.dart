@@ -7,6 +7,7 @@ import 'package:my_rest_api/models/accounts_model.dart';
 import 'package:my_rest_api/models/items_model.dart';
 import 'package:my_rest_api/models/ended_items_model.dart';
 import 'package:my_rest_api/constants.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class ApiService {
   Future<List<String>?> getIdToken(String username, String password) async {
@@ -36,6 +37,17 @@ class ApiService {
       await http.post(url,
           body: json.encode(data),
           headers: {'Content-Type': 'application/json'});
+    } catch (e) {
+      log(e.toString());
+    }
+  }
+
+  void logout(token) async {
+    try {
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      await prefs.clear();
+      var url = Uri.parse(ApiConstants.baseUrl + ApiConstants.logoutEndpoint);
+      await http.get(url, headers: {'Authorization': 'Token $token'});
     } catch (e) {
       log(e.toString());
     }

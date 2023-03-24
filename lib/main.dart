@@ -53,6 +53,16 @@ class MyApp extends StatelessWidget {
           fillColor: Colours.darkGray,
           prefixIconColor: Colours.lightGray,
         ),
+        elevatedButtonTheme: ElevatedButtonThemeData(
+          style: ButtonStyle(
+            elevation: MaterialStateProperty.resolveWith<double?>((_) => 5),
+            padding: MaterialStateProperty.resolveWith<EdgeInsetsGeometry?>(
+                (_) =>
+                    const EdgeInsets.symmetric(vertical: 12, horizontal: 20)),
+            backgroundColor: MaterialStateProperty.resolveWith<Color?>(
+                (states) => Colours.black),
+          ),
+        ),
       ),
       home: const Base(),
     );

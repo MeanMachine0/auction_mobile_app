@@ -10,4 +10,5 @@ class ApiConstants {
   static String itemsEndpoint = 'items/';
   static String endedItemsEndpoint = 'endedItems/';
   static String loginEndpoint = 'login/';
+  static String logoutEndpoint = 'logout/';
 }

@@ -2,8 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:google_nav_bar/google_nav_bar.dart';
 import 'package:my_rest_api/colours.dart';
 import 'package:my_rest_api/pages/home.dart';
-import 'package:my_rest_api/pages/item_detail.dart';
-import 'package:my_rest_api/pages/login.dart';
 import 'package:my_rest_api/pages/my_listings.dart';
 import 'package:my_rest_api/pages/browse.dart';
 import 'package:my_rest_api/pages/list_an_item.dart';
@@ -18,7 +16,7 @@ class Base extends StatefulWidget {
 class _BaseState extends State<Base> {
   int _selectedIndex = 0;
   static const List<Widget> pages = <Widget>[
-    Login(),
+    Home(),
     Browse(),
     ListAnItem(),
     MyListings(),
