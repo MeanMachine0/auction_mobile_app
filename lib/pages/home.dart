@@ -43,7 +43,7 @@ class _HomeState extends State<Home> {
             password == null) &
         !(usernameController.text.isEmpty || passwordController.text.isEmpty)) {
       _IdToken = (await ApiService()
-          .getIdToken(usernameController.text, passwordController.text));
+          .login(usernameController.text, passwordController.text));
       try {
         await prefs.setInt('userId', int.parse(_IdToken![0]));
         await prefs.setString('token', _IdToken![1]);
@@ -56,8 +56,6 @@ class _HomeState extends State<Home> {
       } catch (e) {
         log(e.toString());
       }
-
-      ApiService().login(usernameController.text, passwordController.text);
       _EndedItemsModel = (await ApiService().getEndedItems());
       usernameController.text = '';
       passwordController.text = '';
@@ -67,10 +65,7 @@ class _HomeState extends State<Home> {
             password == null) &
         (usernameController.text.isEmpty || passwordController.text.isEmpty)) {
     } else {
-      ApiService().login(username!, password!);
       _EndedItemsModel = (await ApiService().getEndedItems());
-      usernameController.text = '';
-      passwordController.text = '';
     }
     setState(() {});
   }

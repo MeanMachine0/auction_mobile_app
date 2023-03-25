@@ -10,11 +10,10 @@ import 'package:my_rest_api/constants.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class ApiService {
-  Future<List<String>?> getIdToken(String username, String password) async {
+  Future<List<String>?> login(String username, String password) async {
     try {
       Map<String, dynamic> data = {'username': username, 'password': password};
-      var url =
-          Uri.parse(ApiConstants.baseUrl + ApiConstants.authTokenEndpoint);
+      var url = Uri.parse(ApiConstants.baseUrl + ApiConstants.loginEndpoint);
       var response = await http.post(url,
           body: jsonEncode(data),
           headers: {'Content-Type': 'application/json'});
@@ -30,24 +29,12 @@ class ApiService {
     }
   }
 
-  void login(String username, String password) async {
-    try {
-      Map<String, dynamic> data = {'username': username, 'password': password};
-      var url = Uri.parse(ApiConstants.baseUrl + ApiConstants.loginEndpoint);
-      await http.post(url,
-          body: json.encode(data),
-          headers: {'Content-Type': 'application/json'});
-    } catch (e) {
-      log(e.toString());
-    }
-  }
-
   void logout(token) async {
     try {
       SharedPreferences prefs = await SharedPreferences.getInstance();
       await prefs.clear();
       var url = Uri.parse(ApiConstants.baseUrl + ApiConstants.logoutEndpoint);
-      await http.get(url, headers: {'Authorization': 'Token $token'});
+      await http.post(url, headers: {'Authorization': 'Token $token'});
     } catch (e) {
       log(e.toString());
     }
