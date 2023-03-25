@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:flutter/material.dart';
 
 import 'package:auction_mobile_app/models/ended_items_model.dart';
@@ -16,12 +14,14 @@ class Home extends StatefulWidget {
 }
 
 class _HomeState extends State<Home> {
+  final formKey = GlobalKey<FormState>();
   late List<EndedItemsModel>? _EndedItemsModel = [];
   late List<String>? _IdToken = [];
   late int? userId = 0;
   late String? token = '';
   late String? username = '';
   late String? password = '';
+  bool invalidLogin = false;
   TextEditingController usernameController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
 
@@ -53,17 +53,19 @@ class _HomeState extends State<Home> {
         token = prefs.getString('token');
         username = prefs.getString('username');
         password = prefs.getString('password');
+        usernameController.text = '';
+        passwordController.text = '';
+        invalidLogin = false;
+        _EndedItemsModel = (await ApiService().getEndedItems());
       } catch (e) {
-        log(e.toString());
+        invalidLogin = true;
       }
-      _EndedItemsModel = (await ApiService().getEndedItems());
-      usernameController.text = '';
-      passwordController.text = '';
     } else if ((userId == null ||
             token == null ||
             username == null ||
             password == null) &
         (usernameController.text.isEmpty || passwordController.text.isEmpty)) {
+      invalidLogin = false;
     } else {
       _EndedItemsModel = (await ApiService().getEndedItems());
     }
@@ -93,38 +95,73 @@ class _HomeState extends State<Home> {
           ? Padding(
               padding: const EdgeInsets.symmetric(horizontal: 10),
               child: Form(
+                  key: formKey,
+                  autovalidateMode: AutovalidateMode.always,
                   child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  TextFormField(
-                    controller: usernameController,
-                    keyboardType: TextInputType.visiblePassword,
-                    decoration: const InputDecoration(
-                      label: Text(
-                        'Username',
-                        style: TextStyle(color: Colours.lightGray),
-                      ),
-                      prefixIcon: Icon(Icons.person_outline),
-                    ),
-                  ),
-                  const SizedBox(height: 20),
-                  TextFormField(
-                    controller: passwordController,
-                    keyboardType: TextInputType.visiblePassword,
-                    decoration: const InputDecoration(
-                      label: Text(
-                        'Password',
-                        style: TextStyle(color: Colours.lightGray),
-                      ),
-                      prefixIcon: Icon(Icons.lock_outline),
-                    ),
-                  ),
-                  const SizedBox(height: 40),
-                  ElevatedButton(
-                      onPressed: () => _getData(), child: const Text('Login'))
-                ],
-              )),
-            )
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        TextFormField(
+                          controller: usernameController,
+                          keyboardType: TextInputType.visiblePassword,
+                          validator: (usernameController) {
+                            if (usernameController == '') {
+                              return 'Please enter a username';
+                            }
+                            return null;
+                          },
+                          decoration: const InputDecoration(
+                            errorBorder: OutlineInputBorder(
+                                borderSide: BorderSide(color: Colours.red)),
+                            errorStyle: TextStyle(color: Colours.red),
+                            label: Text(
+                              'Username',
+                              style: TextStyle(color: Colours.lightGray),
+                            ),
+                            prefixIcon: Icon(Icons.person_outline),
+                          ),
+                        ),
+                        const SizedBox(height: 20),
+                        TextFormField(
+                          controller: passwordController,
+                          keyboardType: TextInputType.visiblePassword,
+                          validator: (passwordController) {
+                            if (passwordController == '') {
+                              return 'Please enter a password.';
+                            }
+                            return null;
+                          },
+                          decoration: const InputDecoration(
+                            errorBorder: OutlineInputBorder(
+                              borderSide: BorderSide(color: Colours.red),
+                            ),
+                            errorStyle: TextStyle(color: Colours.red),
+                            label: Text(
+                              'Password',
+                              style: TextStyle(color: Colours.lightGray),
+                            ),
+                            prefixIcon: Icon(Icons.lock_outline),
+                          ),
+                        ),
+                        SizedBox(height: invalidLogin ? 10 : 5),
+                        Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: invalidLogin
+                                ? const [
+                                    Text(
+                                      'Invalid username and/or password.',
+                                      style: TextStyle(color: Colours.red),
+                                    )
+                                  ]
+                                : const [Text('')]),
+                        SizedBox(height: invalidLogin ? 10 : 15),
+                        ElevatedButton(
+                            onPressed: () {
+                              if (formKey.currentState!.validate()) {
+                                _getData();
+                              }
+                            },
+                            child: const Text('Login')),
+                      ])))
           : _EndedItemsModel == null || _EndedItemsModel!.isEmpty
               ? const Center(
                   child: CircularProgressIndicator(),
