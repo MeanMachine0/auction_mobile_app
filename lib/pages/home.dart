@@ -2,10 +2,10 @@ import 'dart:developer';
 
 import 'package:flutter/material.dart';
 
-import 'package:my_rest_api/models/ended_items_model.dart';
-import 'package:my_rest_api/pages/ended_item_detail.dart';
-import 'package:my_rest_api/services/api_service.dart';
-import 'package:my_rest_api/colours.dart';
+import 'package:auction_mobile_app/models/ended_items_model.dart';
+import 'package:auction_mobile_app/pages/ended_item_detail.dart';
+import 'package:auction_mobile_app/services/api_service.dart';
+import 'package:auction_mobile_app/colours.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class Home extends StatefulWidget {

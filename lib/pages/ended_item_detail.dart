@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:my_rest_api/elements.dart';
+import 'package:auction_mobile_app/elements.dart';
 
-import 'package:my_rest_api/models/ended_items_model.dart';
-import 'package:my_rest_api/services/api_service.dart';
+import 'package:auction_mobile_app/models/ended_items_model.dart';
+import 'package:auction_mobile_app/services/api_service.dart';
 import 'package:intl/intl.dart';
-import 'package:my_rest_api/colours.dart';
+import 'package:auction_mobile_app/colours.dart';
 
 class EndedItemDetail extends StatefulWidget {
   final int _endedItemId;

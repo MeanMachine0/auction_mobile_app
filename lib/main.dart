@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:my_rest_api/pages/base.dart';
-import 'package:my_rest_api/colours.dart';
+import 'package:auction_mobile_app/pages/base.dart';
+import 'package:auction_mobile_app/colours.dart';
 
 void main() => runApp(const MyApp());
 

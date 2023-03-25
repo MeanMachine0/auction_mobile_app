@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:google_nav_bar/google_nav_bar.dart';
-import 'package:my_rest_api/colours.dart';
-import 'package:my_rest_api/pages/home.dart';
-import 'package:my_rest_api/pages/my_listings.dart';
-import 'package:my_rest_api/pages/browse.dart';
-import 'package:my_rest_api/pages/list_an_item.dart';
+import 'package:auction_mobile_app/colours.dart';
+import 'package:auction_mobile_app/pages/home.dart';
+import 'package:auction_mobile_app/pages/my_listings.dart';
+import 'package:auction_mobile_app/pages/browse.dart';
+import 'package:auction_mobile_app/pages/list_an_item.dart';
 
 class Base extends StatefulWidget {
   const Base({Key? key}) : super(key: key);

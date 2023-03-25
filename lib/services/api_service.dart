@@ -2,11 +2,11 @@ import 'dart:convert';
 import 'dart:developer';
 
 import 'package:http/http.dart' as http;
-import 'package:my_rest_api/models/user_model.dart';
-import 'package:my_rest_api/models/accounts_model.dart';
-import 'package:my_rest_api/models/items_model.dart';
-import 'package:my_rest_api/models/ended_items_model.dart';
-import 'package:my_rest_api/constants.dart';
+import 'package:auction_mobile_app/models/user_model.dart';
+import 'package:auction_mobile_app/models/accounts_model.dart';
+import 'package:auction_mobile_app/models/items_model.dart';
+import 'package:auction_mobile_app/models/ended_items_model.dart';
+import 'package:auction_mobile_app/constants.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class ApiService {

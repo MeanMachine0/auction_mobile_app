@@ -1,6 +1,6 @@
 {
-    "name": "my_rest_api",
-    "short_name": "my_rest_api",
+    "name": "auction_mobile_app",
+    "short_name": "auction_mobile_app",
     "start_url": ".",
     "display": "standalone",
     "background_color": "#0175C2",

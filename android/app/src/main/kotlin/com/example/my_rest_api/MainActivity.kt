@@ -1,4 +1,4 @@
-package com.example.my_rest_api
+package com.example.auction_mobile_app
 
 import io.flutter.embedding.android.FlutterActivity
 
