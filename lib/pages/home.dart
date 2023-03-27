@@ -144,8 +144,8 @@ class _HomeState extends State<Home> {
                               prefixIcon: const Icon(Icons.lock_outline),
                               suffixIcon: IconButton(
                                 icon: passVis
-                                    ? const Icon(Icons.visibility_outlined)
-                                    : const Icon(Icons.visibility_off_outlined),
+                                    ? const Icon(Icons.visibility_off_outlined)
+                                    : const Icon(Icons.visibility_outlined),
                                 onPressed: () {
                                   passVis = !passVis;
                                   setState(() {});
