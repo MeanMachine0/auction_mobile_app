@@ -52,6 +52,7 @@ class MyApp extends StatelessWidget {
           filled: true,
           fillColor: Colours.darkGray,
           prefixIconColor: Colours.lightGray,
+          suffixIconColor: Colours.lightGray,
         ),
         elevatedButtonTheme: ElevatedButtonThemeData(
           style: ButtonStyle(

@@ -22,6 +22,7 @@ class _HomeState extends State<Home> {
   late String? username = '';
   late String? password = '';
   bool invalidLogin = false;
+  bool passVis = true;
   TextEditingController usernameController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
 
@@ -123,6 +124,7 @@ class _HomeState extends State<Home> {
                         const SizedBox(height: 20),
                         TextFormField(
                           controller: passwordController,
+                          obscureText: passVis,
                           keyboardType: TextInputType.visiblePassword,
                           validator: (passwordController) {
                             if (passwordController == '') {
@@ -130,17 +132,26 @@ class _HomeState extends State<Home> {
                             }
                             return null;
                           },
-                          decoration: const InputDecoration(
-                            errorBorder: OutlineInputBorder(
-                              borderSide: BorderSide(color: Colours.red),
-                            ),
-                            errorStyle: TextStyle(color: Colours.red),
-                            label: Text(
-                              'Password',
-                              style: TextStyle(color: Colours.lightGray),
-                            ),
-                            prefixIcon: Icon(Icons.lock_outline),
-                          ),
+                          decoration: InputDecoration(
+                              errorBorder: const OutlineInputBorder(
+                                borderSide: BorderSide(color: Colours.red),
+                              ),
+                              errorStyle: const TextStyle(color: Colours.red),
+                              label: const Text(
+                                'Password',
+                                style: TextStyle(color: Colours.lightGray),
+                              ),
+                              prefixIcon: const Icon(Icons.lock_outline),
+                              suffixIcon: IconButton(
+                                icon: passVis
+                                    ? const Icon(Icons.visibility_outlined)
+                                    : const Icon(Icons.visibility_off_outlined),
+                                onPressed: () {
+                                  passVis = !passVis;
+                                  setState(() {});
+                                },
+                                splashColor: Colors.transparent,
+                              )),
                         ),
                         SizedBox(height: invalidLogin ? 10 : 5),
                         Row(
