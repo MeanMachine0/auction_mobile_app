@@ -4,7 +4,6 @@ import 'package:auction_mobile_app/elements.dart';
 import 'package:auction_mobile_app/models/ended_items_model.dart';
 import 'package:auction_mobile_app/services/api_service.dart';
 import 'package:intl/intl.dart';
-import 'package:auction_mobile_app/colours.dart';
 
 class EndedItemDetail extends StatefulWidget {
   final int _endedItemId;
@@ -64,52 +63,61 @@ class _EndedItemDetailState extends State<EndedItemDetail> {
                               ],
                             ),
                             const SizedBox(height: 5),
-                            Row(
-                              children: [
-                                Text(
-                                  'Price: £${endedItemModel!.salePrice}',
-                                ),
-                              ],
-                            ),
-                            Row(
-                              children: [
-                                Text(
-                                  'P&P: £${endedItemModel!.postageCost}',
-                                )
-                              ],
-                            ),
-                            Row(
-                              children: [
-                                Text(
-                                    'Bid Increment: £${endedItemModel!.bidIncrement}'),
-                              ],
-                            ),
-                            Row(
-                              children: [
-                                Text('Condition: ${endedItemModel!.condition}'),
-                              ],
-                            ),
-                            Row(
-                              children: [
-                                Text(
-                                    'Ended on ${formatDateTime(endedItemModel!.endDateTime)}'),
-                              ],
-                            ),
-                            Row(
-                              children: [
-                                Text(
-                                    'Accepts Returns: ${endedItemModel!.acceptReturns}'),
-                              ],
-                            ),
-                            Row(
-                              children: [
-                                Text('Bids: ${endedItemModel!.numBids}'),
-                              ],
-                            ),
-                            Row(
-                              children: [
-                                Text('Seller: ${endedItemModel!.sellerId}'),
-                              ],
+                            Padding(
+                              padding: const EdgeInsets.only(left: 8),
+                              child: Column(
+                                children: [
+                                  Row(
+                                    children: [
+                                      Text(
+                                        'Price: £${endedItemModel!.salePrice}',
+                                      ),
+                                    ],
+                                  ),
+                                  Row(
+                                    children: [
+                                      Text(
+                                        'P&P: £${endedItemModel!.postageCost}',
+                                      )
+                                    ],
+                                  ),
+                                  Row(
+                                    children: [
+                                      Text(
+                                          'Bid Increment: £${endedItemModel!.bidIncrement}'),
+                                    ],
+                                  ),
+                                  Row(
+                                    children: [
+                                      Text(
+                                          'Condition: ${endedItemModel!.condition}'),
+                                    ],
+                                  ),
+                                  Row(
+                                    children: [
+                                      Text(
+                                          'Ended on ${formatDateTime(endedItemModel!.endDateTime)}'),
+                                    ],
+                                  ),
+                                  Row(
+                                    children: [
+                                      Text(
+                                          'Accepts Returns: ${endedItemModel!.acceptReturns}'),
+                                    ],
+                                  ),
+                                  Row(
+                                    children: [
+                                      Text('Bids: ${endedItemModel!.numBids}'),
+                                    ],
+                                  ),
+                                  Row(
+                                    children: [
+                                      Text(
+                                          'Seller: ${endedItemModel!.sellerId}'),
+                                    ],
+                                  ),
+                                ],
+                              ),
                             ),
                           ],
                         ),
@@ -135,8 +143,12 @@ class _EndedItemDetailState extends State<EndedItemDetail> {
                               ],
                             ),
                             const SizedBox(height: 5),
-                            Text(
-                              endedItemModel!.description,
+                            Padding(
+                              padding:
+                                  const EdgeInsets.symmetric(horizontal: 8),
+                              child: Text(
+                                endedItemModel!.description,
+                              ),
                             ),
                           ],
                         ),

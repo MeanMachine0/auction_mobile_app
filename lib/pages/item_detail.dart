@@ -4,8 +4,6 @@ import 'package:auction_mobile_app/elements.dart';
 import 'package:auction_mobile_app/models/items_model.dart';
 import 'package:auction_mobile_app/services/api_service.dart';
 import 'package:intl/intl.dart';
-import 'package:auction_mobile_app/colours.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 class ItemDetail extends StatefulWidget {
   final int _itemId;
@@ -27,7 +25,7 @@ class _ItemDetailState extends State<ItemDetail> {
   }
 
   void _getData() async {
-    itemModel = (await ApiService().getItem(widget._itemId)) as ItemsModel?;
+    itemModel = (await ApiService().getItem(widget._itemId));
     setState(() {});
   }
 
@@ -65,52 +63,60 @@ class _ItemDetailState extends State<ItemDetail> {
                               ],
                             ),
                             const SizedBox(height: 5),
-                            Row(
-                              children: [
-                                Text(
-                                  'Price: £${itemModel!.price}',
-                                ),
-                              ],
-                            ),
-                            Row(
-                              children: [
-                                Text(
-                                  'P&P: £${itemModel!.postageCost}',
-                                )
-                              ],
-                            ),
-                            Row(
-                              children: [
-                                Text(
-                                    'Bid Increment: £${itemModel!.bidIncrement}'),
-                              ],
-                            ),
-                            Row(
-                              children: [
-                                Text('Condition: ${itemModel!.condition}'),
-                              ],
-                            ),
-                            Row(
-                              children: [
-                                Text(
-                                    'Ends on ${formatDateTime(itemModel!.endDateTime)}'),
-                              ],
-                            ),
-                            Row(
-                              children: [
-                                Text(
-                                    'Accepts Returns: ${itemModel!.acceptReturns}'),
-                              ],
-                            ),
-                            Row(
-                              children: [
-                                Text('Bids: ${itemModel!.numBids}'),
-                              ],
-                            ),
-                            Row(
-                              children: [
-                                Text('Seller: ${itemModel!.sellerId}'),
-                              ],
+                            Padding(
+                              padding: const EdgeInsets.only(left: 8),
+                              child: Column(
+                                children: [
+                                  Row(
+                                    children: [
+                                      Text(
+                                        'Price: £${itemModel!.price}',
+                                      ),
+                                    ],
+                                  ),
+                                  Row(
+                                    children: [
+                                      Text(
+                                        'P&P: £${itemModel!.postageCost}',
+                                      )
+                                    ],
+                                  ),
+                                  Row(
+                                    children: [
+                                      Text(
+                                          'Bid Increment: £${itemModel!.bidIncrement}'),
+                                    ],
+                                  ),
+                                  Row(
+                                    children: [
+                                      Text(
+                                          'Condition: ${itemModel!.condition}'),
+                                    ],
+                                  ),
+                                  Row(
+                                    children: [
+                                      Text(
+                                          'Ends on ${formatDateTime(itemModel!.endDateTime)}'),
+                                    ],
+                                  ),
+                                  Row(
+                                    children: [
+                                      Text(
+                                          'Accepts Returns: ${itemModel!.acceptReturns}'),
+                                    ],
+                                  ),
+                                  Row(
+                                    children: [
+                                      Text('Bids: ${itemModel!.numBids}'),
+                                    ],
+                                  ),
+                                  Row(
+                                    children: [
+                                      Text('Seller: ${itemModel!.sellerId}'),
+                                    ],
+                                  ),
+                                ],
+                              ),
                             ),
                           ],
                         ),
@@ -136,8 +142,12 @@ class _ItemDetailState extends State<ItemDetail> {
                               ],
                             ),
                             const SizedBox(height: 5),
-                            Text(
-                              itemModel!.description,
+                            Padding(
+                              padding:
+                                  const EdgeInsets.symmetric(horizontal: 8),
+                              child: Text(
+                                itemModel!.description,
+                              ),
                             ),
                           ],
                         ),
