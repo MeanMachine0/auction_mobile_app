@@ -128,4 +128,39 @@ class ApiService {
       log(e.toString());
     }
   }
+
+  void createItem(
+    String name,
+    double price,
+    double postageCost,
+    double bidIncrement,
+    String condition,
+    DateTime endDateTime,
+    bool acceptsReturns,
+    String description,
+    int sellerId,
+    String token,
+  ) async {
+    try {
+      var url =
+          Uri.parse(ApiConstants.baseUrl + ApiConstants.createItemEndpoint);
+      Map<String, dynamic> data = {
+        'name': name,
+        'price': price,
+        'postageCost': postageCost,
+        'bidIncrement': bidIncrement,
+        'condition': condition,
+        'endDateTime': endDateTime.toIso8601String(),
+        'acceptsReturns': acceptsReturns,
+        'description': description,
+        'sellerId': sellerId,
+      };
+      await http.post(url, body: json.encode(data), headers: {
+        'Authorization': 'Token $token',
+        'Content-Type': 'application/json'
+      });
+    } catch (e) {
+      log(e.toString());
+    }
+  }
 }

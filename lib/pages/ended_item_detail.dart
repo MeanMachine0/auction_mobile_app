@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:auction_mobile_app/elements.dart';
-
+import 'package:intl/intl.dart';
 import 'package:auction_mobile_app/models/ended_items_model.dart';
 import 'package:auction_mobile_app/services/api_service.dart';
-import 'package:intl/intl.dart';
 
 class EndedItemDetail extends StatefulWidget {
   final int _endedItemId;

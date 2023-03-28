@@ -3,7 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:auction_mobile_app/models/ended_items_model.dart';
 import 'package:auction_mobile_app/pages/ended_item_detail.dart';
 import 'package:auction_mobile_app/services/api_service.dart';
-import 'package:auction_mobile_app/colours.dart';
+import 'package:auction_mobile_app/constants.dart';
+
 import 'package:shared_preferences/shared_preferences.dart';
 
 class Home extends StatefulWidget {
@@ -38,10 +39,7 @@ class _HomeState extends State<Home> {
     token = prefs.getString('token');
     username = prefs.getString('username');
     password = prefs.getString('password');
-    if ((userId == null ||
-            token == null ||
-            username == null ||
-            password == null) &
+    if ((token == null) &&
         !(usernameController.text.isEmpty || passwordController.text.isEmpty)) {
       _IdToken = (await ApiService()
           .login(usernameController.text, passwordController.text));
@@ -61,10 +59,7 @@ class _HomeState extends State<Home> {
       } catch (e) {
         invalidLogin = true;
       }
-    } else if ((userId == null ||
-            token == null ||
-            username == null ||
-            password == null) &
+    } else if ((token == null) &&
         (usernameController.text.isEmpty || passwordController.text.isEmpty)) {
       invalidLogin = false;
     } else {
@@ -83,29 +78,23 @@ class _HomeState extends State<Home> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: userId == null ||
-              token == null ||
-              username == null ||
-              password == null
+      appBar: token == null
           ? AppBar(title: const Text('Login'))
           : AppBar(title: const Text('Recently Sold Items')),
-      body: userId == null ||
-              token == null ||
-              username == null ||
-              password == null
+      body: token == null
           ? Padding(
               padding: const EdgeInsets.symmetric(horizontal: 10),
               child: Form(
                   key: formKey,
-                  autovalidateMode: AutovalidateMode.always,
+                  autovalidateMode: AutovalidateMode.disabled,
                   child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         TextFormField(
                           controller: usernameController,
                           keyboardType: TextInputType.visiblePassword,
-                          validator: (usernameController) {
-                            if (usernameController == '') {
+                          validator: (uN) {
+                            if (uN == '') {
                               return 'Please enter a username';
                             }
                             return null;
@@ -126,8 +115,8 @@ class _HomeState extends State<Home> {
                           controller: passwordController,
                           obscureText: passVis,
                           keyboardType: TextInputType.visiblePassword,
-                          validator: (passwordController) {
-                            if (passwordController == '') {
+                          validator: (pW) {
+                            if (pW == '') {
                               return 'Please enter a password.';
                             }
                             return null;
@@ -177,53 +166,58 @@ class _HomeState extends State<Home> {
               ? const Center(
                   child: CircularProgressIndicator(),
                 )
-              : Column(
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: SizedBox(
-                        height: 600,
-                        child: ListView.builder(
-                          itemCount: _EndedItemsModel!
-                              .where((item) => item.sold)
-                              .length,
-                          itemBuilder: (context, index) {
-                            EndedItemsModel item = _EndedItemsModel!
+              : SingleChildScrollView(
+                  child: Column(
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: SizedBox(
+                          height: 600,
+                          child: ListView.builder(
+                            itemCount: _EndedItemsModel!
                                 .where((item) => item.sold)
-                                .toList()[index];
-                            return GestureDetector(
-                                onTap: () {
-                                  Navigator.of(context).push(MaterialPageRoute(
-                                      builder: (_) => EndedItemDetail(
-                                          endedItemId: item.id)));
-                                },
-                                child: Card(
-                                  margin: const EdgeInsets.all(5),
-                                  child: Column(
-                                    children: [
-                                      Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.center,
-                                        children: [
-                                          Padding(
-                                            padding: const EdgeInsets.symmetric(
-                                                vertical: 8.0),
-                                            child: Text(
-                                                '${item.name} - £${item.salePrice.toString()}'),
-                                          ),
-                                        ],
-                                      ),
-                                    ],
-                                  ),
-                                ));
-                          },
+                                .length,
+                            itemBuilder: (context, index) {
+                              EndedItemsModel item = _EndedItemsModel!
+                                  .where((item) => item.sold)
+                                  .toList()[index];
+                              return GestureDetector(
+                                  onTap: () {
+                                    Navigator.of(context).push(
+                                        MaterialPageRoute(
+                                            builder: (_) => EndedItemDetail(
+                                                endedItemId: item.id)));
+                                  },
+                                  child: Card(
+                                    margin: const EdgeInsets.all(5),
+                                    child: Column(
+                                      children: [
+                                        Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.center,
+                                          children: [
+                                            Padding(
+                                              padding:
+                                                  const EdgeInsets.symmetric(
+                                                      vertical: 8.0),
+                                              child: Text(
+                                                  '${item.name} - £${item.salePrice.toString()}'),
+                                            ),
+                                          ],
+                                        ),
+                                      ],
+                                    ),
+                                  ));
+                            },
+                          ),
                         ),
                       ),
-                    ),
-                    const SizedBox(height: 20),
-                    ElevatedButton(
-                        onPressed: () => _logout(), child: const Text('Logout'))
-                  ],
+                      const SizedBox(height: 20),
+                      ElevatedButton(
+                          onPressed: () => _logout(),
+                          child: const Text('Logout'))
+                    ],
+                  ),
                 ),
     );
   }

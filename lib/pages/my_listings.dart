@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 import 'package:auction_mobile_app/models/items_model.dart';
 import 'package:auction_mobile_app/services/api_service.dart';
-import 'package:auction_mobile_app/colours.dart';
+import 'package:auction_mobile_app/constants.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class MyListings extends StatefulWidget {

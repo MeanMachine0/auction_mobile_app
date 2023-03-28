@@ -1,8 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:auction_mobile_app/pages/base.dart';
-import 'package:auction_mobile_app/colours.dart';
+import 'package:auction_mobile_app/constants.dart';
+import 'package:intl/intl.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 
-void main() => runApp(const MyApp());
+void main() {
+  Intl.defaultLocale = 'en-GB';
+  runApp(const MyApp());
+}
 
 class MyApp extends StatelessWidget {
   const MyApp({Key? key}) : super(key: key);
@@ -11,6 +16,13 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Auction App',
+      localizationsDelegates: const [
+        GlobalMaterialLocalizations.delegate,
+        GlobalWidgetsLocalizations.delegate,
+        GlobalCupertinoLocalizations.delegate,
+      ],
+      supportedLocales: const [Locale('en', 'GB'), Locale('en', 'US')],
+      locale: const Locale('en', 'GB'),
       theme: ThemeData(
         useMaterial3: false,
         brightness: Brightness.dark,
