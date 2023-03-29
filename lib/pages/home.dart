@@ -54,54 +54,53 @@ class _HomeState extends State<Home> {
           ? const Center(
               child: CircularProgressIndicator(),
             )
-          : SingleChildScrollView(
-              child: Column(
-                children: [
-                  Padding(
+          : Column(
+              children: [
+                Expanded(
+                  child: Padding(
                     padding: const EdgeInsets.all(8.0),
-                    child: SizedBox(
-                      height: 600,
-                      child: ListView.builder(
-                        itemCount:
-                            _EndedItemsModel!.where((item) => item.sold).length,
-                        itemBuilder: (context, index) {
-                          EndedItemsModel item = _EndedItemsModel!
-                              .where((item) => item.sold)
-                              .toList()[index];
-                          return GestureDetector(
-                              onTap: () {
-                                Navigator.of(context).push(MaterialPageRoute(
-                                    builder: (_) =>
-                                        EndedItemDetail(endedItemId: item.id)));
-                              },
-                              child: Card(
-                                margin: const EdgeInsets.all(5),
-                                child: Column(
-                                  children: [
-                                    Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.center,
-                                      children: [
-                                        Padding(
-                                          padding: const EdgeInsets.symmetric(
-                                              vertical: 8.0),
-                                          child: Text(
-                                              '${item.name} - £${item.salePrice.toString()}'),
-                                        ),
-                                      ],
-                                    ),
-                                  ],
-                                ),
-                              ));
-                        },
-                      ),
+                    child: ListView.builder(
+                      itemCount:
+                          _EndedItemsModel!.where((item) => item.sold).length,
+                      itemBuilder: (context, index) {
+                        EndedItemsModel item = _EndedItemsModel!
+                            .where((item) => item.sold)
+                            .toList()[index];
+                        return GestureDetector(
+                            onTap: () {
+                              Navigator.of(context).push(MaterialPageRoute(
+                                  builder: (_) =>
+                                      EndedItemDetail(endedItemId: item.id)));
+                            },
+                            child: Card(
+                              margin: const EdgeInsets.all(5),
+                              child: Column(
+                                children: [
+                                  Row(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      Padding(
+                                        padding: const EdgeInsets.symmetric(
+                                            vertical: 8.0),
+                                        child: Text(
+                                            '${item.name} - £${item.salePrice.toString()}'),
+                                      ),
+                                    ],
+                                  ),
+                                ],
+                              ),
+                            ));
+                      },
                     ),
                   ),
-                  const SizedBox(height: 20),
-                  ElevatedButton(
-                      onPressed: () => _logout(), child: const Text('Logout'))
-                ],
-              ),
+                ),
+                const SizedBox(height: 20),
+                Container(
+                  margin: const EdgeInsets.only(bottom: 10),
+                  child: ElevatedButton(
+                      onPressed: () => _logout(), child: const Text('Logout')),
+                )
+              ],
             ),
     );
   }
