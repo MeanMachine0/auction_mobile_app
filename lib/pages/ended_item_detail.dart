@@ -43,119 +43,131 @@ class _EndedItemDetailState extends State<EndedItemDetail> {
           ? const Center(
               child: CircularProgressIndicator(),
             )
-          : Column(
-              children: [
-                Center(
-                  child: Container(
-                    margin: const EdgeInsets.fromLTRB(20, 20, 20, 0),
-                    child: Card(
-                      child: Padding(
-                        padding: const EdgeInsets.all(10),
-                        child: Column(
-                          children: [
-                            Row(
-                              children: const [
-                                Text(
-                                  'Summary',
-                                  style: Elements.cardHeader,
-                                )
-                              ],
-                            ),
-                            const SizedBox(height: 5),
-                            Padding(
-                              padding: const EdgeInsets.only(left: 8),
-                              child: Column(
-                                children: [
-                                  Row(
-                                    children: [
-                                      Text(
-                                        'Price: £${endedItemModel!.salePrice}',
-                                      ),
-                                    ],
-                                  ),
-                                  Row(
-                                    children: [
-                                      Text(
-                                        'P&P: £${endedItemModel!.postageCost}',
-                                      )
-                                    ],
-                                  ),
-                                  Row(
-                                    children: [
-                                      Text(
-                                          'Bid Increment: £${endedItemModel!.bidIncrement}'),
-                                    ],
-                                  ),
-                                  Row(
-                                    children: [
-                                      Text(
-                                          'Condition: ${endedItemModel!.condition}'),
-                                    ],
-                                  ),
-                                  Row(
-                                    children: [
-                                      Text(
-                                          'Ended on ${formatDateTime(endedItemModel!.endDateTime)}'),
-                                    ],
-                                  ),
-                                  Row(
-                                    children: [
-                                      Text(
-                                          'Accepts Returns: ${endedItemModel!.acceptReturns}'),
-                                    ],
-                                  ),
-                                  Row(
-                                    children: [
-                                      Text('Bids: ${endedItemModel!.numBids}'),
-                                    ],
-                                  ),
-                                  Row(
-                                    children: [
-                                      Text(
-                                          'Seller: ${endedItemModel!.sellerId}'),
-                                    ],
-                                  ),
+          : SingleChildScrollView(
+              child: Column(
+                children: [
+                  Center(
+                    child: Container(
+                      margin: const EdgeInsets.fromLTRB(20, 20, 20, 0),
+                      child: Card(
+                        child: Padding(
+                          padding: const EdgeInsets.all(10),
+                          child: Column(
+                            children: [
+                              Row(
+                                children: const [
+                                  Text(
+                                    'Summary',
+                                    style: Elements.cardHeader,
+                                  )
                                 ],
                               ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
-                  ),
-                ),
-                Center(
-                  child: Container(
-                    margin: const EdgeInsets.fromLTRB(20, 15, 20, 0),
-                    child: Card(
-                      child: Padding(
-                        padding: const EdgeInsets.all(10),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Row(
-                              children: const [
-                                Text(
-                                  'Description',
-                                  style: Elements.cardHeader,
-                                )
-                              ],
-                            ),
-                            const SizedBox(height: 5),
-                            Padding(
-                              padding:
-                                  const EdgeInsets.symmetric(horizontal: 8),
-                              child: Text(
-                                endedItemModel!.description,
+                              const SizedBox(height: 5),
+                              Padding(
+                                padding: const EdgeInsets.only(left: 8),
+                                child: Column(
+                                  children: [
+                                    Row(
+                                      children: [
+                                        Text(
+                                          'Price: £${endedItemModel!.salePrice}',
+                                        ),
+                                      ],
+                                    ),
+                                    Row(
+                                      children: double.parse(endedItemModel!
+                                                  .postageCost) ==
+                                              0
+                                          ? [const Text('P&P: free')]
+                                          : [
+                                              Text(
+                                                'P&P: £${endedItemModel!.postageCost}',
+                                              )
+                                            ],
+                                    ),
+                                    Row(
+                                      children: [
+                                        Text(
+                                            'Bid Increment: £${endedItemModel!.bidIncrement}'),
+                                      ],
+                                    ),
+                                    Row(
+                                      children: [
+                                        Text(
+                                            'Condition: ${endedItemModel!.condition}'),
+                                      ],
+                                    ),
+                                    Row(
+                                      children: [
+                                        Text(
+                                            'Ended on ${formatDateTime(endedItemModel!.endDateTime)}'),
+                                      ],
+                                    ),
+                                    Row(
+                                      children: endedItemModel!.acceptReturns
+                                          ? [
+                                              const Text(
+                                                  'Returns accepted: yes')
+                                            ]
+                                          : [
+                                              const Text(
+                                                  'Returns accepted: no'),
+                                            ],
+                                    ),
+                                    Row(
+                                      children: [
+                                        Text(
+                                            'Bids: ${endedItemModel!.numBids}'),
+                                      ],
+                                    ),
+                                    Row(
+                                      children: [
+                                        Text(
+                                            'Seller: ${endedItemModel!.sellerId}'),
+                                      ],
+                                    ),
+                                  ],
+                                ),
                               ),
-                            ),
-                          ],
+                            ],
+                          ),
                         ),
                       ),
                     ),
                   ),
-                ),
-              ],
+                  Center(
+                    child: Container(
+                      margin: const EdgeInsets.fromLTRB(20, 15, 20, 0),
+                      child: Card(
+                        child: Padding(
+                          padding: const EdgeInsets.all(10),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Row(
+                                children: const [
+                                  Text(
+                                    'Description',
+                                    style: Elements.cardHeader,
+                                  )
+                                ],
+                              ),
+                              const SizedBox(height: 5),
+                              Padding(
+                                padding:
+                                    const EdgeInsets.symmetric(horizontal: 8),
+                                child: Text(
+                                  endedItemModel!.description,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
             ),
     );
   }

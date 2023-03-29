@@ -5,6 +5,7 @@ import 'package:auction_mobile_app/pages/home.dart';
 import 'package:auction_mobile_app/pages/my_listings.dart';
 import 'package:auction_mobile_app/pages/browse.dart';
 import 'package:auction_mobile_app/pages/list_an_item.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class Base extends StatefulWidget {
   const Base({Key? key}) : super(key: key);
@@ -21,6 +22,9 @@ class _BaseState extends State<Base> {
     ListAnItem(),
     MyListings(),
   ];
+  late int? accountId = 0;
+  late String? token = '';
+  late String? username = '';
 
   @override
   Widget build(BuildContext context) {

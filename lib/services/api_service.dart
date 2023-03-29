@@ -163,4 +163,17 @@ class ApiService {
       log(e.toString());
     }
   }
+
+  void submitBid(double bid, int itemId, int accountId, String token) async {
+    var url = Uri.parse(
+        '${ApiConstants.baseUrl}${ApiConstants.itemsEndpoint}$itemId/${ApiConstants.bidEndpoint}');
+    Map<String, dynamic> data = {
+      'price': bid,
+      'accountId': accountId,
+    };
+    await http.post(url, body: json.encode(data), headers: {
+      'Authorization': 'Token $token',
+      'Content-Type': 'application/json',
+    });
+  }
 }

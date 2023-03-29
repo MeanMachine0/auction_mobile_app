@@ -15,17 +15,12 @@ class Home extends StatefulWidget {
 }
 
 class _HomeState extends State<Home> {
-  final formKey = GlobalKey<FormState>();
   late List<EndedItemsModel>? _EndedItemsModel = [];
   late List<String>? _IdToken = [];
   late int? userId = 0;
   late String? token = '';
   late String? username = '';
   late String? password = '';
-  bool invalidLogin = false;
-  bool passVis = true;
-  TextEditingController usernameController = TextEditingController();
-  TextEditingController passwordController = TextEditingController();
 
   @override
   void initState() {
@@ -39,32 +34,8 @@ class _HomeState extends State<Home> {
     token = prefs.getString('token');
     username = prefs.getString('username');
     password = prefs.getString('password');
-    if ((token == null) &&
-        !(usernameController.text.isEmpty || passwordController.text.isEmpty)) {
-      _IdToken = (await ApiService()
-          .login(usernameController.text, passwordController.text));
-      try {
-        await prefs.setInt('userId', int.parse(_IdToken![0]));
-        await prefs.setString('token', _IdToken![1]);
-        await prefs.setString('username', usernameController.text);
-        await prefs.setString('password', passwordController.text);
-        userId = prefs.getInt('userId');
-        token = prefs.getString('token');
-        username = prefs.getString('username');
-        password = prefs.getString('password');
-        usernameController.text = '';
-        passwordController.text = '';
-        invalidLogin = false;
-        _EndedItemsModel = (await ApiService().getEndedItems());
-      } catch (e) {
-        invalidLogin = true;
-      }
-    } else if ((token == null) &&
-        (usernameController.text.isEmpty || passwordController.text.isEmpty)) {
-      invalidLogin = false;
-    } else {
-      _EndedItemsModel = (await ApiService().getEndedItems());
-    }
+    ApiService apiService = ApiService();
+    _EndedItemsModel = await apiService.getEndedItems();
     setState(() {});
   }
 
@@ -78,147 +49,60 @@ class _HomeState extends State<Home> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: token == null
-          ? AppBar(title: const Text('Login'))
-          : AppBar(title: const Text('Recently Sold Items')),
-      body: token == null
-          ? Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 10),
-              child: Form(
-                  key: formKey,
-                  autovalidateMode: AutovalidateMode.disabled,
-                  child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        TextFormField(
-                          controller: usernameController,
-                          keyboardType: TextInputType.visiblePassword,
-                          validator: (uN) {
-                            if (uN == '') {
-                              return 'Please enter a username';
-                            }
-                            return null;
-                          },
-                          decoration: const InputDecoration(
-                            errorBorder: OutlineInputBorder(
-                                borderSide: BorderSide(color: Colours.red)),
-                            errorStyle: TextStyle(color: Colours.red),
-                            label: Text(
-                              'Username',
-                              style: TextStyle(color: Colours.lightGray),
-                            ),
-                            prefixIcon: Icon(Icons.person_outline),
-                          ),
-                        ),
-                        const SizedBox(height: 20),
-                        TextFormField(
-                          controller: passwordController,
-                          obscureText: passVis,
-                          keyboardType: TextInputType.visiblePassword,
-                          validator: (pW) {
-                            if (pW == '') {
-                              return 'Please enter a password.';
-                            }
-                            return null;
-                          },
-                          decoration: InputDecoration(
-                              errorBorder: const OutlineInputBorder(
-                                borderSide: BorderSide(color: Colours.red),
-                              ),
-                              errorStyle: const TextStyle(color: Colours.red),
-                              label: const Text(
-                                'Password',
-                                style: TextStyle(color: Colours.lightGray),
-                              ),
-                              prefixIcon: const Icon(Icons.lock_outline),
-                              suffixIcon: IconButton(
-                                icon: passVis
-                                    ? const Icon(Icons.visibility_off_outlined)
-                                    : const Icon(Icons.visibility_outlined),
-                                onPressed: () {
-                                  passVis = !passVis;
-                                  setState(() {});
-                                },
-                                splashColor: Colors.transparent,
-                              )),
-                        ),
-                        SizedBox(height: invalidLogin ? 10 : 5),
-                        Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: invalidLogin
-                                ? const [
-                                    Text(
-                                      'Invalid username and/or password.',
-                                      style: TextStyle(color: Colours.red),
-                                    )
-                                  ]
-                                : const [Text('')]),
-                        SizedBox(height: invalidLogin ? 10 : 15),
-                        ElevatedButton(
-                            onPressed: () {
-                              if (formKey.currentState!.validate()) {
-                                _getData();
-                              }
-                            },
-                            child: const Text('Login')),
-                      ])))
-          : _EndedItemsModel == null || _EndedItemsModel!.isEmpty
-              ? const Center(
-                  child: CircularProgressIndicator(),
-                )
-              : SingleChildScrollView(
-                  child: Column(
-                    children: [
-                      Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: SizedBox(
-                          height: 600,
-                          child: ListView.builder(
-                            itemCount: _EndedItemsModel!
-                                .where((item) => item.sold)
-                                .length,
-                            itemBuilder: (context, index) {
-                              EndedItemsModel item = _EndedItemsModel!
-                                  .where((item) => item.sold)
-                                  .toList()[index];
-                              return GestureDetector(
-                                  onTap: () {
-                                    Navigator.of(context).push(
-                                        MaterialPageRoute(
-                                            builder: (_) => EndedItemDetail(
-                                                endedItemId: item.id)));
-                                  },
-                                  child: Card(
-                                    margin: const EdgeInsets.all(5),
-                                    child: Column(
+      appBar: AppBar(title: const Text('Recently Sold Items')),
+      body: _EndedItemsModel == null || _EndedItemsModel!.isEmpty
+          ? const Center(
+              child: CircularProgressIndicator(),
+            )
+          : SingleChildScrollView(
+              child: Column(
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: SizedBox(
+                      height: 600,
+                      child: ListView.builder(
+                        itemCount:
+                            _EndedItemsModel!.where((item) => item.sold).length,
+                        itemBuilder: (context, index) {
+                          EndedItemsModel item = _EndedItemsModel!
+                              .where((item) => item.sold)
+                              .toList()[index];
+                          return GestureDetector(
+                              onTap: () {
+                                Navigator.of(context).push(MaterialPageRoute(
+                                    builder: (_) =>
+                                        EndedItemDetail(endedItemId: item.id)));
+                              },
+                              child: Card(
+                                margin: const EdgeInsets.all(5),
+                                child: Column(
+                                  children: [
+                                    Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
                                       children: [
-                                        Row(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.center,
-                                          children: [
-                                            Padding(
-                                              padding:
-                                                  const EdgeInsets.symmetric(
-                                                      vertical: 8.0),
-                                              child: Text(
-                                                  '${item.name} - £${item.salePrice.toString()}'),
-                                            ),
-                                          ],
+                                        Padding(
+                                          padding: const EdgeInsets.symmetric(
+                                              vertical: 8.0),
+                                          child: Text(
+                                              '${item.name} - £${item.salePrice.toString()}'),
                                         ),
                                       ],
                                     ),
-                                  ));
-                            },
-                          ),
-                        ),
+                                  ],
+                                ),
+                              ));
+                        },
                       ),
-                      const SizedBox(height: 20),
-                      ElevatedButton(
-                          onPressed: () => _logout(),
-                          child: const Text('Logout'))
-                    ],
+                    ),
                   ),
-                ),
+                  const SizedBox(height: 20),
+                  ElevatedButton(
+                      onPressed: () => _logout(), child: const Text('Logout'))
+                ],
+              ),
+            ),
     );
   }
 }

@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 
 class ApiConstants {
   static String baseUrl = Platform.isAndroid
-      ? 'http://10.0.2.2:8000/api/'
+      ? 'https://c938-90-251-175-128.eu.ngrok.io/api/'
       : 'http://127.0.0.1:8000/api/';
   static String usersEndpoint = 'users/';
   static String accountsEndpoint = 'accounts/';
@@ -12,6 +12,7 @@ class ApiConstants {
   static String loginEndpoint = 'login/';
   static String logoutEndpoint = 'logout/';
   static String createItemEndpoint = '${itemsEndpoint}create/';
+  static String bidEndpoint = 'bid/';
 }
 
 class Colours {
@@ -27,6 +28,4 @@ class Colours {
 
 class Regexes {
   static var money = RegExp(r'^\d{0,7}\.?\d{0,2}');
-  static var number = RegExp(r'[0-9]');
-  static var colon = RegExp(r':');
 }
