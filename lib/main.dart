@@ -53,8 +53,8 @@ class MyApp extends StatelessWidget {
           horizontalMargin: 10,
           headingTextStyle: TextStyle(fontSize: 16),
           columnSpacing: 16,
-          headingRowColor: MaterialStatePropertyAll(Colours.darkGray),
-          dataRowColor: MaterialStatePropertyAll(Colours.lightGray),
+          headingRowColor: MaterialStatePropertyAll(Colors.transparent),
+          dataRowColor: MaterialStatePropertyAll(Colors.transparent),
         ),
         listTileTheme: const ListTileThemeData(
           tileColor: Colours.lightGray,

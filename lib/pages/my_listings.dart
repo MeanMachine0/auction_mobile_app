@@ -1,3 +1,4 @@
+import 'package:auction_mobile_app/pages/item_detail.dart';
 import 'package:auction_mobile_app/pages/login.dart';
 import 'package:flutter/material.dart';
 
@@ -38,41 +39,66 @@ class _MyListingsState extends State<MyListings> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('My Bids'),
+        title: const Text('My Listings'),
       ),
       body: _itemsModel == null || _itemsModel!.isEmpty
           ? const Center(
               child: CircularProgressIndicator(),
             )
           : token != null
-              ? ListView.builder(
-                  itemCount: _itemsModel!.length,
-                  itemBuilder: (context, index) {
-                    return Card(
-                      child: Column(
-                        children: [
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                            children: [
-                              Text(_itemsModel![index].price.toString()),
-                              Text(_itemsModel![index].condition.toString()),
-                            ],
-                          ),
-                          const SizedBox(
-                            height: 20.0,
-                          ),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                            children: [
-                              Text(_itemsModel![index].description),
-                              Text(_itemsModel![index].sellerId.toString()),
-                            ],
-                          ),
-                        ],
+              ? _itemsModel == null || _itemsModel!.isEmpty
+                  ? const Center(
+                      child: CircularProgressIndicator(),
+                    )
+                  : SingleChildScrollView(
+                      scrollDirection: Axis.horizontal,
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 10,
+                          vertical: 20,
+                        ),
+                        child: DataTable(
+                          border: TableBorder.all(
+                              color: Colours.dimGray,
+                              borderRadius:
+                                  const BorderRadius.all(Radius.circular(30))),
+                          columns: const [
+                            DataColumn(label: Text('Name')),
+                            DataColumn(label: Text('Price')),
+                            DataColumn(label: Text('Bids')),
+                            DataColumn(label: Text('Seller')),
+                          ],
+                          rows: _itemsModel!
+                              .where((item) => item.sellerId == accountId)
+                              .map(
+                                (item) => DataRow(
+                                  cells: [
+                                    DataCell(
+                                        SizedBox(
+                                          width: 200,
+                                          child: Text(item.name,
+                                              style: const TextStyle(
+                                                decoration:
+                                                    TextDecoration.underline,
+                                                decorationStyle:
+                                                    TextDecorationStyle.solid,
+                                              )),
+                                        ), onTap: () {
+                                      Navigator.of(context).push(
+                                          MaterialPageRoute(
+                                              builder: (_) =>
+                                                  ItemDetail(itemId: item.id)));
+                                    }),
+                                    DataCell(Text(item.price)),
+                                    DataCell(Text(item.numBids.toString())),
+                                    DataCell(Text(item.sellerId.toString())),
+                                  ],
+                                ),
+                              )
+                              .toList(),
+                        ),
                       ),
-                    );
-                  },
-                )
+                    )
               : Center(
                   child: ElevatedButton(
                     onPressed: () {
