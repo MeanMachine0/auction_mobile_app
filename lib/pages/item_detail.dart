@@ -24,6 +24,8 @@ class _ItemDetailState extends State<ItemDetail> {
   String? token;
   String? username;
   TextEditingController bidController = TextEditingController();
+  String message = '';
+  var messageColour = Colours.lightGray;
 
   @override
   void initState() {
@@ -58,96 +60,90 @@ class _ItemDetailState extends State<ItemDetail> {
           : SingleChildScrollView(
               child: Column(
                 children: [
-                  Center(
-                    child: Container(
-                      margin: const EdgeInsets.fromLTRB(20, 20, 20, 0),
-                      child: Card(
-                        child: Padding(
-                          padding: const EdgeInsets.all(10),
-                          child: Column(
-                            children: [
-                              Row(
-                                children: const [
-                                  Text(
-                                    'Summary',
-                                    style: Elements.cardHeader,
-                                  )
+                  Padding(
+                    padding: const EdgeInsets.fromLTRB(20, 20, 20, 0),
+                    child: Card(
+                      child: Padding(
+                        padding: const EdgeInsets.all(10),
+                        child: Column(
+                          children: [
+                            Row(
+                              children: const [
+                                Text(
+                                  'Summary',
+                                  style: Elements.cardHeader,
+                                )
+                              ],
+                            ),
+                            const SizedBox(height: 5),
+                            Padding(
+                              padding: const EdgeInsets.only(left: 8),
+                              child: Column(
+                                children: [
+                                  Row(
+                                    children: [
+                                      Text(
+                                        'Price: £${itemModel!.price}',
+                                      ),
+                                    ],
+                                  ),
+                                  Row(
+                                    children:
+                                        double.parse(itemModel!.postageCost) ==
+                                                0
+                                            ? [const Text('P&P: free')]
+                                            : [
+                                                Text(
+                                                  'P&P: £${itemModel!.postageCost}',
+                                                )
+                                              ],
+                                  ),
+                                  Row(
+                                    children: [
+                                      Text(
+                                          'Bid Increment: £${itemModel!.bidIncrement}'),
+                                    ],
+                                  ),
+                                  Row(
+                                    children: [
+                                      Text(
+                                          'Condition: ${itemModel!.condition}'),
+                                    ],
+                                  ),
+                                  Row(
+                                    children: [
+                                      Text(
+                                          'Ends on ${formatDateTime(itemModel!.endDateTime)}'),
+                                    ],
+                                  ),
+                                  Row(
+                                    children: itemModel!.acceptReturns
+                                        ? [const Text('Returns accepted: yes')]
+                                        : [
+                                            const Text('Returns accepted: no'),
+                                          ],
+                                  ),
+                                  Row(
+                                    children: [
+                                      Text('Bids: ${itemModel!.numBids}'),
+                                    ],
+                                  ),
+                                  Row(
+                                    children: [
+                                      Text('Seller: ${itemModel!.sellerId}'),
+                                    ],
+                                  ),
                                 ],
                               ),
-                              const SizedBox(height: 5),
-                              Padding(
-                                padding: const EdgeInsets.only(left: 8),
-                                child: Column(
-                                  children: [
-                                    Row(
-                                      children: [
-                                        Text(
-                                          'Price: £${itemModel!.price}',
-                                        ),
-                                      ],
-                                    ),
-                                    Row(
-                                      children: double.parse(
-                                                  itemModel!.postageCost) ==
-                                              0
-                                          ? [const Text('P&P: free')]
-                                          : [
-                                              Text(
-                                                'P&P: £${itemModel!.postageCost}',
-                                              )
-                                            ],
-                                    ),
-                                    Row(
-                                      children: [
-                                        Text(
-                                            'Bid Increment: £${itemModel!.bidIncrement}'),
-                                      ],
-                                    ),
-                                    Row(
-                                      children: [
-                                        Text(
-                                            'Condition: ${itemModel!.condition}'),
-                                      ],
-                                    ),
-                                    Row(
-                                      children: [
-                                        Text(
-                                            'Ends on ${formatDateTime(itemModel!.endDateTime)}'),
-                                      ],
-                                    ),
-                                    Row(
-                                      children: itemModel!.acceptReturns
-                                          ? [
-                                              const Text(
-                                                  'Returns accepted: yes')
-                                            ]
-                                          : [
-                                              const Text(
-                                                  'Returns accepted: no'),
-                                            ],
-                                    ),
-                                    Row(
-                                      children: [
-                                        Text('Bids: ${itemModel!.numBids}'),
-                                      ],
-                                    ),
-                                    Row(
-                                      children: [
-                                        Text('Seller: ${itemModel!.sellerId}'),
-                                      ],
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            ],
-                          ),
+                            ),
+                          ],
                         ),
                       ),
                     ),
                   ),
                   Center(
-                    child: Container(
-                      margin: const EdgeInsets.fromLTRB(20, 15, 20, 0),
+                    child: Padding(
+                      padding: const EdgeInsets.fromLTRB(20, 15, 20, 0),
                       child: Card(
                         child: Padding(
                           padding: const EdgeInsets.all(10),
@@ -180,56 +176,95 @@ class _ItemDetailState extends State<ItemDetail> {
                   Form(
                       key: bidFormKey,
                       child: Center(
-                        child: Column(
-                          children: [
-                            SizedBox(
-                              width: 125,
-                              child: TextFormField(
-                                controller: bidController,
-                                keyboardType:
-                                    const TextInputType.numberWithOptions(
-                                        decimal: true),
-                                inputFormatters: [
-                                  FilteringTextInputFormatter.allow(
-                                      Regexes.money),
+                        child: accountId != itemModel!.sellerId && token != null
+                            ? Column(
+                                children: [
+                                  Padding(
+                                    padding: const EdgeInsets.symmetric(
+                                        horizontal: 20),
+                                    child: Expanded(
+                                      flex: 0,
+                                      child: TextFormField(
+                                        controller: bidController,
+                                        keyboardType: const TextInputType
+                                            .numberWithOptions(decimal: true),
+                                        inputFormatters: [
+                                          FilteringTextInputFormatter.allow(
+                                              Regexes.money),
+                                        ],
+                                        decoration: const InputDecoration(
+                                          prefix: Text('£'),
+                                          label: Text('Your Bid'),
+                                          errorBorder: OutlineInputBorder(
+                                              borderSide: BorderSide(
+                                                  color: Colours.red)),
+                                          errorStyle:
+                                              TextStyle(color: Colours.red),
+                                        ),
+                                        validator: (bid) {
+                                          double minBid =
+                                              double.parse(itemModel!.price) +
+                                                  double.parse(
+                                                      itemModel!.bidIncrement);
+                                          if (bid! == '') {
+                                            return 'Please enter a bid.';
+                                          } else if (double.parse(bid) <
+                                              minBid) {
+                                            return 'Could not submit bid; minimum bid is $minBid';
+                                          }
+                                          return null;
+                                        },
+                                      ),
+                                    ),
+                                  ),
+                                  const SizedBox(height: 8),
+                                  ElevatedButton(
+                                    onPressed: () async {
+                                      if (bidFormKey.currentState!.validate() &&
+                                          token != null) {
+                                        ApiService apiService = ApiService();
+                                        double bid =
+                                            double.parse(bidController.text);
+                                        message = await apiService.submitBid(
+                                            bid,
+                                            widget._itemId,
+                                            accountId!,
+                                            token!);
+                                        messageColour = Colours.lightGray;
+                                        setState(() {});
+                                      }
+                                    },
+                                    child: const Text('Submit Bid'),
+                                  ),
+                                  Padding(
+                                    padding: const EdgeInsets.all(20),
+                                    child: Column(
+                                      children: [
+                                        Text(
+                                          message,
+                                          style:
+                                              TextStyle(color: messageColour),
+                                          textAlign: TextAlign.center,
+                                        ),
+                                      ],
+                                    ),
+                                  )
                                 ],
-                                decoration: const InputDecoration(
-                                  prefix: Text('£'),
-                                  label: Text('Your Bid'),
-                                  errorBorder: OutlineInputBorder(
-                                      borderSide:
-                                          BorderSide(color: Colours.red)),
-                                  errorStyle: TextStyle(color: Colours.red),
-                                ),
-                                validator: (bid) {
-                                  double minBid =
-                                      double.parse(itemModel!.price) +
-                                          double.parse(itemModel!.bidIncrement);
-                                  if (bid! == '') {
-                                    return 'Please enter a bid.';
-                                  } else if (double.parse(bid) < minBid) {
-                                    return 'Could not submit bid; minimum bid is $minBid';
-                                  }
-                                  return null;
-                                },
-                              ),
-                            ),
-                            const SizedBox(height: 8),
-                            ElevatedButton(
-                              onPressed: () {
-                                if (bidFormKey.currentState!.validate() &&
-                                    token != null) {
-                                  ApiService apiService = ApiService();
-                                  double bid = double.parse(bidController.text);
-                                  apiService.submitBid(
-                                      bid, widget._itemId, accountId!, token!);
-                                  setState(() {});
-                                }
-                              },
-                              child: const Text('Submit Bid'),
-                            )
-                          ],
-                        ),
+                              )
+                            : token != null
+                                ? Column(
+                                    children: const [
+                                      Text('You listed this item.'),
+                                      SizedBox(height: 20),
+                                    ],
+                                  )
+                                : Column(
+                                    children: const [
+                                      Text(
+                                          'You must be logged in to bid on items.'),
+                                      SizedBox(height: 20),
+                                    ],
+                                  ),
                       ))
                 ],
               ),

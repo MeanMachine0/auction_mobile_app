@@ -164,16 +164,37 @@ class ApiService {
     }
   }
 
-  void submitBid(double bid, int itemId, int accountId, String token) async {
-    var url = Uri.parse(
-        '${ApiConstants.baseUrl}${ApiConstants.itemsEndpoint}$itemId/${ApiConstants.bidEndpoint}');
-    Map<String, dynamic> data = {
-      'price': bid,
-      'accountId': accountId,
-    };
-    await http.post(url, body: json.encode(data), headers: {
-      'Authorization': 'Token $token',
-      'Content-Type': 'application/json',
-    });
+  Future<String> submitBid(
+      double bid, int itemId, int accountId, String token) async {
+    try {
+      var url = Uri.parse(
+          '${ApiConstants.baseUrl}${ApiConstants.itemsEndpoint}$itemId/${ApiConstants.bidEndpoint}');
+      Map<String, dynamic> data = {
+        'accountId': accountId,
+        'bid': bid,
+      };
+      var response = await http.post(url, body: json.encode(data), headers: {
+        'Authorization': 'Token $token',
+        'Content-Type': 'application/json',
+      });
+      if (response.statusCode == 200) {
+        var body = json.decode(response.body);
+        int buyerId = body['buyerId'];
+        double price = double.parse(body['price']);
+        double minBid = price + double.parse(body['bidIncrement']);
+        if (price == bid && buyerId == accountId) {
+          return 'Bid of $bid submitted.';
+        } else if (bid < minBid) {
+          return 'Could not submit bid; bid < £$minBid.';
+        } else if (buyerId != accountId) {
+          return 'Could not submit bid; somebody bidded before you.';
+        }
+        return 'Something went wrong - please try again in a moment.';
+      }
+      return 'Something went wrong - please try again in a moment.';
+    } catch (e) {
+      log(e.toString());
+      return 'Something went wrong - please try again in a moment.';
+    }
   }
 }
