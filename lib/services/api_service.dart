@@ -53,6 +53,21 @@ class ApiService {
     }
   }
 
+  Future<AccountsModel?> getAccount(int accountId) async {
+    try {
+      var url = Uri.parse(
+          '${ApiConstants.baseUrl}${ApiConstants.accountsEndpoint}$accountId/');
+      var response = await http.get(url);
+      if (response.statusCode == 200) {
+        var jsonResponse = jsonDecode(response.body);
+        AccountsModel _model = AccountsModel.fromJson(jsonResponse);
+        return _model;
+      }
+    } catch (e) {
+      log(e.toString());
+    }
+  }
+
   Future<List<AccountsModel>?> getAccounts() async {
     try {
       var url = Uri.parse(ApiConstants.baseUrl + ApiConstants.accountsEndpoint);
@@ -186,8 +201,6 @@ class ApiService {
           return 'Bid of $bid submitted.';
         } else if (bid < minBid) {
           return 'Could not submit bid; bid < £$minBid.';
-        } else if (buyerId != accountId) {
-          return 'Could not submit bid; somebody bidded before you.';
         }
         return 'Something went wrong - please try again in a moment.';
       }
@@ -195,6 +208,29 @@ class ApiService {
     } catch (e) {
       log(e.toString());
       return 'Something went wrong - please try again in a moment.';
+    }
+  }
+
+  Future<List<ItemsModel>?> getAccountItems(int accountId) async {
+    try {
+      var url = Uri.parse(
+          '${ApiConstants.baseUrl}${ApiConstants.accountsEndpoint}$accountId/${ApiConstants.itemsEndpoint}');
+      var response = await http.get(url);
+      if (response.statusCode == 200) {
+        try {
+          var jsonResponse = json.decode(response.body);
+          ItemsModel _item = ItemsModel.fromJson(jsonResponse);
+          List<ItemsModel> _model = [_item];
+          return _model;
+        } catch (e) {
+          List<ItemsModel> _model = itemsModelFromJson(response.body);
+          return _model;
+        }
+      } else if (response.statusCode == 404) {
+        List<ItemsModel> _model = [];
+      }
+    } catch (e) {
+      log(e.toString());
     }
   }
 }

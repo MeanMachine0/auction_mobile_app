@@ -1,3 +1,4 @@
+import 'package:auction_mobile_app/constants.dart';
 import 'package:flutter/material.dart';
 import 'package:auction_mobile_app/elements.dart';
 import 'package:intl/intl.dart';
@@ -41,7 +42,9 @@ class _EndedItemDetailState extends State<EndedItemDetail> {
       ),
       body: endedItemModel == null
           ? const Center(
-              child: CircularProgressIndicator(),
+              child: CircularProgressIndicator(
+                color: Colours.lightGray,
+              ),
             )
           : SingleChildScrollView(
               child: Column(

@@ -1,4 +1,6 @@
 import 'package:auction_mobile_app/constants.dart';
+import 'package:auction_mobile_app/models/accounts_model.dart';
+import 'package:auction_mobile_app/pages/my_listings.dart';
 import 'package:flutter/material.dart';
 import 'package:auction_mobile_app/elements.dart';
 import 'package:flutter/services.dart';
@@ -55,7 +57,9 @@ class _ItemDetailState extends State<ItemDetail> {
       ),
       body: itemModel == null
           ? const Center(
-              child: CircularProgressIndicator(),
+              child: CircularProgressIndicator(
+                color: Colours.lightGray,
+              ),
             )
           : SingleChildScrollView(
               child: Column(
@@ -128,10 +132,27 @@ class _ItemDetailState extends State<ItemDetail> {
                                       Text('Bids: ${itemModel!.numBids}'),
                                     ],
                                   ),
-                                  Row(
-                                    children: [
-                                      Text('Seller: ${itemModel!.sellerId}'),
-                                    ],
+                                  GestureDetector(
+                                    onTap: () {
+                                      Navigator.of(context).push(
+                                          MaterialPageRoute(
+                                              builder: (_) => MyListings(
+                                                  accountId:
+                                                      itemModel!.sellerId)));
+                                    },
+                                    child: Row(
+                                      children: [
+                                        Text(
+                                          'Seller: ${itemModel!.sellerId}',
+                                          style: const TextStyle(
+                                            decoration:
+                                                TextDecoration.underline,
+                                            decorationStyle:
+                                                TextDecorationStyle.solid,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
                                   ),
                                 ],
                               ),
@@ -226,10 +247,11 @@ class _ItemDetailState extends State<ItemDetail> {
                                         double bid =
                                             double.parse(bidController.text);
                                         message = await apiService.submitBid(
-                                            bid,
-                                            widget._itemId,
-                                            accountId!,
-                                            token!);
+                                          bid,
+                                          widget._itemId,
+                                          accountId!,
+                                          token!,
+                                        );
                                         messageColour = Colours.lightGray;
                                         setState(() {});
                                       }

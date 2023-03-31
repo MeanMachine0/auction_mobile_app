@@ -8,7 +8,8 @@ import 'package:auction_mobile_app/constants.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class MyListings extends StatefulWidget {
-  const MyListings({Key? key}) : super(key: key);
+  final int? accountId;
+  const MyListings({Key? key, this.accountId}) : super(key: key);
 
   @override
   _MyListingsState createState() => _MyListingsState();
@@ -27,11 +28,13 @@ class _MyListingsState extends State<MyListings> {
   }
 
   void _getData() async {
-    _itemsModel = (await ApiService().getItems());
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    accountId = prefs.getInt('accountId');
+    accountId = widget.accountId ?? prefs.getInt('accountId');
     token = prefs.getString('token');
     username = prefs.getString('username');
+    if (accountId != null) {
+      _itemsModel = (await ApiService().getAccountItems(accountId!));
+    }
     setState(() {});
   }
 
@@ -41,73 +44,82 @@ class _MyListingsState extends State<MyListings> {
       appBar: AppBar(
         title: const Text('My Listings'),
       ),
-      body: _itemsModel == null || _itemsModel!.isEmpty
-          ? const Center(
-              child: CircularProgressIndicator(),
-            )
-          : token != null
-              ? _itemsModel == null || _itemsModel!.isEmpty
-                  ? const Center(
-                      child: CircularProgressIndicator(),
-                    )
-                  : SingleChildScrollView(
-                      scrollDirection: Axis.horizontal,
-                      child: Padding(
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 10,
-                          vertical: 20,
-                        ),
-                        child: DataTable(
-                          border: TableBorder.all(
-                              color: Colours.dimGray,
-                              borderRadius:
-                                  const BorderRadius.all(Radius.circular(30))),
-                          columns: const [
-                            DataColumn(label: Text('Name')),
-                            DataColumn(label: Text('Price')),
-                            DataColumn(label: Text('Bids')),
-                            DataColumn(label: Text('Seller')),
-                          ],
-                          rows: _itemsModel!
-                              .where((item) => item.sellerId == accountId)
-                              .map(
-                                (item) => DataRow(
-                                  cells: [
-                                    DataCell(
-                                        SizedBox(
-                                          width: 200,
-                                          child: Text(item.name,
-                                              style: const TextStyle(
-                                                decoration:
-                                                    TextDecoration.underline,
-                                                decorationStyle:
-                                                    TextDecorationStyle.solid,
-                                              )),
-                                        ), onTap: () {
-                                      Navigator.of(context).push(
-                                          MaterialPageRoute(
-                                              builder: (_) =>
-                                                  ItemDetail(itemId: item.id)));
-                                    }),
-                                    DataCell(Text(item.price)),
-                                    DataCell(Text(item.numBids.toString())),
-                                    DataCell(Text(item.sellerId.toString())),
-                                  ],
-                                ),
-                              )
-                              .toList(),
-                        ),
-                      ),
-                    )
-              : Center(
-                  child: ElevatedButton(
-                    onPressed: () {
-                      Navigator.of(context).push(
-                          MaterialPageRoute(builder: (_) => const Login()));
-                    },
-                    child: const Text('Login'),
+      body: token != null
+          ? _itemsModel == null || _itemsModel!.isEmpty
+              ? const Center(
+                  child: CircularProgressIndicator(
+                    color: Colours.lightGray,
                   ),
-                ),
+                )
+              : SingleChildScrollView(
+                  scrollDirection: Axis.horizontal,
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 10,
+                      vertical: 20,
+                    ),
+                    child: DataTable(
+                      border: TableBorder.all(
+                          color: Colours.dimGray,
+                          borderRadius:
+                              const BorderRadius.all(Radius.circular(20))),
+                      columns: const [
+                        DataColumn(label: Text('Name')),
+                        DataColumn(label: Text('Price')),
+                        DataColumn(label: Text('Bids')),
+                        DataColumn(
+                            label: Text(
+                          'Top\nBidder',
+                          textAlign: TextAlign.center,
+                        )),
+                      ],
+                      rows: _itemsModel!
+                          .where((item) => item.sellerId == accountId)
+                          .map(
+                            (item) => DataRow(
+                              cells: [
+                                DataCell(
+                                    SizedBox(
+                                      width: 100,
+                                      child: Text(
+                                        item.name,
+                                        overflow: TextOverflow.ellipsis,
+                                        maxLines: 1,
+                                        style: const TextStyle(
+                                          decoration: TextDecoration.underline,
+                                          decorationStyle:
+                                              TextDecorationStyle.solid,
+                                        ),
+                                      ),
+                                    ), onTap: () {
+                                  Navigator.of(context).push(MaterialPageRoute(
+                                      builder: (_) =>
+                                          ItemDetail(itemId: item.id)));
+                                }),
+                                DataCell(Text(item.price)),
+                                DataCell(Text(item.numBids.toString())),
+                                DataCell(Text(item.buyerId.toString()),
+                                    onTap: () {
+                                  Navigator.of(context).push(MaterialPageRoute(
+                                      builder: (_) =>
+                                          MyListings(accountId: item.buyerId)));
+                                })
+                              ],
+                            ),
+                          )
+                          .toList(),
+                    ),
+                  ),
+                )
+          : Center(
+              child: ElevatedButton(
+                onPressed: () {
+                  Navigator.of(context)
+                      .push(MaterialPageRoute(builder: (_) => const Login()));
+                },
+                child: const Text('Login'),
+              ),
+            ),
     );
   }
 }

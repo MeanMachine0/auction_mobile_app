@@ -52,7 +52,9 @@ class _HomeState extends State<Home> {
       appBar: AppBar(title: const Text('Recently Sold Items')),
       body: _EndedItemsModel == null || _EndedItemsModel!.isEmpty
           ? const Center(
-              child: CircularProgressIndicator(),
+              child: CircularProgressIndicator(
+                color: Colours.lightGray,
+              ),
             )
           : Column(
               children: [

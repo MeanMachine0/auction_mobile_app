@@ -34,7 +34,9 @@ class _BrowseState extends State<Browse> {
       ),
       body: _itemsModel == null || _itemsModel!.isEmpty
           ? const Center(
-              child: CircularProgressIndicator(),
+              child: CircularProgressIndicator(
+                color: Colours.lightGray,
+              ),
             )
           : Padding(
               padding: const EdgeInsets.all(8.0),
@@ -49,18 +51,16 @@ class _BrowseState extends State<Browse> {
                       },
                       child: Card(
                         margin: const EdgeInsets.all(5),
-                        child: Column(
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
                           children: [
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                Padding(
-                                  padding:
-                                      const EdgeInsets.symmetric(vertical: 8.0),
-                                  child: Text(
-                                      '${_itemsModel![index].name} - £${_itemsModel![index].price.toString()}'),
-                                ),
-                              ],
+                            Container(
+                              margin: const EdgeInsets.all(8),
+                              child: Text(
+                                '${_itemsModel![index].name} - £${_itemsModel![index].price.toString()}',
+                                overflow: TextOverflow.ellipsis,
+                                maxLines: 1,
+                              ),
                             ),
                           ],
                         ),

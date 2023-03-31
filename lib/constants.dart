@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 
 class ApiConstants {
   static String baseUrl = Platform.isAndroid
-      ? 'https://e223-90-251-175-128.eu.ngrok.io/api/'
+      ? 'https://2000-90-251-175-128.eu.ngrok.io/api/'
       : 'http://127.0.0.1:8000/api/';
   static String usersEndpoint = 'users/';
   static String accountsEndpoint = 'accounts/';

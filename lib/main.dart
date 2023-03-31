@@ -50,7 +50,7 @@ class MyApp extends StatelessWidget {
           color: Colours.deepGray,
         ),
         dataTableTheme: const DataTableThemeData(
-          horizontalMargin: 10,
+          horizontalMargin: 15,
           headingTextStyle: TextStyle(fontSize: 16),
           columnSpacing: 16,
           headingRowColor: MaterialStatePropertyAll(Colors.transparent),
