@@ -60,7 +60,7 @@ class _HomeState extends State<Home> {
               children: [
                 Expanded(
                   child: Padding(
-                    padding: const EdgeInsets.all(8.0),
+                    padding: const EdgeInsets.symmetric(vertical: 20),
                     child: ListView.builder(
                       itemCount:
                           _EndedItemsModel!.where((item) => item.sold).length,
@@ -68,30 +68,43 @@ class _HomeState extends State<Home> {
                         EndedItemsModel item = _EndedItemsModel!
                             .where((item) => item.sold)
                             .toList()[index];
-                        return GestureDetector(
-                            onTap: () {
-                              Navigator.of(context).push(MaterialPageRoute(
-                                  builder: (_) =>
-                                      EndedItemDetail(endedItemId: item.id)));
-                            },
-                            child: Card(
-                              margin: const EdgeInsets.all(5),
-                              child: Column(
-                                children: [
-                                  Row(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: [
-                                      Padding(
-                                        padding: const EdgeInsets.symmetric(
-                                            vertical: 8.0),
-                                        child: Text(
-                                            '${item.name} - £${item.salePrice.toString()}'),
-                                      ),
-                                    ],
-                                  ),
-                                ],
+                        return Container(
+                          margin: const EdgeInsets.symmetric(
+                            horizontal: 20,
+                            vertical: 2,
+                          ),
+                          child: ElevatedButton(
+                            style: ButtonStyle(
+                              backgroundColor:
+                                  MaterialStateProperty.resolveWith<Color?>(
+                                (states) => Colours.darkGray,
                               ),
-                            ));
+                            ),
+                            onPressed: () {
+                              Navigator.of(context).push(MaterialPageRoute(
+                                builder: (_) =>
+                                    EndedItemDetail(endedItemId: item.id),
+                              ));
+                            },
+                            child: Row(
+                              children: [
+                                Flexible(
+                                  child: Text(
+                                    '${item.name} - £${item.salePrice.toString()}',
+                                    textAlign: TextAlign.start,
+                                    overflow: TextOverflow.ellipsis,
+                                    maxLines: 1,
+                                    style: const TextStyle(
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.normal,
+                                      color: Colours.lightGray,
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        );
                       },
                     ),
                   ),

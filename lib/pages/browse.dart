@@ -39,32 +39,45 @@ class _BrowseState extends State<Browse> {
               ),
             )
           : Padding(
-              padding: const EdgeInsets.all(8.0),
+              padding: const EdgeInsets.symmetric(vertical: 20),
               child: ListView.builder(
                 itemCount: _itemsModel!.length,
                 itemBuilder: (context, index) {
-                  return GestureDetector(
-                      onTap: () {
+                  return Container(
+                    margin: const EdgeInsets.symmetric(
+                      horizontal: 20,
+                      vertical: 2,
+                    ),
+                    child: ElevatedButton(
+                      style: ButtonStyle(
+                        backgroundColor:
+                            MaterialStateProperty.resolveWith<Color?>(
+                                (states) => Colours.darkGray),
+                      ),
+                      child: Row(
+                        children: [
+                          Flexible(
+                            child: Text(
+                              '${_itemsModel![index].name} - £${_itemsModel![index].price.toString()}',
+                              overflow: TextOverflow.ellipsis,
+                              maxLines: 1,
+                              textAlign: TextAlign.start,
+                              style: const TextStyle(
+                                fontSize: 16,
+                                fontWeight: FontWeight.normal,
+                                color: Colours.lightGray,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                      onPressed: () {
                         Navigator.of(context).push(MaterialPageRoute(
                             builder: (_) =>
                                 ItemDetail(itemId: _itemsModel![index].id)));
                       },
-                      child: Card(
-                        margin: const EdgeInsets.all(5),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Container(
-                              margin: const EdgeInsets.all(8),
-                              child: Text(
-                                '${_itemsModel![index].name} - £${_itemsModel![index].price.toString()}',
-                                overflow: TextOverflow.ellipsis,
-                                maxLines: 1,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ));
+                    ),
+                  );
                 },
               ),
             ),
