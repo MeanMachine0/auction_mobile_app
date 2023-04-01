@@ -19,9 +19,9 @@ class ApiService {
           headers: {'Content-Type': 'application/json'});
       if (response.statusCode == 200) {
         var jsonResponse = jsonDecode(response.body);
-        String userId = jsonResponse['userId'].toString();
+        String accountId = jsonResponse['userId'].toString();
         String token = jsonResponse['token'];
-        List<String> IdToken = [userId, token];
+        List<String> IdToken = [accountId, token];
         return IdToken;
       }
     } catch (e) {

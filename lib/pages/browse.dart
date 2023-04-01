@@ -1,3 +1,4 @@
+import 'package:auction_mobile_app/pages/login.dart';
 import 'package:flutter/material.dart';
 
 import 'package:auction_mobile_app/models/items_model.dart';
@@ -15,6 +16,10 @@ class Browse extends StatefulWidget {
 
 class _BrowseState extends State<Browse> {
   late List<ItemsModel>? _itemsModel = [];
+  late int? accountId = 0;
+  late String? token = '';
+  late String? username = '';
+  late String? password = '';
   @override
   void initState() {
     super.initState();
@@ -22,16 +27,57 @@ class _BrowseState extends State<Browse> {
   }
 
   void _getData() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    accountId = prefs.getInt('accountId');
+    token = prefs.getString('token');
+    username = prefs.getString('username');
+    password = prefs.getString('password');
     _itemsModel = (await ApiService().getItems());
     setState(() {});
+  }
+
+  void _logout() {
+    if (token != null) {
+      ApiService().logout(token);
+      _getData();
+    }
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Active Items'),
-      ),
+          title: const Text('Active Items'),
+          actions: token != null
+              ? [
+                  Padding(
+                    padding: const EdgeInsets.all(3),
+                    child: ElevatedButton(
+                        style: ButtonStyle(
+                          elevation: MaterialStateProperty.resolveWith<double?>(
+                              (_) => 0),
+                        ),
+                        onPressed: () => _logout(),
+                        child: const Text('Logout',
+                            style: TextStyle(color: Colours.lightGray))),
+                  ),
+                ]
+              : [
+                  Padding(
+                    padding: const EdgeInsets.all(3),
+                    child: ElevatedButton(
+                        style: ButtonStyle(
+                          elevation: MaterialStateProperty.resolveWith<double?>(
+                              (_) => 0),
+                        ),
+                        onPressed: () {
+                          Navigator.of(context).push(
+                              MaterialPageRoute(builder: (_) => const Login()));
+                        },
+                        child: const Text('Login',
+                            style: TextStyle(color: Colours.lightGray))),
+                  )
+                ]),
       body: _itemsModel == null || _itemsModel!.isEmpty
           ? const Center(
               child: CircularProgressIndicator(

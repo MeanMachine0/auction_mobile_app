@@ -73,7 +73,12 @@ class MyApp extends StatelessWidget {
                 (_) =>
                     const EdgeInsets.symmetric(vertical: 12, horizontal: 20)),
             backgroundColor: MaterialStateProperty.resolveWith<Color?>(
-                (states) => Colours.black),
+                (states) => Colours.deepGray),
+            textStyle: MaterialStateProperty.resolveWith<TextStyle?>(
+                (states) => const TextStyle(
+                      fontSize: 20,
+                      fontWeight: FontWeight.bold,
+                    )),
           ),
         ),
       ),

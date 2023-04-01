@@ -2,9 +2,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 
 class ApiConstants {
-  static String baseUrl = Platform.isAndroid
-      ? 'https://2000-90-251-175-128.eu.ngrok.io/api/'
-      : 'http://127.0.0.1:8000/api/';
+  static String baseUrl = 'https://9a11-90-251-175-128.eu.ngrok.io/api/';
   static String usersEndpoint = 'users/';
   static String accountsEndpoint = 'accounts/';
   static String itemsEndpoint = 'items/';
@@ -24,6 +22,7 @@ class Colours {
   static const amber = Colors.amber;
   static const black = Colors.black;
   static const red = Color.fromARGB(255, 255, 0, 0);
+  static const deepBlue = Color.fromARGB(255, 0, 0, 44);
 }
 
 class Regexes {
