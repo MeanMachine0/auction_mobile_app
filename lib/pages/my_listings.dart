@@ -38,12 +38,48 @@ class _MyListingsState extends State<MyListings> {
     setState(() {});
   }
 
+  void _logout() {
+    if (token != null) {
+      ApiService().logout(token);
+      _getData();
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('My Listings'),
-      ),
+          title: const Text('My Listings'),
+          actions: token != null
+              ? [
+                  Padding(
+                    padding: const EdgeInsets.all(3),
+                    child: ElevatedButton(
+                        style: ButtonStyle(
+                          elevation: MaterialStateProperty.resolveWith<double?>(
+                              (_) => 0),
+                        ),
+                        onPressed: () => _logout(),
+                        child: const Text('Logout',
+                            style: TextStyle(color: Colours.lightGray))),
+                  ),
+                ]
+              : [
+                  Padding(
+                    padding: const EdgeInsets.all(3),
+                    child: ElevatedButton(
+                        style: ButtonStyle(
+                          elevation: MaterialStateProperty.resolveWith<double?>(
+                              (_) => 0),
+                        ),
+                        onPressed: () {
+                          Navigator.of(context).push(
+                              MaterialPageRoute(builder: (_) => const Login()));
+                        },
+                        child: const Text('Login',
+                            style: TextStyle(color: Colours.lightGray))),
+                  )
+                ]),
       body: token != null
           ? _itemsModel == null || _itemsModel!.isEmpty
               ? const Center(
@@ -111,14 +147,8 @@ class _MyListingsState extends State<MyListings> {
                     ),
                   ),
                 )
-          : Center(
-              child: ElevatedButton(
-                onPressed: () {
-                  Navigator.of(context)
-                      .push(MaterialPageRoute(builder: (_) => const Login()));
-                },
-                child: const Text('Login'),
-              ),
+          : const Center(
+              child: Text('You must be logged in to view this page.'),
             ),
     );
   }
