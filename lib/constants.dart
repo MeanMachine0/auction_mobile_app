@@ -2,7 +2,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 
 class ApiConstants {
-  static String baseUrl = 'https://9a11-90-251-175-128.eu.ngrok.io/api/';
+  static String baseUrl = 'http://10.0.2.2:8000/api/';
   static String usersEndpoint = 'users/';
   static String accountsEndpoint = 'accounts/';
   static String itemsEndpoint = 'items/';

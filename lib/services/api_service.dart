@@ -144,6 +144,15 @@ class ApiService {
     }
   }
 
+  Future<List<EndedItemsModel>?> getSoldItems() async {
+    var url = Uri.parse(ApiConstants.baseUrl + ApiConstants.endedItemsEndpoint);
+    var response = await http.get(url, headers: {'sold': 'yes'});
+    if (response.statusCode == 200) {
+      List<EndedItemsModel> _model = endedItemsModelFromJson(response.body);
+      return _model;
+    }
+  }
+
   void createItem(
     String name,
     double price,

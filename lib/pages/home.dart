@@ -36,7 +36,7 @@ class _HomeState extends State<Home> {
     username = prefs.getString('username');
     password = prefs.getString('password');
     ApiService apiService = ApiService();
-    _EndedItemsModel = await apiService.getEndedItems();
+    _EndedItemsModel = await apiService.getSoldItems();
     setState(() {});
   }
 
@@ -91,11 +91,9 @@ class _HomeState extends State<Home> {
           : Padding(
               padding: const EdgeInsets.symmetric(vertical: 20),
               child: ListView.builder(
-                itemCount: _EndedItemsModel!.where((item) => item.sold).length,
+                itemCount: _EndedItemsModel!.length,
                 itemBuilder: (context, index) {
-                  EndedItemsModel item = _EndedItemsModel!
-                      .where((item) => item.sold)
-                      .toList()[index];
+                  EndedItemsModel item = _EndedItemsModel!.toList()[index];
                   return Container(
                     margin: const EdgeInsets.symmetric(
                       horizontal: 20,
