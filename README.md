@@ -1,16 +1,7 @@
 # auction_mobile_app
+A flutter auction app that fetches data from a json rest api built in a django web app via token authentication.
 
-A new Flutter project.
-
-## Getting Started
-
-This project is a starting point for a Flutter application.
-
-A few resources to get you started if this is your first Flutter project:
-
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
-
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+## Aims
+- To broaden my knowledge of mobile software development.
+- To become proficient in flutter.
+- To improve my api development skills.
