@@ -1,5 +1,5 @@
 # auction_mobile_app
-A flutter app that fetches JSON data from a REST API in a django web app via token authentication.
+A flutter app that fetches JSON data from a REST API built in a django web app via token authentication.
 
 ## Functions
 ### When not logged in
