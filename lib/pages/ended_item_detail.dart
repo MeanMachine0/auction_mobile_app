@@ -1,9 +1,11 @@
 import 'package:auction_mobile_app/constants.dart';
+import 'package:auction_mobile_app/pages/my_listings.dart';
 import 'package:flutter/material.dart';
 import 'package:auction_mobile_app/elements.dart';
 import 'package:intl/intl.dart';
 import 'package:auction_mobile_app/models/ended_items_model.dart';
 import 'package:auction_mobile_app/services/api_service.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class EndedItemDetail extends StatefulWidget {
   final int _endedItemId;
@@ -16,6 +18,7 @@ class EndedItemDetail extends StatefulWidget {
 }
 
 class _EndedItemDetailState extends State<EndedItemDetail> {
+  late int? accountId = 0;
   EndedItemsModel? endedItemModel;
 
   @override
@@ -25,6 +28,8 @@ class _EndedItemDetailState extends State<EndedItemDetail> {
   }
 
   void _getData() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    accountId = prefs.getInt('accountId');
     endedItemModel = (await ApiService().getEndedItem(widget._endedItemId));
     setState(() {});
   }
@@ -123,11 +128,38 @@ class _EndedItemDetailState extends State<EndedItemDetail> {
                                             'Bids: ${endedItemModel!.numBids}'),
                                       ],
                                     ),
-                                    Row(
-                                      children: [
-                                        Text(
-                                            'Seller: ${endedItemModel!.sellerId}'),
-                                      ],
+                                    GestureDetector(
+                                      onTap:
+                                          accountId != endedItemModel!.sellerId
+                                              ? () {
+                                                  Navigator.of(context).push(
+                                                      MaterialPageRoute(
+                                                          builder: (_) => MyListings(
+                                                              accountId:
+                                                                  endedItemModel!
+                                                                      .sellerId)));
+                                                }
+                                              : null,
+                                      child: Row(
+                                        children: [
+                                          Text(
+                                            accountId !=
+                                                    endedItemModel!.sellerId
+                                                ? 'Seller: ${endedItemModel!.sellerId}'
+                                                : 'Seller: You',
+                                            style: accountId !=
+                                                    endedItemModel!.sellerId
+                                                ? const TextStyle(
+                                                    decoration: TextDecoration
+                                                        .underline,
+                                                    decorationStyle:
+                                                        TextDecorationStyle
+                                                            .solid,
+                                                  )
+                                                : null,
+                                          ),
+                                        ],
+                                      ),
                                     ),
                                   ],
                                 ),

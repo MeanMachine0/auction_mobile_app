@@ -133,23 +133,30 @@ class _ItemDetailState extends State<ItemDetail> {
                                     ],
                                   ),
                                   GestureDetector(
-                                    onTap: () {
-                                      Navigator.of(context).push(
-                                          MaterialPageRoute(
-                                              builder: (_) => MyListings(
-                                                  accountId:
-                                                      itemModel!.sellerId)));
-                                    },
+                                    onTap: accountId != itemModel!.sellerId
+                                        ? () {
+                                            Navigator.of(context).push(
+                                                MaterialPageRoute(
+                                                    builder: (_) => MyListings(
+                                                        accountId: itemModel!
+                                                            .sellerId)));
+                                          }
+                                        : null,
                                     child: Row(
                                       children: [
                                         Text(
-                                          'Seller: ${itemModel!.sellerId}',
-                                          style: const TextStyle(
-                                            decoration:
-                                                TextDecoration.underline,
-                                            decorationStyle:
-                                                TextDecorationStyle.solid,
-                                          ),
+                                          accountId != itemModel!.sellerId
+                                              ? 'Seller: ${itemModel!.sellerId}'
+                                              : 'Seller: You',
+                                          style: accountId !=
+                                                  itemModel!.sellerId
+                                              ? const TextStyle(
+                                                  decoration:
+                                                      TextDecoration.underline,
+                                                  decorationStyle:
+                                                      TextDecorationStyle.solid,
+                                                )
+                                              : null,
                                         ),
                                       ],
                                     ),
