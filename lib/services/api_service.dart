@@ -207,7 +207,7 @@ class ApiService {
         double price = double.parse(body['price']);
         double minBid = price + double.parse(body['bidIncrement']);
         if (price == bid && buyerId == accountId) {
-          return 'Bid of $bid submitted.';
+          return 'Bid of £$bid submitted.';
         } else if (bid < minBid) {
           return 'Could not submit bid; bid < £$minBid.';
         }
@@ -236,8 +236,27 @@ class ApiService {
           return _model;
         }
       } else if (response.statusCode == 404) {
-        List<ItemsModel> _model = [];
+        List<ItemsModel> _model = [
+          ItemsModel(
+            id: 404,
+            name: "404 Not Found",
+            price: "404.00",
+            postageCost: "404.00",
+            bidIncrement: "404.00",
+            condition: "404",
+            endDateTime: DateTime(404),
+            acceptReturns: false,
+            description: "404 - Item not found",
+            numBids: 404,
+            bidders: "404",
+            sold: false,
+            buyerId: 404,
+            sellerId: 404,
+          )
+        ];
+        return _model;
       }
+      return [];
     } catch (e) {
       log(e.toString());
     }
