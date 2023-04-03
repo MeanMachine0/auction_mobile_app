@@ -14,5 +14,5 @@ A Flutter app that fetches JSON data from a REST API built in a Django web app v
 
 ## Aims
 - To broaden my knowledge of mobile software development.
-- To develop proficiency in flutter.
+- To develop proficiency in Flutter.
 - To improve my API development skills.
