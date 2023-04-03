@@ -4,11 +4,11 @@ A Flutter app that fetches JSON data from a REST API built in a Django web app v
 ## Functions
 ### When not logged in
 - View recently sold items and their corresponding details.
-- View live items and their corresponding details.
+- View active items and their corresponding details.
 - View others' listings in tables.
 
 ### When logged in (in addition to when not logged in)
-- Bid on live items.
+- Bid on active items.
 - List an item.
 - View all your listings in a table.
 
