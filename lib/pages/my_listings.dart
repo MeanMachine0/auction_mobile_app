@@ -49,7 +49,9 @@ class _MyListingsState extends State<MyListings> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-          title: const Text('My Listings'),
+          title: Text(widget.accountId == null
+              ? 'My Listings'
+              : '${widget.accountId}\'s Listings.'),
           actions: token != null
               ? [
                   Padding(
@@ -89,8 +91,8 @@ class _MyListingsState extends State<MyListings> {
                 )
               : SingleChildScrollView(
                   scrollDirection: Axis.horizontal,
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(
+                  child: Container(
+                    margin: const EdgeInsets.symmetric(
                       horizontal: 10,
                       vertical: 20,
                     ),
@@ -110,13 +112,16 @@ class _MyListingsState extends State<MyListings> {
                         )),
                       ],
                       rows: _itemsModel!
-                          .where((item) => item.sellerId == accountId)
                           .map(
                             (item) => DataRow(
                               cells: [
                                 DataCell(
-                                    SizedBox(
-                                      width: 100,
+                                    Container(
+                                      constraints: BoxConstraints(
+                                          maxWidth: (MediaQuery.of(context)
+                                                  .size
+                                                  .width -
+                                              240)),
                                       child: Text(
                                         item.name,
                                         overflow: TextOverflow.ellipsis,
