@@ -18,6 +18,7 @@ class MyListings extends StatefulWidget {
 class _MyListingsState extends State<MyListings> {
   late List<ItemsModel>? _itemsModel = [];
   late int? accountId = 0;
+  late int? myAccountId = 0;
   late String? token = '';
   late String? username = '';
 
@@ -30,6 +31,7 @@ class _MyListingsState extends State<MyListings> {
   void _getData() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     accountId = widget.accountId ?? prefs.getInt('accountId');
+    myAccountId = prefs.getInt('accountId');
     token = prefs.getString('token');
     username = prefs.getString('username');
     if (accountId != null) {
@@ -51,7 +53,7 @@ class _MyListingsState extends State<MyListings> {
       appBar: AppBar(
           title: Text(widget.accountId == null
               ? 'My Listings'
-              : '${widget.accountId}\'s Listings.'),
+              : '${widget.accountId}\'s Listings'),
           actions: token != null
               ? [
                   Padding(
@@ -89,66 +91,105 @@ class _MyListingsState extends State<MyListings> {
                     color: Colours.lightGray,
                   ),
                 )
-              : SingleChildScrollView(
-                  scrollDirection: Axis.horizontal,
-                  child: Container(
-                    margin: const EdgeInsets.symmetric(
-                      horizontal: 10,
-                      vertical: 20,
-                    ),
-                    child: DataTable(
-                      border: TableBorder.all(
-                          color: Colours.dimGray,
-                          borderRadius:
-                              const BorderRadius.all(Radius.circular(20))),
-                      columns: const [
-                        DataColumn(label: Text('Name')),
-                        DataColumn(label: Text('Price')),
-                        DataColumn(label: Text('Bids')),
-                        DataColumn(
-                            label: Text(
-                          'Top\nBidder',
-                          textAlign: TextAlign.center,
-                        )),
+              : Center(
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 20),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: [
+                        SingleChildScrollView(
+                          scrollDirection: Axis.horizontal,
+                          child: DataTable(
+                            border: TableBorder.all(
+                                color: Colours.dimGray,
+                                borderRadius: const BorderRadius.all(
+                                    Radius.circular(20))),
+                            columns: const [
+                              DataColumn(label: Text('Name')),
+                              DataColumn(label: Text('Price')),
+                              DataColumn(label: Text('Bids')),
+                              DataColumn(
+                                  label: Text(
+                                'Top\nBidder',
+                                textAlign: TextAlign.center,
+                              )),
+                            ],
+                            rows: _itemsModel!
+                                .map(
+                                  (item) => DataRow(
+                                    cells: [
+                                      DataCell(
+                                          Container(
+                                            constraints: BoxConstraints(
+                                                maxWidth:
+                                                    (MediaQuery.of(context)
+                                                            .size
+                                                            .width -
+                                                        240)),
+                                            child: Text(
+                                              item.name,
+                                              overflow: TextOverflow.ellipsis,
+                                              maxLines: 1,
+                                              style: const TextStyle(
+                                                decoration:
+                                                    TextDecoration.underline,
+                                                decorationStyle:
+                                                    TextDecorationStyle.solid,
+                                              ),
+                                            ),
+                                          ), onTap: () {
+                                        Navigator.of(context).push(
+                                            MaterialPageRoute(
+                                                builder: (_) => ItemDetail(
+                                                    itemId: item.id)));
+                                      }),
+                                      DataCell(Text(item.price)),
+                                      DataCell(Text(item.numBids.toString())),
+                                      DataCell(
+                                          Text(
+                                              item.buyerId == myAccountId
+                                                  ? 'You'
+                                                  : item.buyerId == null
+                                                      ? ''
+                                                      : item.sellerId !=
+                                                                  myAccountId &&
+                                                              item.buyerId !=
+                                                                  myAccountId
+                                                          ? 'Not You'
+                                                          : item.buyerId
+                                                              .toString(),
+                                              style: item.sellerId ==
+                                                          myAccountId &&
+                                                      item.buyerId != null
+                                                  ? const TextStyle(
+                                                      decoration: TextDecoration
+                                                          .underline,
+                                                      decorationStyle:
+                                                          TextDecorationStyle
+                                                              .solid,
+                                                    )
+                                                  : null),
+                                          onTap: item.buyerId == myAccountId
+                                              ? null
+                                              : item.sellerId != myAccountId
+                                                  ? null
+                                                  : item.buyerId != null
+                                                      ? () {
+                                                          Navigator.of(context).push(
+                                                              MaterialPageRoute(
+                                                                  builder: (_) =>
+                                                                      MyListings(
+                                                                          accountId:
+                                                                              item.buyerId)));
+                                                        }
+                                                      : null)
+                                    ],
+                                  ),
+                                )
+                                .toList(),
+                          ),
+                        ),
                       ],
-                      rows: _itemsModel!
-                          .map(
-                            (item) => DataRow(
-                              cells: [
-                                DataCell(
-                                    Container(
-                                      constraints: BoxConstraints(
-                                          maxWidth: (MediaQuery.of(context)
-                                                  .size
-                                                  .width -
-                                              240)),
-                                      child: Text(
-                                        item.name,
-                                        overflow: TextOverflow.ellipsis,
-                                        maxLines: 1,
-                                        style: const TextStyle(
-                                          decoration: TextDecoration.underline,
-                                          decorationStyle:
-                                              TextDecorationStyle.solid,
-                                        ),
-                                      ),
-                                    ), onTap: () {
-                                  Navigator.of(context).push(MaterialPageRoute(
-                                      builder: (_) =>
-                                          ItemDetail(itemId: item.id)));
-                                }),
-                                DataCell(Text(item.price)),
-                                DataCell(Text(item.numBids.toString())),
-                                DataCell(Text(item.buyerId.toString()),
-                                    onTap: () {
-                                  Navigator.of(context).push(MaterialPageRoute(
-                                      builder: (_) =>
-                                          MyListings(accountId: item.buyerId)));
-                                })
-                              ],
-                            ),
-                          )
-                          .toList(),
                     ),
                   ),
                 )
