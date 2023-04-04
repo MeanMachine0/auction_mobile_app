@@ -130,26 +130,17 @@ class ApiService {
     return null;
   }
 
-  Future<List<EndedItemsModel>?> getEndedItems() async {
+  Future<List<EndedItemsModel>?> getEndedItems(bool sold) async {
     try {
       var url =
           Uri.parse(ApiConstants.baseUrl + ApiConstants.endedItemsEndpoint);
-      var response = await http.get(url);
+      var response = await http.get(url, headers: {'sold': '$sold'});
       if (response.statusCode == 200) {
         List<EndedItemsModel> _model = endedItemsModelFromJson(response.body);
         return _model;
       }
     } catch (e) {
       log(e.toString());
-    }
-  }
-
-  Future<List<EndedItemsModel>?> getSoldItems() async {
-    var url = Uri.parse(ApiConstants.baseUrl + ApiConstants.endedItemsEndpoint);
-    var response = await http.get(url, headers: {'sold': 'yes'});
-    if (response.statusCode == 200) {
-      List<EndedItemsModel> _model = endedItemsModelFromJson(response.body);
-      return _model;
     }
   }
 
@@ -224,7 +215,10 @@ class ApiService {
     try {
       var url = Uri.parse(
           '${ApiConstants.baseUrl}${ApiConstants.accountsEndpoint}$accountId/${ApiConstants.itemsEndpoint}');
-      var response = await http.get(url);
+      var response = await http.get(
+        url,
+        headers: {'ended': 'false'},
+      );
       if (response.statusCode == 200) {
         try {
           var jsonResponse = json.decode(response.body);
@@ -257,6 +251,51 @@ class ApiService {
         return _model;
       }
       return [];
+    } catch (e) {
+      log(e.toString());
+    }
+  }
+
+  Future<List<EndedItemsModel>?> getAccountEndedItems(int accountId) async {
+    try {
+      var url = Uri.parse(
+          '${ApiConstants.baseUrl}${ApiConstants.accountsEndpoint}$accountId/${ApiConstants.itemsEndpoint}');
+      var response = await http.get(
+        url,
+        headers: {'ended': 'true'},
+      );
+      if (response.statusCode == 200) {
+        try {
+          var jsonResponse = json.decode(response.body);
+          EndedItemsModel _item = EndedItemsModel.fromJson(jsonResponse);
+          List<EndedItemsModel> _model = [_item];
+          return _model;
+        } catch (e) {
+          List<EndedItemsModel> _model = endedItemsModelFromJson(response.body);
+          return _model;
+        }
+      } else if (response.statusCode == 404) {
+        List<EndedItemsModel> _model = [
+          EndedItemsModel(
+            id: 404,
+            name: "404 Not Found",
+            salePrice: "404.00",
+            postageCost: "404.00",
+            bidIncrement: "404.00",
+            condition: "404",
+            endDateTime: DateTime(404),
+            acceptReturns: false,
+            description: "404 - Item not found",
+            numBids: 404,
+            bidders: "404",
+            sold: false,
+            buyerId: 404,
+            sellerId: 404,
+            destinationAddress: '404 Street',
+          )
+        ];
+        return _model;
+      }
     } catch (e) {
       log(e.toString());
     }

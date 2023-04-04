@@ -51,10 +51,10 @@ class MyApp extends StatelessWidget {
         ),
         dataTableTheme: const DataTableThemeData(
           horizontalMargin: 15,
-          headingTextStyle: TextStyle(fontSize: 16),
+          headingTextStyle: TextStyle(fontSize: 16, color: Colours.lightGray),
           columnSpacing: 16,
-          headingRowColor: MaterialStatePropertyAll(Colors.transparent),
-          dataRowColor: MaterialStatePropertyAll(Colors.transparent),
+          headingRowColor: MaterialStatePropertyAll(Colours.deepBlue),
+          dataRowColor: MaterialStatePropertyAll(Colours.darkGray),
         ),
         listTileTheme: const ListTileThemeData(
           tileColor: Colours.lightGray,

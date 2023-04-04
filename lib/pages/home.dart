@@ -36,7 +36,7 @@ class _HomeState extends State<Home> {
     username = prefs.getString('username');
     password = prefs.getString('password');
     ApiService apiService = ApiService();
-    _EndedItemsModel = await apiService.getSoldItems();
+    _EndedItemsModel = await apiService.getEndedItems(true);
     setState(() {});
   }
 
