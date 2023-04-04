@@ -81,12 +81,18 @@ class ApiService {
     }
   }
 
-  Future<ItemsModel?> getItem(int itemId) async {
+  Future<ItemsModel?> getItem(int itemId, String? token) async {
     try {
       var url = Uri.parse(
           '${ApiConstants.baseUrl}${ApiConstants.itemsEndpoint}$itemId/');
-      var response = await http.get(url);
-
+      var response = await http.get(
+        url,
+        headers: token != null
+            ? {
+                'Authorization': 'Token $token',
+              }
+            : null,
+      );
       if (response.statusCode == 200) {
         var jsonResponse = json.decode(response.body);
         ItemsModel item = ItemsModel.fromJson(jsonResponse);
@@ -112,12 +118,16 @@ class ApiService {
     }
   }
 
-  Future<EndedItemsModel?> getEndedItem(int itemId) async {
+  Future<EndedItemsModel?> getEndedItem(int itemId, String? token) async {
     try {
       var url = Uri.parse(
           '${ApiConstants.baseUrl}${ApiConstants.endedItemsEndpoint}$itemId/');
-      var response = await http.get(url);
-
+      var response = await http.get(url,
+          headers: token != null
+              ? {
+                  'Authorization': 'Token $token',
+                }
+              : null);
       if (response.statusCode == 200) {
         var jsonResponse = json.decode(response.body);
         EndedItemsModel item = EndedItemsModel.fromJson(jsonResponse);
@@ -211,13 +221,19 @@ class ApiService {
     }
   }
 
-  Future<List<ItemsModel>?> getAccountItems(int accountId) async {
+  Future<List<ItemsModel>?> getAccountItems(
+      int accountId, String? token) async {
     try {
       var url = Uri.parse(
           '${ApiConstants.baseUrl}${ApiConstants.accountsEndpoint}$accountId/${ApiConstants.itemsEndpoint}');
       var response = await http.get(
         url,
-        headers: {'ended': 'false'},
+        headers: token != null
+            ? {
+                'ended': 'false',
+                'Authorization': 'Token $token',
+              }
+            : {'ended': 'false'},
       );
       if (response.statusCode == 200) {
         try {
@@ -256,13 +272,21 @@ class ApiService {
     }
   }
 
-  Future<List<EndedItemsModel>?> getAccountEndedItems(int accountId) async {
+  Future<List<EndedItemsModel>?> getAccountEndedItems(
+    int accountId,
+    String? token,
+  ) async {
     try {
       var url = Uri.parse(
           '${ApiConstants.baseUrl}${ApiConstants.accountsEndpoint}$accountId/${ApiConstants.itemsEndpoint}');
       var response = await http.get(
         url,
-        headers: {'ended': 'true'},
+        headers: token != null
+            ? {
+                'ended': 'true',
+                'Authorization': 'Token $token',
+              }
+            : {'ended': 'true'},
       );
       if (response.statusCode == 200) {
         try {
@@ -279,7 +303,7 @@ class ApiService {
           EndedItemsModel(
             id: 404,
             name: "404 Not Found",
-            salePrice: "404.00",
+            price: "404.00",
             postageCost: "404.00",
             bidIncrement: "404.00",
             condition: "404",
@@ -299,5 +323,20 @@ class ApiService {
     } catch (e) {
       log(e.toString());
     }
+  }
+
+  Future<bool> amITheBuyer(int itemId, String? token, bool ended) async {
+    var url = Uri.parse(
+        '${ApiConstants.baseUrl}${ApiConstants.amITheBuyerEndpoint}$itemId/');
+    var response = await http.get(
+      url,
+      headers: token != null
+          ? {'ended': '$ended', 'Authorization': 'Token $token'}
+          : {'ended': '$ended'},
+    );
+    // ignore: non_constant_identifier_names
+    var decodedResponse = json.decode(response.body);
+    bool IAmTheBuyer = decodedResponse['IAmTheBuyer'];
+    return IAmTheBuyer;
   }
 }

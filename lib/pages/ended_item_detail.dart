@@ -19,6 +19,8 @@ class EndedItemDetail extends StatefulWidget {
 
 class _EndedItemDetailState extends State<EndedItemDetail> {
   late int? accountId = 0;
+  late String? token = '';
+  bool you = false;
   EndedItemsModel? endedItemModel;
 
   @override
@@ -30,7 +32,10 @@ class _EndedItemDetailState extends State<EndedItemDetail> {
   void _getData() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     accountId = prefs.getInt('accountId');
-    endedItemModel = (await ApiService().getEndedItem(widget._endedItemId));
+    token = prefs.getString('token');
+    endedItemModel =
+        (await ApiService().getEndedItem(widget._endedItemId, token));
+    you = accountId == endedItemModel!.sellerId;
     setState(() {});
   }
 
@@ -78,7 +83,7 @@ class _EndedItemDetailState extends State<EndedItemDetail> {
                                     Row(
                                       children: [
                                         Text(
-                                          'Price: £${endedItemModel!.salePrice}',
+                                          'Price: £${endedItemModel!.price}',
                                         ),
                                       ],
                                     ),
@@ -128,35 +133,78 @@ class _EndedItemDetailState extends State<EndedItemDetail> {
                                             'Bids: ${endedItemModel!.numBids}'),
                                       ],
                                     ),
-                                    GestureDetector(
-                                      onTap:
-                                          accountId != endedItemModel!.sellerId
-                                              ? () {
+                                    Column(
+                                      children: you
+                                          ? [
+                                              GestureDetector(
+                                                onTap: () {
                                                   Navigator.of(context).push(
                                                       MaterialPageRoute(
                                                           builder: (_) => MyListings(
                                                               accountId:
                                                                   endedItemModel!
-                                                                      .sellerId)));
-                                                }
-                                              : null,
+                                                                      .buyerId)));
+                                                },
+                                                child: Row(
+                                                  children: endedItemModel!
+                                                              .buyerId !=
+                                                          null
+                                                      ? [
+                                                          Text(
+                                                            'Buyer: ${endedItemModel!.buyerId}',
+                                                            style:
+                                                                const TextStyle(
+                                                              decoration:
+                                                                  TextDecoration
+                                                                      .underline,
+                                                              decorationStyle:
+                                                                  TextDecorationStyle
+                                                                      .solid,
+                                                            ),
+                                                          ),
+                                                        ]
+                                                      : [
+                                                          const Text('Buyer:'),
+                                                        ],
+                                                ),
+                                              ),
+                                              Row(
+                                                children: [
+                                                  Text(
+                                                      'Destination: ${endedItemModel!.destinationAddress}'),
+                                                ],
+                                              ),
+                                            ]
+                                          : [
+                                              const SizedBox(height: 0),
+                                            ],
+                                    ),
+                                    GestureDetector(
+                                      onTap: you
+                                          ? null
+                                          : () {
+                                              Navigator.of(context).push(
+                                                  MaterialPageRoute(
+                                                      builder: (_) => MyListings(
+                                                          accountId:
+                                                              endedItemModel!
+                                                                  .sellerId)));
+                                            },
                                       child: Row(
                                         children: [
                                           Text(
-                                            accountId !=
-                                                    endedItemModel!.sellerId
-                                                ? 'Seller: ${endedItemModel!.sellerId}'
-                                                : 'Seller: You',
-                                            style: accountId !=
-                                                    endedItemModel!.sellerId
-                                                ? const TextStyle(
+                                            you
+                                                ? 'Seller: You'
+                                                : 'Seller: ${endedItemModel!.sellerId}',
+                                            style: you
+                                                ? null
+                                                : const TextStyle(
                                                     decoration: TextDecoration
                                                         .underline,
                                                     decorationStyle:
                                                         TextDecorationStyle
                                                             .solid,
-                                                  )
-                                                : null,
+                                                  ),
                                           ),
                                         ],
                                       ),

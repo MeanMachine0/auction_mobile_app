@@ -115,7 +115,7 @@ class _HomeState extends State<Home> {
                         children: [
                           Flexible(
                             child: Text(
-                              '${item.name} - £${item.salePrice.toString()}',
+                              '${item.name} - £${item.price.toString()}',
                               textAlign: TextAlign.start,
                               overflow: TextOverflow.ellipsis,
                               maxLines: 1,

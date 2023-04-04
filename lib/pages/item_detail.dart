@@ -28,6 +28,7 @@ class _ItemDetailState extends State<ItemDetail> {
   TextEditingController bidController = TextEditingController();
   String message = '';
   var messageColour = Colours.lightGray;
+  bool you = false;
 
   @override
   void initState() {
@@ -36,11 +37,12 @@ class _ItemDetailState extends State<ItemDetail> {
   }
 
   void _getData() async {
-    itemModel = (await ApiService().getItem(widget._itemId));
     SharedPreferences prefs = await SharedPreferences.getInstance();
     accountId = prefs.getInt('accountId');
     token = prefs.getString('token');
     username = prefs.getString('username');
+    itemModel = (await ApiService().getItem(widget._itemId, token));
+    you = accountId == itemModel!.sellerId;
     setState(() {});
   }
 
@@ -132,31 +134,70 @@ class _ItemDetailState extends State<ItemDetail> {
                                       Text('Bids: ${itemModel!.numBids}'),
                                     ],
                                   ),
+                                  Column(
+                                    children: you
+                                        ? [
+                                            GestureDetector(
+                                              onTap: () {
+                                                Navigator.of(context).push(
+                                                    MaterialPageRoute(
+                                                        builder: (_) => MyListings(
+                                                            accountId:
+                                                                itemModel!
+                                                                    .buyerId)));
+                                              },
+                                              child: Row(
+                                                children:
+                                                    itemModel!.buyerId != null
+                                                        ? [
+                                                            Text(
+                                                              'Top Bidder: ${itemModel!.buyerId}',
+                                                              style:
+                                                                  const TextStyle(
+                                                                decoration:
+                                                                    TextDecoration
+                                                                        .underline,
+                                                                decorationStyle:
+                                                                    TextDecorationStyle
+                                                                        .solid,
+                                                              ),
+                                                            ),
+                                                          ]
+                                                        : [
+                                                            const Text(
+                                                                'Top Bidder:'),
+                                                          ],
+                                              ),
+                                            ),
+                                          ]
+                                        : [
+                                            const SizedBox(height: 0),
+                                          ],
+                                  ),
                                   GestureDetector(
-                                    onTap: accountId != itemModel!.sellerId
-                                        ? () {
+                                    onTap: you
+                                        ? null
+                                        : () {
                                             Navigator.of(context).push(
                                                 MaterialPageRoute(
                                                     builder: (_) => MyListings(
                                                         accountId: itemModel!
                                                             .sellerId)));
-                                          }
-                                        : null,
+                                          },
                                     child: Row(
                                       children: [
                                         Text(
-                                          accountId != itemModel!.sellerId
-                                              ? 'Seller: ${itemModel!.sellerId}'
-                                              : 'Seller: You',
-                                          style: accountId !=
-                                                  itemModel!.sellerId
-                                              ? const TextStyle(
+                                          you
+                                              ? 'Seller: You'
+                                              : 'Seller: ${itemModel!.sellerId}',
+                                          style: you
+                                              ? null
+                                              : const TextStyle(
                                                   decoration:
                                                       TextDecoration.underline,
                                                   decorationStyle:
                                                       TextDecorationStyle.solid,
-                                                )
-                                              : null,
+                                                ),
                                         ),
                                       ],
                                     ),
@@ -204,7 +245,7 @@ class _ItemDetailState extends State<ItemDetail> {
                   Form(
                       key: bidFormKey,
                       child: Center(
-                        child: accountId != itemModel!.sellerId && token != null
+                        child: !you && token != null
                             ? Column(
                                 children: [
                                   Padding(

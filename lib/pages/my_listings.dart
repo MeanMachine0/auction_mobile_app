@@ -39,8 +39,9 @@ class _MyListingsState extends State<MyListings> {
     username = prefs.getString('username');
     if (accountId != null) {
       ApiService apiService = ApiService();
-      _itemsModel = await apiService.getAccountItems(accountId!);
-      _endedItemsModel = await apiService.getAccountEndedItems(accountId!);
+      _itemsModel = await apiService.getAccountItems(accountId!, token);
+      _endedItemsModel =
+          await apiService.getAccountEndedItems(accountId!, token);
       setState(() {});
     }
   }
@@ -59,7 +60,7 @@ class _MyListingsState extends State<MyListings> {
             title: Text(widget.accountId == null
                 ? 'My Listings'
                 : '${widget.accountId}\'s Listings'),
-            actions: token != null
+            actions: token != '' && token != null
                 ? [
                     Padding(
                       padding: const EdgeInsets.all(3),
@@ -91,7 +92,7 @@ class _MyListingsState extends State<MyListings> {
                               style: TextStyle(color: Colours.lightGray))),
                     )
                   ]),
-        body: token == null
+        body: (token == '' || token == null) && widget.accountId == null
             ? const Center(
                 child: Text('You must be logged in to view this page.'),
               )
@@ -169,32 +170,53 @@ class _MyListingsState extends State<MyListings> {
                                               DataCell(Text(
                                                   item.numBids.toString())),
                                               DataCell(
-                                                  Text(
-                                                      item.buyerId ==
-                                                              myAccountId
-                                                          ? 'You'
-                                                          : item.buyerId == null
-                                                              ? ''
-                                                              : item.sellerId !=
-                                                                          myAccountId &&
-                                                                      item.buyerId !=
-                                                                          myAccountId
-                                                                  ? 'Not You'
-                                                                  : item.buyerId
-                                                                      .toString(),
-                                                      style: item.sellerId ==
-                                                                  myAccountId &&
-                                                              item.buyerId !=
-                                                                  null
-                                                          ? const TextStyle(
-                                                              decoration:
-                                                                  TextDecoration
-                                                                      .underline,
-                                                              decorationStyle:
-                                                                  TextDecorationStyle
-                                                                      .solid,
-                                                            )
-                                                          : null),
+                                                  FutureBuilder(
+                                                    future: ApiService()
+                                                        .amITheBuyer(
+                                                      item.id,
+                                                      token,
+                                                      false,
+                                                    ),
+                                                    builder:
+                                                        (BuildContext context,
+                                                            AsyncSnapshot<bool>
+                                                                snapshot) {
+                                                      if (snapshot
+                                                              .connectionState ==
+                                                          ConnectionState
+                                                              .waiting) {
+                                                        return const Text(
+                                                            'Loading...');
+                                                      } else if (snapshot
+                                                          .hasError) {
+                                                        return Text(
+                                                            'Error: ${snapshot.error}');
+                                                      } else {
+                                                        return Text(
+                                                          snapshot.data == true
+                                                              ? 'You'
+                                                              : item.buyerId !=
+                                                                      null
+                                                                  ? item.buyerId
+                                                                      .toString()
+                                                                  : 'Not You',
+                                                          style: item.sellerId ==
+                                                                      myAccountId &&
+                                                                  item.buyerId !=
+                                                                      null
+                                                              ? const TextStyle(
+                                                                  decoration:
+                                                                      TextDecoration
+                                                                          .underline,
+                                                                  decorationStyle:
+                                                                      TextDecorationStyle
+                                                                          .solid,
+                                                                )
+                                                              : null,
+                                                        );
+                                                      }
+                                                    },
+                                                  ),
                                                   onTap:
                                                       item.buyerId ==
                                                               myAccountId
@@ -232,7 +254,7 @@ class _MyListingsState extends State<MyListings> {
                                     columns: const [
                                       DataColumn(label: Text('Name')),
                                       DataColumn(label: Text('Price')),
-                                      DataColumn(label: Text('Bids')),
+                                      DataColumn(label: Text('Sold')),
                                       DataColumn(
                                           label: Text(
                                         'Buyer',
@@ -275,41 +297,59 @@ class _MyListingsState extends State<MyListings> {
                                                                     endedItem
                                                                         .id)));
                                               }),
+                                              DataCell(Text(endedItem.price)),
+                                              DataCell(Text(
+                                                  endedItem.sold.toString())),
                                               DataCell(
-                                                  Text(endedItem.salePrice)),
-                                              DataCell(Text(endedItem.numBids
-                                                  .toString())),
-                                              DataCell(
-                                                  Text(
-                                                      endedItem.buyerId ==
-                                                              myAccountId
-                                                          ? 'You'
-                                                          : endedItem.buyerId ==
-                                                                  null
-                                                              ? ''
-                                                              : endedItem.sellerId !=
-                                                                          myAccountId &&
-                                                                      endedItem
-                                                                              .buyerId !=
-                                                                          myAccountId
-                                                                  ? 'Not You'
-                                                                  : endedItem
+                                                  FutureBuilder(
+                                                    future: ApiService()
+                                                        .amITheBuyer(
+                                                      endedItem.id,
+                                                      token,
+                                                      true,
+                                                    ),
+                                                    builder:
+                                                        (BuildContext context,
+                                                            AsyncSnapshot<bool>
+                                                                snapshot) {
+                                                      if (snapshot
+                                                              .connectionState ==
+                                                          ConnectionState
+                                                              .waiting) {
+                                                        return const Text(
+                                                            'Loading...');
+                                                      } else if (snapshot
+                                                          .hasError) {
+                                                        return Text(
+                                                            'Error: ${snapshot.error}');
+                                                      } else {
+                                                        return Text(
+                                                          snapshot.data == true
+                                                              ? 'You'
+                                                              : endedItem.buyerId !=
+                                                                      null
+                                                                  ? endedItem
                                                                       .buyerId
-                                                                      .toString(),
-                                                      style: endedItem.sellerId ==
-                                                                  myAccountId &&
-                                                              endedItem
-                                                                      .buyerId !=
-                                                                  null
-                                                          ? const TextStyle(
-                                                              decoration:
-                                                                  TextDecoration
-                                                                      .underline,
-                                                              decorationStyle:
-                                                                  TextDecorationStyle
-                                                                      .solid,
-                                                            )
-                                                          : null),
+                                                                      .toString()
+                                                                  : 'Not You',
+                                                          style: endedItem.sellerId ==
+                                                                      myAccountId &&
+                                                                  endedItem
+                                                                          .buyerId !=
+                                                                      null
+                                                              ? const TextStyle(
+                                                                  decoration:
+                                                                      TextDecoration
+                                                                          .underline,
+                                                                  decorationStyle:
+                                                                      TextDecorationStyle
+                                                                          .solid,
+                                                                )
+                                                              : null,
+                                                        );
+                                                      }
+                                                    },
+                                                  ),
                                                   onTap: endedItem.buyerId ==
                                                           myAccountId
                                                       ? null

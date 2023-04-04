@@ -11,7 +11,7 @@ class EndedItemsModel {
   EndedItemsModel({
     required this.id,
     required this.name,
-    required this.salePrice,
+    required this.price,
     required this.postageCost,
     required this.bidIncrement,
     required this.condition,
@@ -28,7 +28,7 @@ class EndedItemsModel {
 
   int id;
   String name;
-  String salePrice;
+  String price;
   String postageCost;
   String bidIncrement;
   String condition;
@@ -46,7 +46,7 @@ class EndedItemsModel {
       EndedItemsModel(
         id: json["id"],
         name: json["name"],
-        salePrice: json["salePrice"],
+        price: json["price"],
         postageCost: json["postageCost"],
         bidIncrement: json["bidIncrement"],
         condition: json["condition"],
@@ -64,7 +64,7 @@ class EndedItemsModel {
   Map<String, dynamic> toJson() => {
         "id": id,
         "name": name,
-        "salePrice": salePrice,
+        "price": price,
         "postageCost": postageCost,
         "bidIncrement": bidIncrement,
         "condition": condition,

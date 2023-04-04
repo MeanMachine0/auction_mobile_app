@@ -11,6 +11,7 @@ class ApiConstants {
   static String logoutEndpoint = 'logout/';
   static String createItemEndpoint = '${itemsEndpoint}create/';
   static String bidEndpoint = 'bid/';
+  static String amITheBuyerEndpoint = 'amITheBuyer/';
 }
 
 class Colours {
