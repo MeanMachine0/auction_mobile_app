@@ -108,9 +108,9 @@ class _MyListingsState extends State<MyListings> {
                                   scrollDirection: Axis.horizontal,
                                   child: DataTable(
                                     border: TableBorder.all(
-                                        color: Colours.dimGray,
-                                        borderRadius: const BorderRadius.all(
-                                            Radius.circular(20))),
+                                      color: Colours.deepBlue,
+                                      width: 0.75,
+                                    ),
                                     columns: const [
                                       DataColumn(label: Text('Name')),
                                       DataColumn(label: Text('Price')),
