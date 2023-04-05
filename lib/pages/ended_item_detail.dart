@@ -20,7 +20,8 @@ class EndedItemDetail extends StatefulWidget {
 class _EndedItemDetailState extends State<EndedItemDetail> {
   late int? accountId = 0;
   late String? token = '';
-  bool you = false;
+  bool IAmTheSeller = false;
+  bool IAmTheBuyer = false;
   EndedItemsModel? endedItemModel;
 
   @override
@@ -33,9 +34,12 @@ class _EndedItemDetailState extends State<EndedItemDetail> {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     accountId = prefs.getInt('accountId');
     token = prefs.getString('token');
-    endedItemModel =
-        (await ApiService().getEndedItem(widget._endedItemId, token));
-    you = accountId == endedItemModel!.sellerId;
+    ApiService apiService = ApiService();
+    endedItemModel = await apiService.getEndedItem(widget._endedItemId, token);
+    IAmTheSeller = accountId == endedItemModel!.sellerId;
+    IAmTheBuyer = IAmTheSeller
+        ? false
+        : await apiService.amITheBuyer(endedItemModel!.id, token, false);
     setState(() {});
   }
 
@@ -107,7 +111,7 @@ class _EndedItemDetailState extends State<EndedItemDetail> {
                                     Row(
                                       children: [
                                         Text(
-                                            'Condition: ${endedItemModel!.condition}'),
+                                            'Condition: ${Dicts.conditions.keys.firstWhere((key) => Dicts.conditions[key] == endedItemModel!.condition)}'),
                                       ],
                                     ),
                                     Row(
@@ -117,15 +121,10 @@ class _EndedItemDetailState extends State<EndedItemDetail> {
                                       ],
                                     ),
                                     Row(
-                                      children: endedItemModel!.acceptReturns
-                                          ? [
-                                              const Text(
-                                                  'Returns accepted: yes')
-                                            ]
-                                          : [
-                                              const Text(
-                                                  'Returns accepted: no'),
-                                            ],
+                                      children: [
+                                        Text(
+                                            'Returns accepted: ${Dicts.toYesNo[endedItemModel!.acceptReturns]}')
+                                      ],
                                     ),
                                     Row(
                                       children: [
@@ -134,53 +133,67 @@ class _EndedItemDetailState extends State<EndedItemDetail> {
                                       ],
                                     ),
                                     Column(
-                                      children: you
-                                          ? [
-                                              GestureDetector(
-                                                onTap: () {
-                                                  Navigator.of(context).push(
-                                                      MaterialPageRoute(
-                                                          builder: (_) => MyListings(
-                                                              accountId:
-                                                                  endedItemModel!
-                                                                      .buyerId)));
-                                                },
-                                                child: Row(
-                                                  children: endedItemModel!
+                                        children: IAmTheSeller
+                                            ? [
+                                                GestureDetector(
+                                                  onTap: endedItemModel!
                                                               .buyerId !=
                                                           null
-                                                      ? [
-                                                          Text(
-                                                            'Buyer: ${endedItemModel!.buyerId}',
-                                                            style:
-                                                                const TextStyle(
-                                                              decoration:
-                                                                  TextDecoration
-                                                                      .underline,
-                                                              decorationStyle:
-                                                                  TextDecorationStyle
-                                                                      .solid,
+                                                      ? () {
+                                                          Navigator.of(context).push(
+                                                              MaterialPageRoute(
+                                                                  builder: (_) =>
+                                                                      MyListings(
+                                                                          accountId:
+                                                                              endedItemModel!.buyerId)));
+                                                        }
+                                                      : null,
+                                                  child: Row(
+                                                    children: endedItemModel!
+                                                                .buyerId !=
+                                                            null
+                                                        ? [
+                                                            Text(
+                                                              'Buyer: ${endedItemModel!.buyerId}',
+                                                              style:
+                                                                  const TextStyle(
+                                                                decoration:
+                                                                    TextDecoration
+                                                                        .underline,
+                                                                decorationStyle:
+                                                                    TextDecorationStyle
+                                                                        .solid,
+                                                              ),
                                                             ),
-                                                          ),
-                                                        ]
-                                                      : [
-                                                          const Text('Buyer:'),
-                                                        ],
+                                                          ]
+                                                        : [
+                                                            const Text(
+                                                                'Buyer:'),
+                                                          ],
+                                                  ),
                                                 ),
-                                              ),
-                                              Row(
-                                                children: [
-                                                  Text(
-                                                      'Destination: ${endedItemModel!.destinationAddress}'),
-                                                ],
-                                              ),
-                                            ]
-                                          : [
-                                              const SizedBox(height: 0),
-                                            ],
-                                    ),
+                                                Row(
+                                                  children: [
+                                                    Text(
+                                                        'Destination: ${endedItemModel!.destinationAddress}'),
+                                                  ],
+                                                ),
+                                              ]
+                                            : IAmTheBuyer
+                                                ? [
+                                                    Row(children: const [
+                                                      Text('Buyer: You')
+                                                    ])
+                                                  ]
+                                                : [
+                                                    Row(
+                                                      children: const [
+                                                        Text('Buyer: Not You')
+                                                      ],
+                                                    )
+                                                  ]),
                                     GestureDetector(
-                                      onTap: you
+                                      onTap: IAmTheSeller
                                           ? null
                                           : () {
                                               Navigator.of(context).push(
@@ -193,10 +206,10 @@ class _EndedItemDetailState extends State<EndedItemDetail> {
                                       child: Row(
                                         children: [
                                           Text(
-                                            you
+                                            IAmTheSeller
                                                 ? 'Seller: You'
                                                 : 'Seller: ${endedItemModel!.sellerId}',
-                                            style: you
+                                            style: IAmTheSeller
                                                 ? null
                                                 : const TextStyle(
                                                     decoration: TextDecoration

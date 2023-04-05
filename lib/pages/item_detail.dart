@@ -28,7 +28,8 @@ class _ItemDetailState extends State<ItemDetail> {
   TextEditingController bidController = TextEditingController();
   String message = '';
   var messageColour = Colours.lightGray;
-  bool you = false;
+  bool IAmTheSeller = false;
+  bool IAmTheTopBidder = false;
 
   @override
   void initState() {
@@ -41,8 +42,12 @@ class _ItemDetailState extends State<ItemDetail> {
     accountId = prefs.getInt('accountId');
     token = prefs.getString('token');
     username = prefs.getString('username');
-    itemModel = (await ApiService().getItem(widget._itemId, token));
-    you = accountId == itemModel!.sellerId;
+    ApiService apiService = ApiService();
+    itemModel = await apiService.getItem(widget._itemId, token);
+    IAmTheSeller = accountId == itemModel!.sellerId;
+    IAmTheTopBidder = IAmTheSeller
+        ? false
+        : await apiService.amITheBuyer(itemModel!.id, token, false);
     setState(() {});
   }
 
@@ -113,7 +118,7 @@ class _ItemDetailState extends State<ItemDetail> {
                                   Row(
                                     children: [
                                       Text(
-                                          'Condition: ${itemModel!.condition}'),
+                                          'Condition: ${Dicts.conditions.keys.firstWhere((key) => Dicts.conditions[key] == itemModel!.condition)}'),
                                     ],
                                   ),
                                   Row(
@@ -123,29 +128,31 @@ class _ItemDetailState extends State<ItemDetail> {
                                     ],
                                   ),
                                   Row(
-                                    children: itemModel!.acceptReturns
-                                        ? [const Text('Returns accepted: yes')]
-                                        : [
-                                            const Text('Returns accepted: no'),
-                                          ],
+                                    children: [
+                                      Text(
+                                          'Returns accepted: ${Dicts.toYesNo[itemModel!.acceptReturns]}')
+                                    ],
                                   ),
                                   Row(
                                     children: [
                                       Text('Bids: ${itemModel!.numBids}'),
                                     ],
                                   ),
-                                  Column(
-                                    children: you
+                                  Row(
+                                    children: IAmTheSeller
                                         ? [
                                             GestureDetector(
-                                              onTap: () {
-                                                Navigator.of(context).push(
-                                                    MaterialPageRoute(
-                                                        builder: (_) => MyListings(
-                                                            accountId:
-                                                                itemModel!
-                                                                    .buyerId)));
-                                              },
+                                              onTap: itemModel!.buyerId != null
+                                                  ? () {
+                                                      Navigator.of(context).push(
+                                                          MaterialPageRoute(
+                                                              builder: (_) =>
+                                                                  MyListings(
+                                                                      accountId:
+                                                                          itemModel!
+                                                                              .buyerId)));
+                                                    }
+                                                  : null,
                                               child: Row(
                                                 children:
                                                     itemModel!.buyerId != null
@@ -170,12 +177,14 @@ class _ItemDetailState extends State<ItemDetail> {
                                               ),
                                             ),
                                           ]
-                                        : [
-                                            const SizedBox(height: 0),
-                                          ],
+                                        : IAmTheTopBidder
+                                            ? const [Text('Top Bidder: You')]
+                                            : const [
+                                                Text('Top Bidder: Not You')
+                                              ],
                                   ),
                                   GestureDetector(
-                                    onTap: you
+                                    onTap: IAmTheSeller
                                         ? null
                                         : () {
                                             Navigator.of(context).push(
@@ -187,10 +196,10 @@ class _ItemDetailState extends State<ItemDetail> {
                                     child: Row(
                                       children: [
                                         Text(
-                                          you
+                                          IAmTheSeller
                                               ? 'Seller: You'
                                               : 'Seller: ${itemModel!.sellerId}',
-                                          style: you
+                                          style: IAmTheSeller
                                               ? null
                                               : const TextStyle(
                                                   decoration:
@@ -245,7 +254,7 @@ class _ItemDetailState extends State<ItemDetail> {
                   Form(
                       key: bidFormKey,
                       child: Center(
-                        child: !you && token != null
+                        child: !IAmTheSeller && token != null
                             ? Column(
                                 children: [
                                   Padding(
