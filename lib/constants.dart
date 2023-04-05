@@ -30,8 +30,17 @@ class Regexes {
 }
 
 class Dicts {
-  static var toYesNo = {
+  static Map<bool, String> toYesNo = {
     true: 'yes',
     false: 'no',
+  };
+
+  static Map<String, String> conditions = {
+    'New': 'new',
+    'Excellent': 'excellent',
+    'Good': 'good',
+    'Used': 'used',
+    'Refurbished': 'refurbished',
+    'Parts Only': 'partsOnly',
   };
 }
