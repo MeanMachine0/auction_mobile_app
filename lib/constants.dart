@@ -1,4 +1,3 @@
-import 'dart:io';
 import 'package:flutter/material.dart';
 
 class ApiConstants {
@@ -28,4 +27,11 @@ class Colours {
 
 class Regexes {
   static var money = RegExp(r'^\d{0,7}\.?\d{0,2}');
+}
+
+class Dicts {
+  static var toYesNo = {
+    true: 'yes',
+    false: 'no',
+  };
 }

@@ -334,9 +334,14 @@ class ApiService {
           ? {'ended': '$ended', 'Authorization': 'Token $token'}
           : {'ended': '$ended'},
     );
-    // ignore: non_constant_identifier_names
-    var decodedResponse = json.decode(response.body);
-    bool IAmTheBuyer = decodedResponse['IAmTheBuyer'];
-    return IAmTheBuyer;
+
+    try {
+      var decodedResponse = json.decode(response.body);
+      // ignore: non_constant_identifier_names
+      bool IAmTheBuyer = decodedResponse['IAmTheBuyer'];
+      return IAmTheBuyer;
+    } catch (e) {
+      return false;
+    }
   }
 }
