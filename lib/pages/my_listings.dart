@@ -49,8 +49,8 @@ class _MyListingsState extends State<MyListings> {
       if (widget.accountId == null) {
         seller = true;
       }
-      setState(() {});
     }
+    setState(() {});
   }
 
   void _logout() {
@@ -77,7 +77,9 @@ class _MyListingsState extends State<MyListings> {
                                 MaterialStateProperty.resolveWith<double?>(
                                     (_) => 0),
                           ),
-                          onPressed: () => _logout(),
+                          onPressed: () {
+                            _logout();
+                          },
                           child: const Text('Logout',
                               style: TextStyle(color: Colours.lightGray))),
                     ),
