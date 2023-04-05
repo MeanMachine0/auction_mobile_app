@@ -70,9 +70,12 @@ class _BrowseState extends State<Browse> {
                           elevation: MaterialStateProperty.resolveWith<double?>(
                               (_) => 0),
                         ),
-                        onPressed: () {
-                          Navigator.of(context).push(
+                        onPressed: () async {
+                          final result = await Navigator.of(context).push(
                               MaterialPageRoute(builder: (_) => const Login()));
+                          if (result == true) {
+                            _getData();
+                          }
                         },
                         child: const Text('Login',
                             style: TextStyle(color: Colours.lightGray))),
