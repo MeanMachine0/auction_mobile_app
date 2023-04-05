@@ -1,5 +1,8 @@
 // ignore_for_file: avoid_init_to_null
 
+import 'dart:io';
+
+import 'package:auction_mobile_app/pages/item_detail.dart';
 import 'package:auction_mobile_app/pages/login.dart';
 import 'package:flutter/material.dart';
 
@@ -315,15 +318,15 @@ class _ListAnItemState extends State<ListAnItem> {
                       ),
                       const SizedBox(height: 13),
                       ElevatedButton(
-                          onPressed: () {
+                          onPressed: () async {
                             listFormKey.currentState!.save();
                             if (listFormKey.currentState!.validate()) {
                               ApiService apiService = ApiService();
-                              if (conditionOption == 'Parts Only') {
-                                conditionOption = 'partsOnly';
-                              } else {
-                                conditionOption = conditionOption.toLowerCase();
-                              }
+                              try {
+                                conditionOption =
+                                    Dicts.conditions[conditionOption]!;
+                                // ignore: empty_catches
+                              } catch (e) {}
                               var hoursMinutes =
                                   endTimeController.text.split(':');
                               // ignore: no_leading_underscores_for_local_identifiers
@@ -332,17 +335,36 @@ class _ListAnItemState extends State<ListAnItem> {
                               int _minutes = int.parse(hoursMinutes[1]);
                               DateTime endDateTime = endDate.add(
                                   Duration(hours: _hours, minutes: _minutes));
-                              apiService.createItem(
-                                  itemNameController.text,
-                                  double.parse(startingPriceController.text),
-                                  double.parse(postageCostController.text),
-                                  double.parse(bidIncrementController.text),
-                                  conditionOption,
-                                  endDateTime,
-                                  acceptReturns,
-                                  descriptionController.text,
-                                  accountId!,
-                                  token!);
+                              int itemId = await apiService.createItem(
+                                itemNameController.text,
+                                double.parse(startingPriceController.text),
+                                double.parse(postageCostController.text),
+                                double.parse(bidIncrementController.text),
+                                conditionOption,
+                                endDateTime,
+                                acceptReturns,
+                                descriptionController.text,
+                                accountId!,
+                                token!,
+                              );
+                              listFormKey.currentState!.reset();
+                              List<TextEditingController> controllers = [
+                                itemNameController,
+                                startingPriceController,
+                                postageCostController,
+                                bidIncrementController,
+                                descriptionController,
+                                endTimeController,
+                              ];
+                              for (TextEditingController controller
+                                  in controllers) {
+                                controller.text = '';
+                              }
+                              acceptReturns = false;
+                              endDate = DateTime(0);
+                              setState(() {});
+                              Navigator.of(context).push(MaterialPageRoute(
+                                  builder: (_) => ItemDetail(itemId: itemId)));
                             }
                           },
                           child: const Text('List Item')),

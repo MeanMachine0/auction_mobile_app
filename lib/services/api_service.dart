@@ -154,7 +154,7 @@ class ApiService {
     }
   }
 
-  void createItem(
+  Future<int> createItem(
     String name,
     double price,
     double postageCost,
@@ -180,12 +180,15 @@ class ApiService {
         'description': description,
         'sellerId': sellerId,
       };
-      await http.post(url, body: json.encode(data), headers: {
+      var response = await http.post(url, body: json.encode(data), headers: {
         'Authorization': 'Token $token',
         'Content-Type': 'application/json'
       });
+      var decodedBody = json.decode(response.body);
+      return decodedBody['itemId'];
     } catch (e) {
       log(e.toString());
+      return 0;
     }
   }
 
