@@ -49,6 +49,10 @@ class _LoginState extends State<Login> {
         usernameController.text = '';
         passwordController.text = '';
         invalidLogin = false;
+        if (token != null) {
+          // ignore: use_build_context_synchronously
+          Navigator.pop(context, true);
+        }
       } catch (e) {
         invalidLogin = true;
       }
