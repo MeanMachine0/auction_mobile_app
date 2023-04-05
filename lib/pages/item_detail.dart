@@ -310,7 +310,7 @@ class _ItemDetailState extends State<ItemDetail> {
                                           token!,
                                         );
                                         messageColour = Colours.lightGray;
-                                        setState(() {});
+                                        _getData();
                                       }
                                     },
                                     child: const Text('Submit Bid'),
