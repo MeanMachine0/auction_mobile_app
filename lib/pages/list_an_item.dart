@@ -115,9 +115,13 @@ class _ListAnItemState extends State<ListAnItem> {
                                 MaterialStateProperty.resolveWith<double?>(
                                     (_) => 0),
                           ),
-                          onPressed: () {
-                            Navigator.of(context).push(MaterialPageRoute(
-                                builder: (_) => const Login()));
+                          onPressed: () async {
+                            final result = await Navigator.of(context).push(
+                                MaterialPageRoute(
+                                    builder: (_) => const Login()));
+                            if (result == true) {
+                              _getData();
+                            }
                           },
                           child: const Text('Login',
                               style: TextStyle(color: Colours.lightGray))),
