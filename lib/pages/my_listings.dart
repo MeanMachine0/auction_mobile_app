@@ -23,6 +23,7 @@ class MyListings extends StatefulWidget {
 class _MyListingsState extends State<MyListings> {
   late List<ItemsModel>? _itemsModel = [];
   late List<EndedItemsModel>? _endedItemsModel = [];
+  late List<ItemsModel>? _itemsBidOnByMe = [];
   late int? accountId = null;
   late int? myAccountId = null;
   late String? token = null;
@@ -48,6 +49,10 @@ class _MyListingsState extends State<MyListings> {
           await apiService.getAccountEndedItems(accountId!, token);
       if (widget.accountId == null) {
         seller = true;
+        if (token != null) {
+          _itemsBidOnByMe =
+              await apiService.getItemsBidOnByMe(accountId!, token!);
+        }
       }
     }
     setState(() {});
@@ -410,6 +415,101 @@ class _MyListingsState extends State<MyListings> {
                                                   DataCell(Text(endedItem
                                                           .destinationAddress ??
                                                       '')),
+                                              ],
+                                            ),
+                                          )
+                                          .toList(),
+                                    ),
+                                  ),
+                                ),
+                                const SizedBox(height: 40),
+                                const Center(
+                                    child: Text('Active Listings Bid on by Me',
+                                        style: Elements.cardHeader)),
+                                const SizedBox(height: 20),
+                                SingleChildScrollView(
+                                  scrollDirection: Axis.horizontal,
+                                  child: Container(
+                                    constraints: BoxConstraints(
+                                        minWidth:
+                                            MediaQuery.of(context).size.width -
+                                                40),
+                                    child: DataTable(
+                                      border: TableBorder.all(
+                                        color: Colours.deepBlue,
+                                        width: 0.75,
+                                      ),
+                                      columns: const [
+                                        DataColumn(label: Text('Name')),
+                                        DataColumn(label: Text('Price')),
+                                        DataColumn(label: Text('Bids')),
+                                        DataColumn(
+                                            label: Text(
+                                          'Top\nBidder',
+                                          textAlign: TextAlign.center,
+                                        )),
+                                      ],
+                                      rows: _itemsBidOnByMe!
+                                          .map(
+                                            (item) => DataRow(
+                                              cells: [
+                                                DataCell(
+                                                    Container(
+                                                      constraints: BoxConstraints(
+                                                          maxWidth:
+                                                              (MediaQuery.of(
+                                                                          context)
+                                                                      .size
+                                                                      .width -
+                                                                  240)),
+                                                      child: Text(
+                                                        item.name,
+                                                        overflow: TextOverflow
+                                                            .ellipsis,
+                                                        maxLines: 1,
+                                                        style: const TextStyle(
+                                                          decoration:
+                                                              TextDecoration
+                                                                  .underline,
+                                                          decorationStyle:
+                                                              TextDecorationStyle
+                                                                  .solid,
+                                                        ),
+                                                      ),
+                                                    ), onTap: () {
+                                                  Navigator.of(context).push(
+                                                      MaterialPageRoute(
+                                                          builder: (_) =>
+                                                              ItemDetail(
+                                                                  itemId: item
+                                                                      .id)));
+                                                }),
+                                                DataCell(
+                                                    Text('£${item.price}')),
+                                                DataCell(Text(
+                                                    item.numBids.toString())),
+                                                DataCell(
+                                                    Text(
+                                                      item.buyerId != null
+                                                          ? 'You'
+                                                          : 'Not You',
+                                                    ),
+                                                    onTap: item.buyerId ==
+                                                            myAccountId
+                                                        ? null
+                                                        : item.sellerId !=
+                                                                myAccountId
+                                                            ? null
+                                                            : item.buyerId !=
+                                                                    null
+                                                                ? () {
+                                                                    Navigator.of(
+                                                                            context)
+                                                                        .push(MaterialPageRoute(
+                                                                            builder: (_) =>
+                                                                                MyListings(accountId: item.buyerId)));
+                                                                  }
+                                                                : null)
                                               ],
                                             ),
                                           )

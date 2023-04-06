@@ -336,9 +336,57 @@ class ApiService {
         '${ApiConstants.baseUrl}${ApiConstants.amITheBuyerEndpoint}$itemId/');
     var response = await http.get(url,
         headers: {'ended': '$ended', 'Authorization': 'Token $token'});
-
     var decodedResponse = json.decode(response.body);
     bool IAmTheBuyer = decodedResponse['IAmTheBuyer'];
     return IAmTheBuyer;
+  }
+
+  Future<List<ItemsModel>?> getItemsBidOnByMe(
+      int accountId, String token) async {
+    try {
+      var url = Uri.parse(
+          '${ApiConstants.baseUrl}${ApiConstants.accountBidsEndpoint}$accountId/');
+      var response = await http.get(
+        url,
+        headers: {
+          'ended': 'false',
+          'Authorization': 'Token $token',
+        },
+      );
+      if (response.statusCode == 200) {
+        try {
+          var jsonResponse = json.decode(response.body);
+          ItemsModel _item = ItemsModel.fromJson(jsonResponse);
+          List<ItemsModel> _model = [_item];
+          return _model;
+        } catch (e) {
+          List<ItemsModel> _model = itemsModelFromJson(response.body);
+          return _model;
+        }
+      } else if (response.statusCode == 404) {
+        List<ItemsModel> _model = [
+          ItemsModel(
+            id: 404,
+            name: "404 Not Found",
+            price: "404.00",
+            postageCost: "404.00",
+            bidIncrement: "404.00",
+            condition: "404",
+            endDateTime: DateTime(404),
+            acceptReturns: false,
+            description: "404 - Item not found",
+            numBids: 404,
+            bidders: "404",
+            sold: false,
+            buyerId: 404,
+            sellerId: 404,
+          )
+        ];
+        return _model;
+      }
+      return [];
+    } catch (e) {
+      log(e.toString());
+    }
   }
 }
