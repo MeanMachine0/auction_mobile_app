@@ -45,18 +45,33 @@ class _MyListingsState extends State<MyListings> {
     username = prefs.getString('username');
     if (accountId != null) {
       ApiService apiService = ApiService();
-      _itemsModel = await apiService.getAccountItems(accountId!, token);
-      _endedItemsModel =
-          await apiService.getAccountEndedItems(accountId!, token);
+      _itemsModel = (await apiService.getAccountItems(
+        accountId!,
+        token,
+        false,
+      ))
+          .cast<ItemsModel>();
+      _endedItemsModel = (await apiService.getAccountItems(
+        accountId!,
+        token,
+        true,
+      ))
+          .cast<EndedItemsModel>();
       if (widget.accountId == null) {
         seller = true;
         if (token != null) {
-          _itemsBidOnByMe =
-              (await apiService.getItemsBidOnByMe(accountId!, token!, false))
-                  ?.cast<ItemsModel>();
-          _endedItemsBidOnByMe =
-              (await apiService.getItemsBidOnByMe(accountId!, token!, true))
-                  ?.cast<EndedItemsModel>();
+          _itemsBidOnByMe = (await apiService.getItemsBidOnByMe(
+            accountId!,
+            token!,
+            false,
+          ))
+              .cast<ItemsModel>();
+          _endedItemsBidOnByMe = (await apiService.getItemsBidOnByMe(
+            accountId!,
+            token!,
+            true,
+          ))
+              .cast<EndedItemsModel>();
         }
       }
     }
@@ -119,7 +134,11 @@ class _MyListingsState extends State<MyListings> {
             ? const Center(
                 child: Text('You must be logged in to view this page.'),
               )
-            : _itemsModel == null || _itemsModel!.isEmpty
+            : (_itemsModel == null || _itemsModel!.isEmpty) &&
+                    (_endedItemsModel == null || _endedItemsModel!.isEmpty) &&
+                    (_itemsBidOnByMe == null || _itemsBidOnByMe!.isEmpty) &&
+                    (_endedItemsBidOnByMe == null ||
+                        _endedItemsBidOnByMe!.isEmpty)
                 ? const Center(
                     child: CircularProgressIndicator(
                       color: Colours.lightGray,
@@ -144,8 +163,7 @@ class _MyListingsState extends State<MyListings> {
                               constraints: BoxConstraints(
                                   minWidth:
                                       MediaQuery.of(context).size.width - 40),
-                              child: _itemsModel![0].endDateTime ==
-                                      DateTime(404)
+                              child: _itemsModel!.isEmpty
                                   ? const Center(
                                       child: Text(
                                           'There are no listings to view.'))
@@ -176,7 +194,7 @@ class _MyListingsState extends State<MyListings> {
                                                                         context)
                                                                     .size
                                                                     .width -
-                                                                240)),
+                                                                280)),
                                                     child: Text(
                                                       item.name,
                                                       overflow:
@@ -293,8 +311,7 @@ class _MyListingsState extends State<MyListings> {
                               constraints: BoxConstraints(
                                   minWidth:
                                       MediaQuery.of(context).size.width - 40),
-                              child: _endedItemsModel![0].endDateTime ==
-                                      DateTime(404)
+                              child: _endedItemsModel!.isEmpty
                                   ? const Center(
                                       child: Text(
                                           'There are no listings to view.'))
@@ -329,7 +346,7 @@ class _MyListingsState extends State<MyListings> {
                                                                         context)
                                                                     .size
                                                                     .width -
-                                                                240)),
+                                                                280)),
                                                     child: Text(
                                                       endedItem.name,
                                                       overflow:
@@ -474,6 +491,7 @@ class _MyListingsState extends State<MyListings> {
                                                 'Top\nBidder',
                                                 textAlign: TextAlign.center,
                                               )),
+                                              DataColumn(label: Text('Seller')),
                                             ],
                                             rows: _itemsBidOnByMe!
                                                 .map(
@@ -486,7 +504,7 @@ class _MyListingsState extends State<MyListings> {
                                                                           context)
                                                                       .size
                                                                       .width -
-                                                                  300)),
+                                                                  280)),
                                                           child: Text(
                                                             item.name,
                                                             overflow:
@@ -525,7 +543,32 @@ class _MyListingsState extends State<MyListings> {
                                                               ? 'You'
                                                               : 'Not You',
                                                         ),
-                                                      )
+                                                      ),
+                                                      DataCell(
+                                                          Text(
+                                                            item.sellerId
+                                                                .toString(),
+                                                            style:
+                                                                const TextStyle(
+                                                              decoration:
+                                                                  TextDecoration
+                                                                      .underline,
+                                                              decorationStyle:
+                                                                  TextDecorationStyle
+                                                                      .solid,
+                                                            ),
+                                                          ), onTap: () async {
+                                                        await Navigator.of(
+                                                                context)
+                                                            .push(
+                                                                MaterialPageRoute(
+                                                                    builder: (_) =>
+                                                                        MyListings(
+                                                                          accountId:
+                                                                              item.sellerId,
+                                                                        )));
+                                                        _getData();
+                                                      }),
                                                     ],
                                                   ),
                                                 )
@@ -565,6 +608,7 @@ class _MyListingsState extends State<MyListings> {
                                                 'Buyer',
                                                 textAlign: TextAlign.center,
                                               )),
+                                              DataColumn(label: Text('Seller')),
                                             ],
                                             rows: _endedItemsBidOnByMe!
                                                 .map(
@@ -577,7 +621,7 @@ class _MyListingsState extends State<MyListings> {
                                                                           context)
                                                                       .size
                                                                       .width -
-                                                                  300)),
+                                                                  280)),
                                                           child: Text(
                                                             endedItem.name,
                                                             overflow:
@@ -619,6 +663,31 @@ class _MyListingsState extends State<MyListings> {
                                                               : 'Not You',
                                                         ),
                                                       ),
+                                                      DataCell(
+                                                          Text(
+                                                            endedItem.sellerId
+                                                                .toString(),
+                                                            style:
+                                                                const TextStyle(
+                                                              decoration:
+                                                                  TextDecoration
+                                                                      .underline,
+                                                              decorationStyle:
+                                                                  TextDecorationStyle
+                                                                      .solid,
+                                                            ),
+                                                          ), onTap: () async {
+                                                        await Navigator.of(
+                                                                context)
+                                                            .push(
+                                                                MaterialPageRoute(
+                                                                    builder: (_) =>
+                                                                        MyListings(
+                                                                          accountId:
+                                                                              endedItem.sellerId,
+                                                                        )));
+                                                        _getData();
+                                                      }),
                                                     ],
                                                   ),
                                                 )

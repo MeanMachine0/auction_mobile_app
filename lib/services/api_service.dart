@@ -223,60 +223,10 @@ class ApiService {
     }
   }
 
-  Future<List<ItemsModel>?> getAccountItems(
-      int accountId, String? token) async {
-    try {
-      var url = Uri.parse(
-          '${ApiConstants.baseUrl}${ApiConstants.accountsEndpoint}$accountId/${ApiConstants.itemsEndpoint}');
-      var response = await http.get(
-        url,
-        headers: token != null
-            ? {
-                'ended': 'false',
-                'Authorization': 'Token $token',
-              }
-            : {'ended': 'false'},
-      );
-      if (response.statusCode == 200) {
-        try {
-          var jsonResponse = json.decode(response.body);
-          ItemsModel _item = ItemsModel.fromJson(jsonResponse);
-          List<ItemsModel> _model = [_item];
-          return _model;
-        } catch (e) {
-          List<ItemsModel> _model = itemsModelFromJson(response.body);
-          return _model;
-        }
-      } else if (response.statusCode == 404) {
-        List<ItemsModel> _model = [
-          ItemsModel(
-            id: 404,
-            name: "404 Not Found",
-            price: "404.00",
-            postageCost: "404.00",
-            bidIncrement: "404.00",
-            condition: "404",
-            endDateTime: DateTime(404),
-            acceptReturns: false,
-            description: "404 - Item not found",
-            numBids: 404,
-            bidders: "404",
-            sold: false,
-            buyerId: 404,
-            sellerId: 404,
-          )
-        ];
-        return _model;
-      }
-      return [];
-    } catch (e) {
-      log(e.toString());
-    }
-  }
-
-  Future<List<EndedItemsModel>?> getAccountEndedItems(
+  Future<List> getAccountItems(
     int accountId,
     String? token,
+    bool ended,
   ) async {
     try {
       var url = Uri.parse(
@@ -285,45 +235,38 @@ class ApiService {
         url,
         headers: token != null
             ? {
-                'ended': 'true',
+                'ended': '$ended',
                 'Authorization': 'Token $token',
               }
-            : {'ended': 'true'},
+            : {'ended': '$ended'},
       );
       if (response.statusCode == 200) {
         try {
           var jsonResponse = json.decode(response.body);
-          EndedItemsModel _item = EndedItemsModel.fromJson(jsonResponse);
-          List<EndedItemsModel> _model = [_item];
-          return _model;
+          if (!ended) {
+            ItemsModel _item = ItemsModel.fromJson(jsonResponse);
+            List<ItemsModel> _model = [_item];
+            return _model;
+          } else {
+            EndedItemsModel _item = EndedItemsModel.fromJson(jsonResponse);
+            List<EndedItemsModel> _model = [_item];
+            return _model;
+          }
         } catch (e) {
-          List<EndedItemsModel> _model = endedItemsModelFromJson(response.body);
-          return _model;
+          if (!ended) {
+            List<ItemsModel> _model = itemsModelFromJson(response.body);
+            return _model;
+          } else {
+            List<EndedItemsModel> _model =
+                endedItemsModelFromJson(response.body);
+            return _model;
+          }
         }
-      } else if (response.statusCode == 404) {
-        List<EndedItemsModel> _model = [
-          EndedItemsModel(
-            id: 404,
-            name: "404 Not Found",
-            price: "404.00",
-            postageCost: "404.00",
-            bidIncrement: "404.00",
-            condition: "404",
-            endDateTime: DateTime(404),
-            acceptReturns: false,
-            description: "404 - Item not found",
-            numBids: 404,
-            bidders: "404",
-            sold: false,
-            buyerId: 404,
-            sellerId: 404,
-            destinationAddress: '404 Street',
-          )
-        ];
-        return _model;
       }
+      return [];
     } catch (e) {
       log(e.toString());
+      return [];
     }
   }
 
@@ -340,7 +283,7 @@ class ApiService {
     return IAmTheBuyer;
   }
 
-  Future<List?> getItemsBidOnByMe(
+  Future<List> getItemsBidOnByMe(
       int accountId, String token, bool ended) async {
     try {
       var url = Uri.parse(
