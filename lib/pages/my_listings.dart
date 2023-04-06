@@ -24,6 +24,7 @@ class _MyListingsState extends State<MyListings> {
   late List<ItemsModel>? _itemsModel = [];
   late List<EndedItemsModel>? _endedItemsModel = [];
   late List<ItemsModel>? _itemsBidOnByMe = [];
+  late List<EndedItemsModel>? _endedItemsBidOnByMe = [];
   late int? accountId = null;
   late int? myAccountId = null;
   late String? token = null;
@@ -51,7 +52,11 @@ class _MyListingsState extends State<MyListings> {
         seller = true;
         if (token != null) {
           _itemsBidOnByMe =
-              await apiService.getItemsBidOnByMe(accountId!, token!, false);
+              (await apiService.getItemsBidOnByMe(accountId!, token!, false))
+                  ?.cast<ItemsModel>();
+          _endedItemsBidOnByMe =
+              (await apiService.getItemsBidOnByMe(accountId!, token!, true))
+                  ?.cast<EndedItemsModel>();
         }
       }
     }
@@ -128,21 +133,23 @@ class _MyListingsState extends State<MyListings> {
                       ),
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.start,
-                        children: _itemsModel![0].endDateTime == DateTime(404)
-                            ? const [Text('There are no listings to view.')]
-                            : [
-                                const Center(
-                                    child: Text('Active Listings',
-                                        style: Elements.cardHeader)),
-                                const SizedBox(height: 20),
-                                SingleChildScrollView(
-                                  scrollDirection: Axis.horizontal,
-                                  child: Container(
-                                    constraints: BoxConstraints(
-                                        minWidth:
-                                            MediaQuery.of(context).size.width -
-                                                40),
-                                    child: DataTable(
+                        children: [
+                          const Center(
+                              child: Text('Active Listings',
+                                  style: Elements.cardHeader)),
+                          const SizedBox(height: 20),
+                          SingleChildScrollView(
+                            scrollDirection: Axis.horizontal,
+                            child: Container(
+                              constraints: BoxConstraints(
+                                  minWidth:
+                                      MediaQuery.of(context).size.width - 40),
+                              child: _itemsModel![0].endDateTime ==
+                                      DateTime(404)
+                                  ? const Center(
+                                      child: Text(
+                                          'There are no listings to view.'))
+                                  : DataTable(
                                       border: TableBorder.all(
                                         color: Colours.deepBlue,
                                         width: 0.75,
@@ -162,36 +169,38 @@ class _MyListingsState extends State<MyListings> {
                                             (item) => DataRow(
                                               cells: [
                                                 DataCell(
-                                                    Container(
-                                                      constraints: BoxConstraints(
-                                                          maxWidth:
-                                                              (MediaQuery.of(
-                                                                          context)
-                                                                      .size
-                                                                      .width -
-                                                                  240)),
-                                                      child: Text(
-                                                        item.name,
-                                                        overflow: TextOverflow
-                                                            .ellipsis,
-                                                        maxLines: 1,
-                                                        style: const TextStyle(
-                                                          decoration:
-                                                              TextDecoration
-                                                                  .underline,
-                                                          decorationStyle:
-                                                              TextDecorationStyle
-                                                                  .solid,
-                                                        ),
+                                                  Container(
+                                                    constraints: BoxConstraints(
+                                                        maxWidth:
+                                                            (MediaQuery.of(
+                                                                        context)
+                                                                    .size
+                                                                    .width -
+                                                                240)),
+                                                    child: Text(
+                                                      item.name,
+                                                      overflow:
+                                                          TextOverflow.ellipsis,
+                                                      maxLines: 1,
+                                                      style: const TextStyle(
+                                                        decoration:
+                                                            TextDecoration
+                                                                .underline,
+                                                        decorationStyle:
+                                                            TextDecorationStyle
+                                                                .solid,
                                                       ),
-                                                    ), onTap: () {
-                                                  Navigator.of(context).push(
-                                                      MaterialPageRoute(
-                                                          builder: (_) =>
-                                                              ItemDetail(
-                                                                  itemId: item
-                                                                      .id)));
-                                                }),
+                                                    ),
+                                                  ),
+                                                  onTap: () {
+                                                    Navigator.of(context).push(
+                                                        MaterialPageRoute(
+                                                            builder: (_) =>
+                                                                ItemDetail(
+                                                                    itemId: item
+                                                                        .id)));
+                                                  },
+                                                ),
                                                 DataCell(
                                                     Text('£${item.price}')),
                                                 DataCell(Text(
@@ -269,21 +278,25 @@ class _MyListingsState extends State<MyListings> {
                                           )
                                           .toList(),
                                     ),
-                                  ),
-                                ),
-                                const SizedBox(height: 40),
-                                const Center(
-                                    child: Text('Inactive Listings',
-                                        style: Elements.cardHeader)),
-                                const SizedBox(height: 20),
-                                SingleChildScrollView(
-                                  scrollDirection: Axis.horizontal,
-                                  child: Container(
-                                    constraints: BoxConstraints(
-                                        minWidth:
-                                            MediaQuery.of(context).size.width -
-                                                40),
-                                    child: DataTable(
+                            ),
+                          ),
+                          const SizedBox(height: 40),
+                          const Center(
+                              child: Text('Inactive Listings',
+                                  style: Elements.cardHeader)),
+                          const SizedBox(height: 20),
+                          SingleChildScrollView(
+                            scrollDirection: Axis.horizontal,
+                            child: Container(
+                              constraints: BoxConstraints(
+                                  minWidth:
+                                      MediaQuery.of(context).size.width - 40),
+                              child: _endedItemsModel![0].endDateTime ==
+                                      DateTime(404)
+                                  ? const Center(
+                                      child: Text(
+                                          'There are no listings to view.'))
+                                  : DataTable(
                                       border: TableBorder.all(
                                         color: Colours.deepBlue,
                                         width: 0.75,
@@ -307,37 +320,39 @@ class _MyListingsState extends State<MyListings> {
                                             (endedItem) => DataRow(
                                               cells: [
                                                 DataCell(
-                                                    Container(
-                                                      constraints: BoxConstraints(
-                                                          maxWidth:
-                                                              (MediaQuery.of(
-                                                                          context)
-                                                                      .size
-                                                                      .width -
-                                                                  240)),
-                                                      child: Text(
-                                                        endedItem.name,
-                                                        overflow: TextOverflow
-                                                            .ellipsis,
-                                                        maxLines: 1,
-                                                        style: const TextStyle(
-                                                          decoration:
-                                                              TextDecoration
-                                                                  .underline,
-                                                          decorationStyle:
-                                                              TextDecorationStyle
-                                                                  .solid,
-                                                        ),
+                                                  Container(
+                                                    constraints: BoxConstraints(
+                                                        maxWidth:
+                                                            (MediaQuery.of(
+                                                                        context)
+                                                                    .size
+                                                                    .width -
+                                                                240)),
+                                                    child: Text(
+                                                      endedItem.name,
+                                                      overflow:
+                                                          TextOverflow.ellipsis,
+                                                      maxLines: 1,
+                                                      style: const TextStyle(
+                                                        decoration:
+                                                            TextDecoration
+                                                                .underline,
+                                                        decorationStyle:
+                                                            TextDecorationStyle
+                                                                .solid,
                                                       ),
-                                                    ), onTap: () {
-                                                  Navigator.of(context).push(
-                                                      MaterialPageRoute(
-                                                          builder: (_) =>
-                                                              EndedItemDetail(
-                                                                  endedItemId:
-                                                                      endedItem
-                                                                          .id)));
-                                                }),
+                                                    ),
+                                                  ),
+                                                  onTap: () {
+                                                    Navigator.of(context).push(
+                                                        MaterialPageRoute(
+                                                            builder: (_) =>
+                                                                EndedItemDetail(
+                                                                    endedItemId:
+                                                                        endedItem
+                                                                            .id)));
+                                                  },
+                                                ),
                                                 DataCell(Text(
                                                     '£${endedItem.price}')),
                                                 DataCell(Text(Dicts
@@ -420,27 +435,28 @@ class _MyListingsState extends State<MyListings> {
                                           )
                                           .toList(),
                                     ),
-                                  ),
-                                ),
-                                SizedBox(
-                                    height: widget.accountId == null ? 40 : 0),
-                                Center(
-                                    child: widget.accountId == null
-                                        ? const Text(
-                                            'Active Listings Bid on by Me',
-                                            style: Elements.cardHeader)
-                                        : null),
-                                SizedBox(
-                                    height: widget.accountId == null ? 20 : 0),
-                                SingleChildScrollView(
-                                  scrollDirection: Axis.horizontal,
-                                  child: Container(
-                                    constraints: BoxConstraints(
-                                        minWidth:
-                                            MediaQuery.of(context).size.width -
-                                                40),
-                                    child: widget.accountId == null
-                                        ? DataTable(
+                            ),
+                          ),
+                          SizedBox(height: widget.accountId == null ? 40 : 0),
+                          Center(
+                              child: widget.accountId == null
+                                  ? const Text('Active Listings Bid on by Me',
+                                      style: Elements.cardHeader)
+                                  : null),
+                          SizedBox(height: widget.accountId == null ? 20 : 0),
+                          SingleChildScrollView(
+                            scrollDirection: Axis.horizontal,
+                            child: Container(
+                                constraints: BoxConstraints(
+                                    minWidth:
+                                        MediaQuery.of(context).size.width - 40),
+                                child: widget.accountId != null
+                                    ? null
+                                    : _itemsBidOnByMe!.isEmpty
+                                        ? const Center(
+                                            child: Text(
+                                                'There are no listings to view.'))
+                                        : DataTable(
                                             border: TableBorder.all(
                                               color: Colours.deepBlue,
                                               width: 0.75,
@@ -460,69 +476,148 @@ class _MyListingsState extends State<MyListings> {
                                                   (item) => DataRow(
                                                     cells: [
                                                       DataCell(
-                                                          Container(
-                                                            constraints: BoxConstraints(
-                                                                maxWidth: (MediaQuery.of(
-                                                                            context)
-                                                                        .size
-                                                                        .width -
-                                                                    300)),
-                                                            child: Text(
-                                                              item.name,
-                                                              overflow:
-                                                                  TextOverflow
-                                                                      .ellipsis,
-                                                              maxLines: 1,
-                                                              style:
-                                                                  const TextStyle(
-                                                                decoration:
-                                                                    TextDecoration
-                                                                        .underline,
-                                                                decorationStyle:
-                                                                    TextDecorationStyle
-                                                                        .solid,
-                                                              ),
+                                                        Container(
+                                                          constraints: BoxConstraints(
+                                                              maxWidth: (MediaQuery.of(
+                                                                          context)
+                                                                      .size
+                                                                      .width -
+                                                                  300)),
+                                                          child: Text(
+                                                            item.name,
+                                                            overflow:
+                                                                TextOverflow
+                                                                    .ellipsis,
+                                                            maxLines: 1,
+                                                            style:
+                                                                const TextStyle(
+                                                              decoration:
+                                                                  TextDecoration
+                                                                      .underline,
+                                                              decorationStyle:
+                                                                  TextDecorationStyle
+                                                                      .solid,
                                                             ),
-                                                          ), onTap: () {
-                                                        Navigator.of(context).push(
-                                                            MaterialPageRoute(
-                                                                builder: (_) =>
-                                                                    ItemDetail(
-                                                                        itemId:
-                                                                            item.id)));
-                                                      }),
+                                                          ),
+                                                        ),
+                                                        onTap: () {
+                                                          Navigator.of(context).push(
+                                                              MaterialPageRoute(
+                                                                  builder: (_) =>
+                                                                      ItemDetail(
+                                                                          itemId:
+                                                                              item.id)));
+                                                        },
+                                                      ),
                                                       DataCell(Text(
                                                           '£${item.price}')),
                                                       DataCell(Text(item.numBids
                                                           .toString())),
                                                       DataCell(
-                                                          Text(
-                                                            item.buyerId != null
-                                                                ? 'You'
-                                                                : 'Not You',
-                                                          ),
-                                                          onTap: item.buyerId ==
-                                                                  myAccountId
-                                                              ? null
-                                                              : item.sellerId !=
-                                                                      myAccountId
-                                                                  ? null
-                                                                  : item.buyerId !=
-                                                                          null
-                                                                      ? () {
-                                                                          Navigator.of(context)
-                                                                              .push(MaterialPageRoute(builder: (_) => MyListings(accountId: item.buyerId)));
-                                                                        }
-                                                                      : null)
+                                                        Text(
+                                                          item.buyerId != null
+                                                              ? 'You'
+                                                              : 'Not You',
+                                                        ),
+                                                      )
                                                     ],
                                                   ),
                                                 )
                                                 .toList(),
-                                          )
-                                        : null,
-                                  ),
-                                ),
-                              ],
+                                          )),
+                          ),
+                          SizedBox(height: widget.accountId == null ? 40 : 0),
+                          Center(
+                              child: widget.accountId == null
+                                  ? const Text('Inactive Listings Bid on by Me',
+                                      style: Elements.cardHeader)
+                                  : null),
+                          SizedBox(height: widget.accountId == null ? 20 : 0),
+                          SingleChildScrollView(
+                            scrollDirection: Axis.horizontal,
+                            child: Container(
+                                constraints: BoxConstraints(
+                                    minWidth:
+                                        MediaQuery.of(context).size.width - 40),
+                                child: widget.accountId != null
+                                    ? null
+                                    : _endedItemsBidOnByMe!.isEmpty
+                                        ? const Center(
+                                            child: Text(
+                                                'There are no listings to view.'))
+                                        : DataTable(
+                                            border: TableBorder.all(
+                                              color: Colours.deepBlue,
+                                              width: 0.75,
+                                            ),
+                                            columns: const [
+                                              DataColumn(label: Text('Name')),
+                                              DataColumn(label: Text('Price')),
+                                              DataColumn(label: Text('Bids')),
+                                              DataColumn(
+                                                  label: Text(
+                                                'Buyer',
+                                                textAlign: TextAlign.center,
+                                              )),
+                                            ],
+                                            rows: _endedItemsBidOnByMe!
+                                                .map(
+                                                  (endedItem) => DataRow(
+                                                    cells: [
+                                                      DataCell(
+                                                        Container(
+                                                          constraints: BoxConstraints(
+                                                              maxWidth: (MediaQuery.of(
+                                                                          context)
+                                                                      .size
+                                                                      .width -
+                                                                  300)),
+                                                          child: Text(
+                                                            endedItem.name,
+                                                            overflow:
+                                                                TextOverflow
+                                                                    .ellipsis,
+                                                            maxLines: 1,
+                                                            style:
+                                                                const TextStyle(
+                                                              decoration:
+                                                                  TextDecoration
+                                                                      .underline,
+                                                              decorationStyle:
+                                                                  TextDecorationStyle
+                                                                      .solid,
+                                                            ),
+                                                          ),
+                                                        ),
+                                                        onTap: () {
+                                                          Navigator.of(context).push(
+                                                              MaterialPageRoute(
+                                                                  builder: (_) =>
+                                                                      EndedItemDetail(
+                                                                          endedItemId:
+                                                                              endedItem.id)));
+                                                        },
+                                                      ),
+                                                      DataCell(Text(
+                                                          '£${endedItem.price}')),
+                                                      DataCell(Text(endedItem
+                                                          .numBids
+                                                          .toString())),
+                                                      DataCell(
+                                                        Text(
+                                                          endedItem.buyerId !=
+                                                                  null
+                                                              ? 'You'
+                                                              : 'Not You',
+                                                        ),
+                                                      ),
+                                                    ],
+                                                  ),
+                                                )
+                                                .toList(),
+                                          )),
+                          ),
+                        ],
                       ),
                     ),
                   ));
