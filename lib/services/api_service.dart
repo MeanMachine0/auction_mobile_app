@@ -136,7 +136,6 @@ class ApiService {
     } catch (e) {
       log(e.toString());
     }
-
     return null;
   }
 
@@ -341,7 +340,7 @@ class ApiService {
     return IAmTheBuyer;
   }
 
-  Future<List<ItemsModel>?> getItemsBidOnByMe(
+  Future<List?> getItemsBidOnByMe(
       int accountId, String token, bool ended) async {
     try {
       var url = Uri.parse(
@@ -356,37 +355,30 @@ class ApiService {
       if (response.statusCode == 200) {
         try {
           var jsonResponse = json.decode(response.body);
-          ItemsModel _item = ItemsModel.fromJson(jsonResponse);
-          List<ItemsModel> _model = [_item];
-          return _model;
+          if (!ended) {
+            ItemsModel _item = ItemsModel.fromJson(jsonResponse);
+            List<ItemsModel> _model = [_item];
+            return _model;
+          } else {
+            EndedItemsModel _item = EndedItemsModel.fromJson(jsonResponse);
+            List<EndedItemsModel> _model = [_item];
+            return _model;
+          }
         } catch (e) {
-          List<ItemsModel> _model = itemsModelFromJson(response.body);
-          return _model;
+          if (!ended) {
+            List<ItemsModel> _model = itemsModelFromJson(response.body);
+            return _model;
+          } else {
+            List<EndedItemsModel> _model =
+                endedItemsModelFromJson(response.body);
+            return _model;
+          }
         }
-      } else if (response.statusCode == 404) {
-        List<ItemsModel> _model = [
-          ItemsModel(
-            id: 404,
-            name: "404 Not Found",
-            price: "404.00",
-            postageCost: "404.00",
-            bidIncrement: "404.00",
-            condition: "404",
-            endDateTime: DateTime(404),
-            acceptReturns: false,
-            description: "404 - Item not found",
-            numBids: 404,
-            bidders: "404",
-            sold: false,
-            buyerId: 404,
-            sellerId: 404,
-          )
-        ];
-        return _model;
       }
       return [];
     } catch (e) {
       log(e.toString());
+      return [];
     }
   }
 }
