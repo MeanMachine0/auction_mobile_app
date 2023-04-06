@@ -329,22 +329,16 @@ class ApiService {
   }
 
   Future<bool> amITheBuyer(int itemId, String? token, bool ended) async {
-    var url = Uri.parse(
-        '${ApiConstants.baseUrl}${ApiConstants.amITheBuyerEndpoint}$itemId/');
-    var response = await http.get(
-      url,
-      headers: token != null
-          ? {'ended': '$ended', 'Authorization': 'Token $token'}
-          : {'ended': '$ended'},
-    );
-
-    try {
-      var decodedResponse = json.decode(response.body);
-      // ignore: non_constant_identifier_names
-      bool IAmTheBuyer = decodedResponse['IAmTheBuyer'];
-      return IAmTheBuyer;
-    } catch (e) {
+    if (token == null) {
       return false;
     }
+    var url = Uri.parse(
+        '${ApiConstants.baseUrl}${ApiConstants.amITheBuyerEndpoint}$itemId/');
+    var response = await http.get(url,
+        headers: {'ended': '$ended', 'Authorization': 'Token $token'});
+
+    var decodedResponse = json.decode(response.body);
+    bool IAmTheBuyer = decodedResponse['IAmTheBuyer'];
+    return IAmTheBuyer;
   }
 }
