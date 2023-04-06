@@ -342,14 +342,14 @@ class ApiService {
   }
 
   Future<List<ItemsModel>?> getItemsBidOnByMe(
-      int accountId, String token) async {
+      int accountId, String token, bool ended) async {
     try {
       var url = Uri.parse(
           '${ApiConstants.baseUrl}${ApiConstants.accountBidsEndpoint}$accountId/');
       var response = await http.get(
         url,
         headers: {
-          'ended': 'false',
+          'ended': '$ended',
           'Authorization': 'Token $token',
         },
       );
