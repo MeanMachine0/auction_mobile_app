@@ -39,7 +39,7 @@ class _EndedItemDetailState extends State<EndedItemDetail> {
     IAmTheSeller = accountId == endedItemModel!.sellerId;
     IAmTheBuyer = IAmTheSeller
         ? false
-        : await apiService.amITheBuyer(endedItemModel!.id, token, false);
+        : await apiService.amITheBuyer(endedItemModel!.id, token, true);
     setState(() {});
   }
 
