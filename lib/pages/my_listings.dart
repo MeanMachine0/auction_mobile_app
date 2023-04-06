@@ -192,13 +192,14 @@ class _MyListingsState extends State<MyListings> {
                                                       ),
                                                     ),
                                                   ),
-                                                  onTap: () {
-                                                    Navigator.of(context).push(
-                                                        MaterialPageRoute(
+                                                  onTap: () async {
+                                                    await Navigator.of(context)
+                                                        .push(MaterialPageRoute(
                                                             builder: (_) =>
                                                                 ItemDetail(
                                                                     itemId: item
                                                                         .id)));
+                                                    _getData();
                                                   },
                                                 ),
                                                 DataCell(
@@ -265,12 +266,13 @@ class _MyListingsState extends State<MyListings> {
                                                             ? null
                                                             : item.buyerId !=
                                                                     null
-                                                                ? () {
-                                                                    Navigator.of(
+                                                                ? () async {
+                                                                    await Navigator.of(
                                                                             context)
                                                                         .push(MaterialPageRoute(
                                                                             builder: (_) =>
                                                                                 MyListings(accountId: item.buyerId)));
+                                                                    _getData();
                                                                   }
                                                                 : null)
                                               ],
@@ -343,7 +345,7 @@ class _MyListingsState extends State<MyListings> {
                                                       ),
                                                     ),
                                                   ),
-                                                  onTap: () {
+                                                  onTap: () async {
                                                     Navigator.of(context).push(
                                                         MaterialPageRoute(
                                                             builder: (_) =>
@@ -351,6 +353,7 @@ class _MyListingsState extends State<MyListings> {
                                                                     endedItemId:
                                                                         endedItem
                                                                             .id)));
+                                                    _getData();
                                                   },
                                                 ),
                                                 DataCell(Text(
@@ -418,12 +421,13 @@ class _MyListingsState extends State<MyListings> {
                                                             ? null
                                                             : endedItem.buyerId !=
                                                                     null
-                                                                ? () {
-                                                                    Navigator.of(
+                                                                ? () async {
+                                                                    await Navigator.of(
                                                                             context)
                                                                         .push(MaterialPageRoute(
                                                                             builder: (_) =>
                                                                                 MyListings(accountId: endedItem.buyerId)));
+                                                                    _getData();
                                                                   }
                                                                 : null),
                                                 if (seller)
@@ -500,13 +504,15 @@ class _MyListingsState extends State<MyListings> {
                                                             ),
                                                           ),
                                                         ),
-                                                        onTap: () {
-                                                          Navigator.of(context).push(
-                                                              MaterialPageRoute(
+                                                        onTap: () async {
+                                                          await Navigator.of(
+                                                                  context)
+                                                              .push(MaterialPageRoute(
                                                                   builder: (_) =>
                                                                       ItemDetail(
                                                                           itemId:
                                                                               item.id)));
+                                                          _getData();
                                                         },
                                                       ),
                                                       DataCell(Text(
@@ -589,13 +595,15 @@ class _MyListingsState extends State<MyListings> {
                                                             ),
                                                           ),
                                                         ),
-                                                        onTap: () {
-                                                          Navigator.of(context).push(
-                                                              MaterialPageRoute(
+                                                        onTap: () async {
+                                                          await Navigator.of(
+                                                                  context)
+                                                              .push(MaterialPageRoute(
                                                                   builder: (_) =>
                                                                       EndedItemDetail(
                                                                           endedItemId:
                                                                               endedItem.id)));
+                                                          _getData();
                                                         },
                                                       ),
                                                       DataCell(Text(
