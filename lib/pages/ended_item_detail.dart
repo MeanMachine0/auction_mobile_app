@@ -3,7 +3,7 @@ import 'package:auction_mobile_app/pages/my_listings.dart';
 import 'package:flutter/material.dart';
 import 'package:auction_mobile_app/elements.dart';
 import 'package:intl/intl.dart';
-import 'package:auction_mobile_app/models/ended_items_model.dart';
+import 'package:auction_mobile_app/models/items_model.dart';
 import 'package:auction_mobile_app/services/api_service.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -22,7 +22,7 @@ class _EndedItemDetailState extends State<EndedItemDetail> {
   late String? token = '';
   bool IAmTheSeller = false;
   bool IAmTheBuyer = false;
-  EndedItemsModel? endedItemModel;
+  ItemsModel? endedItemModel;
 
   @override
   void initState() {
@@ -35,8 +35,8 @@ class _EndedItemDetailState extends State<EndedItemDetail> {
     accountId = prefs.getInt('accountId');
     token = prefs.getString('token');
     ApiService apiService = ApiService();
-    endedItemModel = await apiService.getEndedItem(widget._endedItemId, token);
-    IAmTheSeller = accountId == endedItemModel!.sellerId;
+    endedItemModel = await apiService.getItem(widget._endedItemId, token);
+    IAmTheSeller = accountId == endedItemModel!.seller;
     IAmTheBuyer = IAmTheSeller
         ? false
         : await apiService.amITheBuyer(endedItemModel!.id, token, true);
@@ -137,7 +137,7 @@ class _EndedItemDetailState extends State<EndedItemDetail> {
                                             ? [
                                                 GestureDetector(
                                                   onTap: endedItemModel!
-                                                              .buyerId !=
+                                                              .buyer !=
                                                           null
                                                       ? () {
                                                           Navigator.of(context).push(
@@ -145,31 +145,31 @@ class _EndedItemDetailState extends State<EndedItemDetail> {
                                                                   builder: (_) =>
                                                                       MyListings(
                                                                           accountId:
-                                                                              endedItemModel!.buyerId)));
+                                                                              endedItemModel!.buyer)));
                                                         }
                                                       : null,
                                                   child: Row(
-                                                    children: endedItemModel!
-                                                                .buyerId !=
-                                                            null
-                                                        ? [
-                                                            Text(
-                                                              'Buyer: ${endedItemModel!.buyerId}',
-                                                              style:
-                                                                  const TextStyle(
-                                                                decoration:
-                                                                    TextDecoration
-                                                                        .underline,
-                                                                decorationStyle:
-                                                                    TextDecorationStyle
-                                                                        .solid,
-                                                              ),
-                                                            ),
-                                                          ]
-                                                        : [
-                                                            const Text(
-                                                                'Buyer:'),
-                                                          ],
+                                                    children:
+                                                        endedItemModel!.buyer !=
+                                                                null
+                                                            ? [
+                                                                Text(
+                                                                  'Buyer: ${endedItemModel!.buyer}',
+                                                                  style:
+                                                                      const TextStyle(
+                                                                    decoration:
+                                                                        TextDecoration
+                                                                            .underline,
+                                                                    decorationStyle:
+                                                                        TextDecorationStyle
+                                                                            .solid,
+                                                                  ),
+                                                                ),
+                                                              ]
+                                                            : [
+                                                                const Text(
+                                                                    'Buyer:'),
+                                                              ],
                                                   ),
                                                 ),
                                                 Row(
@@ -201,14 +201,14 @@ class _EndedItemDetailState extends State<EndedItemDetail> {
                                                       builder: (_) => MyListings(
                                                           accountId:
                                                               endedItemModel!
-                                                                  .sellerId)));
+                                                                  .seller)));
                                             },
                                       child: Row(
                                         children: [
                                           Text(
                                             IAmTheSeller
                                                 ? 'Seller: You'
-                                                : 'Seller: ${endedItemModel!.sellerId}',
+                                                : 'Seller: ${endedItemModel!.seller}',
                                             style: IAmTheSeller
                                                 ? null
                                                 : const TextStyle(

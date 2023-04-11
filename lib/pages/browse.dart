@@ -32,7 +32,7 @@ class _BrowseState extends State<Browse> {
     token = prefs.getString('token');
     username = prefs.getString('username');
     password = prefs.getString('password');
-    _itemsModel = (await ApiService().getItems());
+    _itemsModel = (await ApiService().getItems(false, false));
     setState(() {});
   }
 

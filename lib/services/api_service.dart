@@ -5,15 +5,14 @@ import 'package:http/http.dart' as http;
 import 'package:auction_mobile_app/models/user_model.dart';
 import 'package:auction_mobile_app/models/accounts_model.dart';
 import 'package:auction_mobile_app/models/items_model.dart';
-import 'package:auction_mobile_app/models/ended_items_model.dart';
-import 'package:auction_mobile_app/constants.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class ApiService {
+  static String baseUrl = 'http://10.0.2.2:8000/api/';
   Future<List<String>?> login(String username, String password) async {
     try {
       Map<String, dynamic> data = {'username': username, 'password': password};
-      var url = Uri.parse(ApiConstants.baseUrl + ApiConstants.loginEndpoint);
+      var url = Uri.parse('${baseUrl}login/');
       var response = await http.post(url,
           body: jsonEncode(data),
           headers: {'Content-Type': 'application/json'});
@@ -33,7 +32,7 @@ class ApiService {
     try {
       SharedPreferences prefs = await SharedPreferences.getInstance();
       await prefs.clear();
-      var url = Uri.parse(ApiConstants.baseUrl + ApiConstants.logoutEndpoint);
+      var url = Uri.parse('${baseUrl}logout/');
       await http.post(url, headers: {'Authorization': 'Token $token'});
     } catch (e) {
       log(e.toString());
@@ -42,7 +41,7 @@ class ApiService {
 
   Future<List<UserModel>?> getUsers() async {
     try {
-      var url = Uri.parse(ApiConstants.baseUrl + ApiConstants.usersEndpoint);
+      var url = Uri.parse('${baseUrl}users/');
       var response = await http.get(url);
       if (response.statusCode == 200) {
         List<UserModel> _model = userModelFromJson(response.body);
@@ -55,8 +54,7 @@ class ApiService {
 
   Future<AccountsModel?> getAccount(int accountId) async {
     try {
-      var url = Uri.parse(
-          '${ApiConstants.baseUrl}${ApiConstants.accountsEndpoint}$accountId/');
+      var url = Uri.parse('${baseUrl}accounts/$accountId/');
       var response = await http.get(url);
       if (response.statusCode == 200) {
         var jsonResponse = jsonDecode(response.body);
@@ -70,7 +68,7 @@ class ApiService {
 
   Future<List<AccountsModel>?> getAccounts() async {
     try {
-      var url = Uri.parse(ApiConstants.baseUrl + ApiConstants.accountsEndpoint);
+      var url = Uri.parse('${baseUrl}accounts/');
       var response = await http.get(url);
       if (response.statusCode == 200) {
         List<AccountsModel> _model = accountsModelFromJson(response.body);
@@ -83,8 +81,7 @@ class ApiService {
 
   Future<ItemsModel?> getItem(int itemId, String? token) async {
     try {
-      var url = Uri.parse(
-          '${ApiConstants.baseUrl}${ApiConstants.itemsEndpoint}$itemId/');
+      var url = Uri.parse('${baseUrl}items/$itemId/');
       var response = await http.get(
         url,
         headers: token != null
@@ -105,47 +102,13 @@ class ApiService {
     return null;
   }
 
-  Future<List<ItemsModel>?> getItems() async {
+  Future<List<ItemsModel>?> getItems(bool ended, bool sold) async {
     try {
-      var url = Uri.parse(ApiConstants.baseUrl + ApiConstants.itemsEndpoint);
-      var response = await http.get(url);
+      var url = Uri.parse('${baseUrl}items/');
+      var response =
+          await http.get(url, headers: {'ended': '$ended', 'sold': '$sold'});
       if (response.statusCode == 200) {
         List<ItemsModel> _model = itemsModelFromJson(response.body);
-        return _model;
-      }
-    } catch (e) {
-      log(e.toString());
-    }
-  }
-
-  Future<EndedItemsModel?> getEndedItem(int itemId, String? token) async {
-    try {
-      var url = Uri.parse(
-          '${ApiConstants.baseUrl}${ApiConstants.endedItemsEndpoint}$itemId/');
-      var response = await http.get(url,
-          headers: token != null
-              ? {
-                  'Authorization': 'Token $token',
-                }
-              : null);
-      if (response.statusCode == 200) {
-        var jsonResponse = json.decode(response.body);
-        EndedItemsModel item = EndedItemsModel.fromJson(jsonResponse);
-        return item;
-      }
-    } catch (e) {
-      log(e.toString());
-    }
-    return null;
-  }
-
-  Future<List<EndedItemsModel>?> getEndedItems(bool sold) async {
-    try {
-      var url =
-          Uri.parse(ApiConstants.baseUrl + ApiConstants.endedItemsEndpoint);
-      var response = await http.get(url, headers: {'sold': '$sold'});
-      if (response.statusCode == 200) {
-        List<EndedItemsModel> _model = endedItemsModelFromJson(response.body);
         return _model;
       }
     } catch (e) {
@@ -166,8 +129,7 @@ class ApiService {
     String token,
   ) async {
     try {
-      var url =
-          Uri.parse(ApiConstants.baseUrl + ApiConstants.createItemEndpoint);
+      var url = Uri.parse('${baseUrl}createItem/');
       Map<String, dynamic> data = {
         'name': name,
         'price': price,
@@ -194,8 +156,7 @@ class ApiService {
   Future<String> submitBid(
       double bid, int itemId, int accountId, String token) async {
     try {
-      var url = Uri.parse(
-          '${ApiConstants.baseUrl}${ApiConstants.itemsEndpoint}$itemId/${ApiConstants.bidEndpoint}');
+      var url = Uri.parse('${baseUrl}items/$itemId/bid');
       Map<String, dynamic> data = {
         'accountId': accountId,
         'bid': bid,
@@ -229,8 +190,7 @@ class ApiService {
     bool ended,
   ) async {
     try {
-      var url = Uri.parse(
-          '${ApiConstants.baseUrl}${ApiConstants.accountsEndpoint}$accountId/${ApiConstants.itemsEndpoint}');
+      var url = Uri.parse('${baseUrl}accounts/$accountId/items/');
       var response = await http.get(
         url,
         headers: token != null
@@ -243,24 +203,12 @@ class ApiService {
       if (response.statusCode == 200) {
         try {
           var jsonResponse = json.decode(response.body);
-          if (!ended) {
-            ItemsModel _item = ItemsModel.fromJson(jsonResponse);
-            List<ItemsModel> _model = [_item];
-            return _model;
-          } else {
-            EndedItemsModel _item = EndedItemsModel.fromJson(jsonResponse);
-            List<EndedItemsModel> _model = [_item];
-            return _model;
-          }
+          ItemsModel _item = ItemsModel.fromJson(jsonResponse);
+          List<ItemsModel> _model = [_item];
+          return _model;
         } catch (e) {
-          if (!ended) {
-            List<ItemsModel> _model = itemsModelFromJson(response.body);
-            return _model;
-          } else {
-            List<EndedItemsModel> _model =
-                endedItemsModelFromJson(response.body);
-            return _model;
-          }
+          List<ItemsModel> _model = itemsModelFromJson(response.body);
+          return _model;
         }
       }
       return [];
@@ -274,10 +222,9 @@ class ApiService {
     if (token == null) {
       return false;
     }
-    var url = Uri.parse(
-        '${ApiConstants.baseUrl}${ApiConstants.amITheBuyerEndpoint}$itemId/');
-    var response = await http.get(url,
-        headers: {'ended': '$ended', 'Authorization': 'Token $token'});
+    var url = Uri.parse('${baseUrl}amITheBuyer/$itemId/');
+    var response =
+        await http.get(url, headers: {'Authorization': 'Token $token'});
     var decodedResponse = json.decode(response.body);
     bool IAmTheBuyer = decodedResponse['IAmTheBuyer'];
     return IAmTheBuyer;
@@ -286,8 +233,7 @@ class ApiService {
   Future<List> getItemsBidOnByMe(
       int accountId, String token, bool ended) async {
     try {
-      var url = Uri.parse(
-          '${ApiConstants.baseUrl}${ApiConstants.accountBidsEndpoint}$accountId/');
+      var url = Uri.parse('${baseUrl}accountBids/$accountId/');
       var response = await http.get(
         url,
         headers: {
@@ -298,24 +244,12 @@ class ApiService {
       if (response.statusCode == 200) {
         try {
           var jsonResponse = json.decode(response.body);
-          if (!ended) {
-            ItemsModel _item = ItemsModel.fromJson(jsonResponse);
-            List<ItemsModel> _model = [_item];
-            return _model;
-          } else {
-            EndedItemsModel _item = EndedItemsModel.fromJson(jsonResponse);
-            List<EndedItemsModel> _model = [_item];
-            return _model;
-          }
+          ItemsModel _item = ItemsModel.fromJson(jsonResponse);
+          List<ItemsModel> _model = [_item];
+          return _model;
         } catch (e) {
-          if (!ended) {
-            List<ItemsModel> _model = itemsModelFromJson(response.body);
-            return _model;
-          } else {
-            List<EndedItemsModel> _model =
-                endedItemsModelFromJson(response.body);
-            return _model;
-          }
+          List<ItemsModel> _model = itemsModelFromJson(response.body);
+          return _model;
         }
       }
       return [];

@@ -1,7 +1,7 @@
 import 'package:auction_mobile_app/pages/login.dart';
 import 'package:flutter/material.dart';
 
-import 'package:auction_mobile_app/models/ended_items_model.dart';
+import 'package:auction_mobile_app/models/items_model.dart';
 import 'package:auction_mobile_app/pages/ended_item_detail.dart';
 import 'package:auction_mobile_app/services/api_service.dart';
 import 'package:auction_mobile_app/constants.dart';
@@ -16,7 +16,7 @@ class Home extends StatefulWidget {
 }
 
 class _HomeState extends State<Home> {
-  late List<EndedItemsModel>? _EndedItemsModel = [];
+  late List<ItemsModel>? _EndedItemsModel = [];
   late List<String>? _IdToken = [];
   late int? accountId = 0;
   late String? token = '';
@@ -36,7 +36,7 @@ class _HomeState extends State<Home> {
     username = prefs.getString('username');
     password = prefs.getString('password');
     ApiService apiService = ApiService();
-    _EndedItemsModel = await apiService.getEndedItems(true);
+    _EndedItemsModel = await apiService.getItems(true, true);
     setState(() {});
   }
 
@@ -96,7 +96,7 @@ class _HomeState extends State<Home> {
               child: ListView.builder(
                 itemCount: _EndedItemsModel!.length,
                 itemBuilder: (context, index) {
-                  EndedItemsModel item = _EndedItemsModel!.toList()[index];
+                  ItemsModel item = _EndedItemsModel!.toList()[index];
                   return Container(
                     margin: const EdgeInsets.symmetric(
                       horizontal: 20,

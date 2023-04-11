@@ -1,5 +1,4 @@
 import 'package:auction_mobile_app/constants.dart';
-import 'package:auction_mobile_app/models/accounts_model.dart';
 import 'package:auction_mobile_app/pages/my_listings.dart';
 import 'package:flutter/material.dart';
 import 'package:auction_mobile_app/elements.dart';
@@ -44,7 +43,7 @@ class _ItemDetailState extends State<ItemDetail> {
     username = prefs.getString('username');
     ApiService apiService = ApiService();
     itemModel = await apiService.getItem(widget._itemId, token);
-    IAmTheSeller = accountId == itemModel!.sellerId;
+    IAmTheSeller = accountId == itemModel!.seller;
     IAmTheTopBidder = IAmTheSeller
         ? false
         : await apiService.amITheBuyer(itemModel!.id, token, false);
@@ -142,7 +141,7 @@ class _ItemDetailState extends State<ItemDetail> {
                                     children: IAmTheSeller
                                         ? [
                                             GestureDetector(
-                                              onTap: itemModel!.buyerId != null
+                                              onTap: itemModel!.buyer != null
                                                   ? () {
                                                       Navigator.of(context).push(
                                                           MaterialPageRoute(
@@ -150,15 +149,15 @@ class _ItemDetailState extends State<ItemDetail> {
                                                                   MyListings(
                                                                       accountId:
                                                                           itemModel!
-                                                                              .buyerId)));
+                                                                              .buyer)));
                                                     }
                                                   : null,
                                               child: Row(
                                                 children:
-                                                    itemModel!.buyerId != null
+                                                    itemModel!.buyer != null
                                                         ? [
                                                             Text(
-                                                              'Top Bidder: ${itemModel!.buyerId}',
+                                                              'Top Bidder: ${itemModel!.buyer}',
                                                               style:
                                                                   const TextStyle(
                                                                 decoration:
@@ -191,14 +190,14 @@ class _ItemDetailState extends State<ItemDetail> {
                                                 MaterialPageRoute(
                                                     builder: (_) => MyListings(
                                                         accountId: itemModel!
-                                                            .sellerId)));
+                                                            .seller)));
                                           },
                                     child: Row(
                                       children: [
                                         Text(
                                           IAmTheSeller
                                               ? 'Seller: You'
-                                              : 'Seller: ${itemModel!.sellerId}',
+                                              : 'Seller: ${itemModel!.seller}',
                                           style: IAmTheSeller
                                               ? null
                                               : const TextStyle(

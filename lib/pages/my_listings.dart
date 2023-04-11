@@ -1,12 +1,10 @@
 // ignore_for_file: avoid_init_to_null
 
 import 'package:auction_mobile_app/elements.dart';
-import 'package:auction_mobile_app/models/ended_items_model.dart';
 import 'package:auction_mobile_app/pages/ended_item_detail.dart';
 import 'package:auction_mobile_app/pages/item_detail.dart';
 import 'package:auction_mobile_app/pages/login.dart';
 import 'package:flutter/material.dart';
-
 import 'package:auction_mobile_app/models/items_model.dart';
 import 'package:auction_mobile_app/services/api_service.dart';
 import 'package:auction_mobile_app/constants.dart';
@@ -22,9 +20,9 @@ class MyListings extends StatefulWidget {
 
 class _MyListingsState extends State<MyListings> {
   late List<ItemsModel>? _itemsModel = [];
-  late List<EndedItemsModel>? _endedItemsModel = [];
+  late List<ItemsModel>? _endedItemsModel = [];
   late List<ItemsModel>? _itemsBidOnByMe = [];
-  late List<EndedItemsModel>? _endedItemsBidOnByMe = [];
+  late List<ItemsModel>? _endedItemsBidOnByMe = [];
   late int? accountId = null;
   late int? myAccountId = null;
   late String? token = null;
@@ -56,7 +54,7 @@ class _MyListingsState extends State<MyListings> {
         token,
         true,
       ))
-          .cast<EndedItemsModel>();
+          .cast<ItemsModel>();
       if (widget.accountId == null) {
         seller = true;
         if (token != null) {
@@ -71,7 +69,7 @@ class _MyListingsState extends State<MyListings> {
             token!,
             true,
           ))
-              .cast<EndedItemsModel>();
+              .cast<ItemsModel>();
         }
       }
     }
@@ -251,17 +249,16 @@ class _MyListingsState extends State<MyListings> {
                                                             snapshot.data ==
                                                                     true
                                                                 ? 'You'
-                                                                : item.buyerId !=
+                                                                : item.buyer !=
                                                                         null
-                                                                    ? item
-                                                                        .buyerId
+                                                                    ? item.buyer
                                                                         .toString()
                                                                     : seller
                                                                         ? ''
                                                                         : 'Not You',
-                                                            style: item.sellerId ==
+                                                            style: item.seller ==
                                                                         myAccountId &&
-                                                                    item.buyerId !=
+                                                                    item.buyer !=
                                                                         null
                                                                 ? const TextStyle(
                                                                     decoration:
@@ -276,23 +273,22 @@ class _MyListingsState extends State<MyListings> {
                                                         }
                                                       },
                                                     ),
-                                                    onTap: item.buyerId ==
-                                                            myAccountId
-                                                        ? null
-                                                        : item.sellerId !=
+                                                    onTap:
+                                                        item.buyer ==
                                                                 myAccountId
                                                             ? null
-                                                            : item.buyerId !=
-                                                                    null
-                                                                ? () async {
-                                                                    await Navigator.of(
-                                                                            context)
-                                                                        .push(MaterialPageRoute(
+                                                            : item.seller !=
+                                                                    myAccountId
+                                                                ? null
+                                                                : item.buyer !=
+                                                                        null
+                                                                    ? () async {
+                                                                        await Navigator.of(context).push(MaterialPageRoute(
                                                                             builder: (_) =>
-                                                                                MyListings(accountId: item.buyerId)));
-                                                                    _getData();
-                                                                  }
-                                                                : null)
+                                                                                MyListings(accountId: item.buyer)));
+                                                                        _getData();
+                                                                      }
+                                                                    : null)
                                               ],
                                             ),
                                           )
@@ -404,18 +400,18 @@ class _MyListingsState extends State<MyListings> {
                                                             snapshot.data ==
                                                                     true
                                                                 ? 'You'
-                                                                : endedItem.buyerId !=
+                                                                : endedItem.buyer !=
                                                                         null
                                                                     ? endedItem
-                                                                        .buyerId
+                                                                        .buyer
                                                                         .toString()
                                                                     : seller
                                                                         ? ''
                                                                         : 'Not You',
-                                                            style: endedItem.sellerId ==
+                                                            style: endedItem.seller ==
                                                                         myAccountId &&
                                                                     endedItem
-                                                                            .buyerId !=
+                                                                            .buyer !=
                                                                         null
                                                                 ? const TextStyle(
                                                                     decoration:
@@ -430,20 +426,20 @@ class _MyListingsState extends State<MyListings> {
                                                         }
                                                       },
                                                     ),
-                                                    onTap: endedItem.buyerId ==
+                                                    onTap: endedItem.buyer ==
                                                             myAccountId
                                                         ? null
-                                                        : endedItem.sellerId !=
+                                                        : endedItem.seller !=
                                                                 myAccountId
                                                             ? null
-                                                            : endedItem.buyerId !=
+                                                            : endedItem.buyer !=
                                                                     null
                                                                 ? () async {
                                                                     await Navigator.of(
                                                                             context)
                                                                         .push(MaterialPageRoute(
                                                                             builder: (_) =>
-                                                                                MyListings(accountId: endedItem.buyerId)));
+                                                                                MyListings(accountId: endedItem.buyer)));
                                                                     _getData();
                                                                   }
                                                                 : null),
@@ -539,14 +535,14 @@ class _MyListingsState extends State<MyListings> {
                                                           .toString())),
                                                       DataCell(
                                                         Text(
-                                                          item.buyerId != null
+                                                          item.buyer != null
                                                               ? 'You'
                                                               : 'Not You',
                                                         ),
                                                       ),
                                                       DataCell(
                                                           Text(
-                                                            item.sellerId
+                                                            item.seller
                                                                 .toString(),
                                                             style:
                                                                 const TextStyle(
@@ -565,7 +561,7 @@ class _MyListingsState extends State<MyListings> {
                                                                     builder: (_) =>
                                                                         MyListings(
                                                                           accountId:
-                                                                              item.sellerId,
+                                                                              item.seller,
                                                                         )));
                                                         _getData();
                                                       }),
@@ -657,7 +653,7 @@ class _MyListingsState extends State<MyListings> {
                                                           .toString())),
                                                       DataCell(
                                                         Text(
-                                                          endedItem.buyerId !=
+                                                          endedItem.buyer !=
                                                                   null
                                                               ? 'You'
                                                               : 'Not You',
@@ -665,7 +661,7 @@ class _MyListingsState extends State<MyListings> {
                                                       ),
                                                       DataCell(
                                                           Text(
-                                                            endedItem.sellerId
+                                                            endedItem.seller
                                                                 .toString(),
                                                             style:
                                                                 const TextStyle(
@@ -684,7 +680,7 @@ class _MyListingsState extends State<MyListings> {
                                                                     builder: (_) =>
                                                                         MyListings(
                                                                           accountId:
-                                                                              endedItem.sellerId,
+                                                                              endedItem.seller,
                                                                         )));
                                                         _getData();
                                                       }),

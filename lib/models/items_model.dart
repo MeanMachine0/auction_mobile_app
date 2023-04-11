@@ -19,9 +19,12 @@ class ItemsModel {
     required this.description,
     required this.numBids,
     required this.bidders,
+    required this.ended,
     required this.sold,
-    this.buyerId,
-    required this.sellerId,
+    this.buyer,
+    required this.seller,
+    this.destinationAddress,
+    this.transactionSuccess,
   });
 
   int id;
@@ -35,9 +38,12 @@ class ItemsModel {
   String description;
   int numBids;
   String bidders;
+  bool ended;
   bool sold;
-  dynamic buyerId;
-  int sellerId;
+  int? buyer;
+  int seller;
+  String? destinationAddress;
+  bool? transactionSuccess;
 
   factory ItemsModel.fromJson(Map<String, dynamic> json) => ItemsModel(
         id: json["id"],
@@ -51,9 +57,12 @@ class ItemsModel {
         description: json["description"],
         numBids: json["numBids"],
         bidders: json["bidders"],
+        ended: json["ended"],
         sold: json["sold"],
-        buyerId: json["buyerId"],
-        sellerId: json["sellerId"],
+        buyer: json["buyer"],
+        seller: json["seller"],
+        destinationAddress: json["destinationAddress"],
+        transactionSuccess: json["transactionSuccess"],
       );
 
   Map<String, dynamic> toJson() => {
@@ -69,7 +78,9 @@ class ItemsModel {
         "numBids": numBids,
         "bidders": bidders,
         "sold": sold,
-        "buyerId": buyerId,
-        "sellerId": sellerId,
+        "buyer": buyer,
+        "seller": seller,
+        "destinationAddress": destinationAddress,
+        "transactionSuccess": transactionSuccess,
       };
 }

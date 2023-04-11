@@ -1,18 +1,6 @@
 import 'package:flutter/material.dart';
 
-class ApiConstants {
-  static String baseUrl = 'http://10.0.2.2:8000/api/';
-  static String usersEndpoint = 'users/';
-  static String accountsEndpoint = 'accounts/';
-  static String itemsEndpoint = 'items/';
-  static String endedItemsEndpoint = 'endedItems/';
-  static String loginEndpoint = 'login/';
-  static String logoutEndpoint = 'logout/';
-  static String createItemEndpoint = '${itemsEndpoint}create/';
-  static String bidEndpoint = 'bid/';
-  static String amITheBuyerEndpoint = 'amITheBuyer/';
-  static String accountBidsEndpoint = 'accountBids/';
-}
+class ApiConstants {}
 
 class Colours {
   static const lightBlue = Color.fromARGB(255, 173, 216, 230);
