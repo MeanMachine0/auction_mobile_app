@@ -39,19 +39,6 @@ class ApiService {
     }
   }
 
-  Future<List<UserModel>?> getUsers() async {
-    try {
-      var url = Uri.parse('${baseUrl}users/');
-      var response = await http.get(url);
-      if (response.statusCode == 200) {
-        List<UserModel> _model = userModelFromJson(response.body);
-        return _model;
-      }
-    } catch (e) {
-      log(e.toString());
-    }
-  }
-
   Future<AccountsModel?> getAccount(int accountId) async {
     try {
       var url = Uri.parse('${baseUrl}accounts/$accountId/');
@@ -59,19 +46,6 @@ class ApiService {
       if (response.statusCode == 200) {
         var jsonResponse = jsonDecode(response.body);
         AccountsModel _model = AccountsModel.fromJson(jsonResponse);
-        return _model;
-      }
-    } catch (e) {
-      log(e.toString());
-    }
-  }
-
-  Future<List<AccountsModel>?> getAccounts() async {
-    try {
-      var url = Uri.parse('${baseUrl}accounts/');
-      var response = await http.get(url);
-      if (response.statusCode == 200) {
-        List<AccountsModel> _model = accountsModelFromJson(response.body);
         return _model;
       }
     } catch (e) {
@@ -202,12 +176,12 @@ class ApiService {
       );
       if (response.statusCode == 200) {
         try {
+          List<ItemsModel> _model = itemsModelFromJson(response.body);
+          return _model;
+        } catch (e) {
           var jsonResponse = json.decode(response.body);
           ItemsModel _item = ItemsModel.fromJson(jsonResponse);
           List<ItemsModel> _model = [_item];
-          return _model;
-        } catch (e) {
-          List<ItemsModel> _model = itemsModelFromJson(response.body);
           return _model;
         }
       }
@@ -243,12 +217,12 @@ class ApiService {
       );
       if (response.statusCode == 200) {
         try {
+          List<ItemsModel> _model = itemsModelFromJson(response.body);
+          return _model;
+        } catch (e) {
           var jsonResponse = json.decode(response.body);
           ItemsModel _item = ItemsModel.fromJson(jsonResponse);
           List<ItemsModel> _model = [_item];
-          return _model;
-        } catch (e) {
-          List<ItemsModel> _model = itemsModelFromJson(response.body);
           return _model;
         }
       }
