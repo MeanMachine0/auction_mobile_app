@@ -50,14 +50,27 @@ class _ListAnItemState extends State<ListAnItem> {
   TextEditingController bidIncrementController = TextEditingController();
   TextEditingController descriptionController = TextEditingController();
   TextEditingController endTimeController = TextEditingController();
-  String conditionOption = '';
+  String conditionChoice = '';
   List<String> conditionOptions = [
     'New',
     'Excellent',
     'Good',
     'Used',
     'Refurbished',
-    'Parts Only'
+    'Parts Only',
+  ];
+  String categoryChoice = '';
+  List<String> categories = [
+    'Business, Office & Industrial Supplies',
+    'Health & Beauty',
+    'Fashion',
+    'Electronics',
+    'Home Garden',
+    'Sports, Hobbies & Leisure',
+    'Motors',
+    'Collectables & Art',
+    'Media',
+    'Other',
   ];
   bool acceptReturns = false;
   DateTime endDate = DateTime(0);
@@ -231,7 +244,7 @@ class _ListAnItemState extends State<ListAnItem> {
                         ),
                         onChanged: (String? newValue) {
                           setState(() {
-                            conditionOption = newValue!;
+                            conditionChoice = newValue!;
                           });
                         },
                         validator: (condition) {
@@ -321,14 +334,43 @@ class _ListAnItemState extends State<ListAnItem> {
                         ),
                       ),
                       const SizedBox(height: 13),
+                      DropdownButtonFormField<String>(
+                        decoration: const InputDecoration(
+                          errorBorder: OutlineInputBorder(
+                              borderSide: BorderSide(color: Colours.red)),
+                          errorStyle: TextStyle(color: Colours.red),
+                          label: Text('Category'),
+                        ),
+                        onChanged: (String? newValue) {
+                          setState(() {
+                            categoryChoice = newValue!;
+                          });
+                        },
+                        validator: (category) {
+                          if (!categories.contains(category)) {
+                            return 'Please select a category';
+                          }
+                          return null;
+                        },
+                        items: categories
+                            .map<DropdownMenuItem<String>>((String value) {
+                          return DropdownMenuItem<String>(
+                            value: value,
+                            child: Text(value),
+                          );
+                        }).toList(),
+                      ),
+                      const SizedBox(height: 13),
                       ElevatedButton(
                           onPressed: () async {
                             listFormKey.currentState!.save();
                             if (listFormKey.currentState!.validate()) {
                               ApiService apiService = ApiService();
                               try {
-                                conditionOption =
-                                    Dicts.conditions[conditionOption]!;
+                                conditionChoice =
+                                    Dicts.conditions[conditionChoice]!;
+                                categoryChoice =
+                                    Dicts.categories[categoryChoice]!;
                                 // ignore: empty_catches
                               } catch (e) {}
                               var hoursMinutes =
@@ -344,10 +386,11 @@ class _ListAnItemState extends State<ListAnItem> {
                                 double.parse(startingPriceController.text),
                                 double.parse(postageCostController.text),
                                 double.parse(bidIncrementController.text),
-                                conditionOption,
+                                conditionChoice,
                                 endDateTime,
                                 acceptReturns,
                                 descriptionController.text,
+                                categoryChoice,
                                 accountId!,
                                 token!,
                               );

@@ -99,11 +99,12 @@ class ApiService {
     DateTime endDateTime,
     bool acceptsReturns,
     String description,
+    String category,
     int sellerId,
     String token,
   ) async {
     try {
-      var url = Uri.parse('${baseUrl}createItem/');
+      var url = Uri.parse('${baseUrl}items/create/');
       Map<String, dynamic> data = {
         'name': name,
         'price': price,
@@ -113,7 +114,8 @@ class ApiService {
         'endDateTime': endDateTime.toIso8601String(),
         'acceptsReturns': acceptsReturns,
         'description': description,
-        'sellerId': sellerId,
+        'category': category,
+        'seller': sellerId,
       };
       var response = await http.post(url, body: json.encode(data), headers: {
         'Authorization': 'Token $token',
@@ -130,7 +132,7 @@ class ApiService {
   Future<String> submitBid(
       double bid, int itemId, int accountId, String token) async {
     try {
-      var url = Uri.parse('${baseUrl}items/$itemId/bid');
+      var url = Uri.parse('${baseUrl}items/$itemId/bid/');
       Map<String, dynamic> data = {
         'accountId': accountId,
         'bid': bid,
@@ -141,7 +143,7 @@ class ApiService {
       });
       if (response.statusCode == 200) {
         var body = json.decode(response.body);
-        int buyerId = body['buyerId'];
+        int buyerId = body['buyer'];
         double price = double.parse(body['price']);
         double minBid = price + double.parse(body['bidIncrement']);
         if (price == bid && buyerId == accountId) {

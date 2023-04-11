@@ -32,4 +32,17 @@ class Dicts {
     'Refurbished': 'refurbished',
     'Parts Only': 'partsOnly',
   };
+
+  static Map<String, String> categories = {
+    'Business, Office & Industrial Supplies': 'bOIS',
+    'Health & Beauty': 'hB',
+    'Fashion': 'f',
+    'Electronics': 'e',
+    'Home Garden': 'hG',
+    'Sports, Hobbies & Leisure': 'sHL',
+    'Motors': 'mt',
+    'Collectables & Art': 'cA',
+    'Media': 'mda',
+    'Other': 'o',
+  };
 }
