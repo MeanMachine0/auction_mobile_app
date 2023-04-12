@@ -1,3 +1,4 @@
+import 'package:auction_mobile_app/elements.dart';
 import 'package:auction_mobile_app/pages/login.dart';
 import 'package:flutter/material.dart';
 
@@ -95,7 +96,7 @@ class _BrowseState extends State<Browse> {
                   return Container(
                     margin: const EdgeInsets.symmetric(
                       horizontal: 20,
-                      vertical: 2,
+                      vertical: 6,
                     ),
                     child: ElevatedButton(
                       style: ButtonStyle(
@@ -106,16 +107,36 @@ class _BrowseState extends State<Browse> {
                       child: Row(
                         children: [
                           Flexible(
-                            child: Text(
-                              '${_itemsModel![index].name} - £${_itemsModel![index].price.toString()}',
-                              overflow: TextOverflow.ellipsis,
-                              maxLines: 1,
-                              textAlign: TextAlign.start,
-                              style: const TextStyle(
-                                fontSize: 16,
-                                fontWeight: FontWeight.normal,
-                                color: Colours.lightGray,
-                              ),
+                            child: Column(
+                              children: [
+                                Row(
+                                  children: [
+                                    Flexible(
+                                      child: Text(_itemsModel![index].name,
+                                          overflow: TextOverflow.ellipsis,
+                                          maxLines: 1,
+                                          textAlign: TextAlign.start,
+                                          style: Elements.boldCardText),
+                                    ),
+                                  ],
+                                ),
+                                const SizedBox(height: 2),
+                                Row(
+                                  children: [
+                                    Flexible(
+                                      child: Text(
+                                          '£${_itemsModel![index].price}, '
+                                          '${_itemsModel![index].numBids} ${_itemsModel![index].numBids != 1 ? 'bids' : 'bid'}, '
+                                          '${_itemsModel![index].condition != 'partsOnly' ? _itemsModel![index].condition : 'parts only'}, '
+                                          'listed by ${accountId == _itemsModel![index].seller ? 'you' : _itemsModel![index].seller}',
+                                          overflow: TextOverflow.ellipsis,
+                                          maxLines: 1,
+                                          textAlign: TextAlign.start,
+                                          style: Elements.cardText),
+                                    ),
+                                  ],
+                                ),
+                              ],
                             ),
                           ),
                         ],

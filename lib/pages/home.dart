@@ -1,3 +1,4 @@
+import 'package:auction_mobile_app/elements.dart';
 import 'package:auction_mobile_app/pages/login.dart';
 import 'package:flutter/material.dart';
 
@@ -100,37 +101,56 @@ class _HomeState extends State<Home> {
                   return Container(
                     margin: const EdgeInsets.symmetric(
                       horizontal: 20,
-                      vertical: 2,
+                      vertical: 6,
                     ),
                     child: ElevatedButton(
                       style: ButtonStyle(
                         backgroundColor:
                             MaterialStateProperty.resolveWith<Color?>(
-                          (states) => Colours.darkGray,
-                        ),
+                                (states) => Colours.darkGray),
                       ),
-                      onPressed: () {
-                        Navigator.of(context).push(MaterialPageRoute(
-                          builder: (_) => EndedItemDetail(endedItemId: item.id),
-                        ));
-                      },
                       child: Row(
                         children: [
                           Flexible(
-                            child: Text(
-                              '${item.name} - £${item.price.toString()}',
-                              textAlign: TextAlign.start,
-                              overflow: TextOverflow.ellipsis,
-                              maxLines: 1,
-                              style: const TextStyle(
-                                fontSize: 16,
-                                fontWeight: FontWeight.normal,
-                                color: Colours.lightGray,
-                              ),
+                            child: Column(
+                              children: [
+                                Row(
+                                  children: [
+                                    Flexible(
+                                      child: Text(_EndedItemsModel![index].name,
+                                          overflow: TextOverflow.ellipsis,
+                                          maxLines: 1,
+                                          textAlign: TextAlign.start,
+                                          style: Elements.boldCardText),
+                                    ),
+                                  ],
+                                ),
+                                const SizedBox(height: 2),
+                                Row(
+                                  children: [
+                                    Flexible(
+                                      child: Text(
+                                          '£${_EndedItemsModel![index].price}, '
+                                          '${_EndedItemsModel![index].numBids} ${_EndedItemsModel![index].numBids != 1 ? 'bids' : 'bid'}, '
+                                          '${_EndedItemsModel![index].condition != 'partsOnly' ? _EndedItemsModel![index].condition : 'parts only'}, '
+                                          'listed by ${accountId == _EndedItemsModel![index].seller ? 'you' : _EndedItemsModel![index].seller}',
+                                          overflow: TextOverflow.ellipsis,
+                                          maxLines: 1,
+                                          textAlign: TextAlign.start,
+                                          style: Elements.cardText),
+                                    ),
+                                  ],
+                                ),
+                              ],
                             ),
                           ),
                         ],
                       ),
+                      onPressed: () {
+                        Navigator.of(context).push(MaterialPageRoute(
+                            builder: (_) => EndedItemDetail(
+                                endedItemId: _EndedItemsModel![index].id)));
+                      },
                     ),
                   );
                 },
