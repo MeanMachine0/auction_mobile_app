@@ -312,7 +312,9 @@ class _ItemDetailState extends State<ItemDetail> {
                                         _getData();
                                       }
                                     },
-                                    child: const Text('Submit Bid'),
+                                    child: const Text('Submit Bid',
+                                        style: TextStyle(
+                                            color: Colours.lightGray)),
                                   ),
                                   Padding(
                                     padding: const EdgeInsets.all(20),

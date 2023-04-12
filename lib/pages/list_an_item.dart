@@ -162,9 +162,6 @@ class _ListAnItemState extends State<ListAnItem> {
                             return null;
                           },
                           decoration: const InputDecoration(
-                            errorBorder: OutlineInputBorder(
-                                borderSide: BorderSide(color: Colours.red)),
-                            errorStyle: TextStyle(color: Colours.red),
                             label: Text('Item name'),
                           )),
                       const SizedBox(height: 13),
@@ -184,9 +181,6 @@ class _ListAnItemState extends State<ListAnItem> {
                             return null;
                           },
                           decoration: const InputDecoration(
-                            errorBorder: OutlineInputBorder(
-                                borderSide: BorderSide(color: Colours.red)),
-                            errorStyle: TextStyle(color: Colours.red),
                             label: Text('Starting Price'),
                             prefix: Text('£'),
                           )),
@@ -205,9 +199,6 @@ class _ListAnItemState extends State<ListAnItem> {
                             return null;
                           },
                           decoration: const InputDecoration(
-                            errorBorder: OutlineInputBorder(
-                                borderSide: BorderSide(color: Colours.red)),
-                            errorStyle: TextStyle(color: Colours.red),
                             label: Text('P&P'),
                             prefix: Text('£'),
                           )),
@@ -228,18 +219,12 @@ class _ListAnItemState extends State<ListAnItem> {
                             return null;
                           },
                           decoration: const InputDecoration(
-                            errorBorder: OutlineInputBorder(
-                                borderSide: BorderSide(color: Colours.red)),
-                            errorStyle: TextStyle(color: Colours.red),
                             label: Text('Bid Increment'),
                             prefix: Text('£'),
                           )),
                       const SizedBox(height: 13),
                       DropdownButtonFormField<String>(
                         decoration: const InputDecoration(
-                          errorBorder: OutlineInputBorder(
-                              borderSide: BorderSide(color: Colours.red)),
-                          errorStyle: TextStyle(color: Colours.red),
                           label: Text('Condition'),
                         ),
                         onChanged: (String? newValue) {
@@ -296,17 +281,12 @@ class _ListAnItemState extends State<ListAnItem> {
                             return null;
                           },
                           decoration: const InputDecoration(
-                            errorBorder: OutlineInputBorder(
-                                borderSide: BorderSide(color: Colours.red)),
-                            errorStyle: TextStyle(color: Colours.red),
                             label: Text('End Time (HH:mm)'),
                           )),
                       const SizedBox(height: 13),
                       CheckboxListTile(
-                        activeColor: Colours.deepGray,
+                        activeColor: Colours.darkGray,
                         checkColor: Colours.lightGray,
-                        selectedTileColor: Colors.transparent,
-                        tileColor: Colours.darkGray,
                         title: const Text('Accept Returns?'),
                         value: acceptReturns,
                         onChanged: (value) {
@@ -327,18 +307,12 @@ class _ListAnItemState extends State<ListAnItem> {
                           return null;
                         },
                         decoration: const InputDecoration(
-                          errorBorder: OutlineInputBorder(
-                              borderSide: BorderSide(color: Colours.red)),
-                          errorStyle: TextStyle(color: Colours.red),
                           label: Text('Description'),
                         ),
                       ),
                       const SizedBox(height: 13),
                       DropdownButtonFormField<String>(
                         decoration: const InputDecoration(
-                          errorBorder: OutlineInputBorder(
-                              borderSide: BorderSide(color: Colours.red)),
-                          errorStyle: TextStyle(color: Colours.red),
                           label: Text('Category'),
                         ),
                         onChanged: (String? newValue) {
@@ -414,7 +388,10 @@ class _ListAnItemState extends State<ListAnItem> {
                                   builder: (_) => ItemDetail(itemId: itemId)));
                             }
                           },
-                          child: const Text('List Item')),
+                          child: const Text(
+                            'List Item',
+                            style: TextStyle(color: Colours.lightGray),
+                          )),
                     ],
                   ),
                 ),
