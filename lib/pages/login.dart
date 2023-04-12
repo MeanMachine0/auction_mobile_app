@@ -147,7 +147,8 @@ class _LoginState extends State<Login> {
                                   _getData();
                                 }
                               },
-                              child: const Text('Login')),
+                              child: const Text('Login',
+                                  style: TextStyle(color: Colours.lightGray))),
                         ])))
             : Center(
                 child: Text('Logged in as $username'),
