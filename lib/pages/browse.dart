@@ -55,7 +55,9 @@ class _BrowseState extends State<Browse> {
     return Scaffold(
       appBar: AppBar(
           scrolledUnderElevation: 0,
-          title: const Text('Active Items'),
+          title: !widget._home
+              ? const Text('Active Items')
+              : const Text('Recently Sold Items'),
           actions: token != null
               ? [
                   Padding(

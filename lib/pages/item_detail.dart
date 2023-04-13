@@ -47,6 +47,7 @@ class _ItemDetailState extends State<ItemDetail> {
     IAmTheTopBidder = IAmTheSeller
         ? false
         : await apiService.amITheBuyer(itemModel!.id, token, false);
+
     setState(() {});
   }
 
@@ -129,7 +130,7 @@ class _ItemDetailState extends State<ItemDetail> {
                                   Row(
                                     children: [
                                       Text(
-                                        'Ends on ${formatDateTime(itemModel!.endDateTime)}',
+                                        '${!itemModel!.ended ? 'Ends' : 'Ended'} on ${formatDateTime(itemModel!.endDateTime)}',
                                         style: Elements.cardText,
                                       ),
                                     ],
@@ -170,7 +171,7 @@ class _ItemDetailState extends State<ItemDetail> {
                                                         null
                                                     ? [
                                                         Text(
-                                                          'Top Bidder: ${itemModel!.buyer}',
+                                                          '${!itemModel!.ended ? 'Top Bidder' : 'Buyer'}: ${itemModel!.buyer}',
                                                           style:
                                                               const TextStyle(
                                                             decoration:
@@ -184,8 +185,10 @@ class _ItemDetailState extends State<ItemDetail> {
                                                         ),
                                                       ]
                                                     : [
-                                                        const Text(
-                                                          'Top Bidder:',
+                                                        Text(
+                                                          !itemModel!.ended
+                                                              ? 'Top Bidder'
+                                                              : 'Buyer',
                                                           style:
                                                               Elements.cardText,
                                                         ),
@@ -194,15 +197,15 @@ class _ItemDetailState extends State<ItemDetail> {
                                             ),
                                           ]
                                         : IAmTheTopBidder
-                                            ? const [
+                                            ? [
                                                 Text(
-                                                  'Top Bidder: You',
+                                                  '${!itemModel!.ended ? 'Top Bidder' : 'Buyer'}: You',
                                                   style: Elements.cardText,
                                                 )
                                               ]
-                                            : const [
+                                            : [
                                                 Text(
-                                                  'Top Bidder: Not You',
+                                                  '${!itemModel!.ended ? 'Top Bidder' : 'Buyer'}: Not You',
                                                   style: Elements.cardText,
                                                 )
                                               ],
@@ -277,121 +280,109 @@ class _ItemDetailState extends State<ItemDetail> {
                     ),
                   ),
                   const SizedBox(height: 20),
-                  Column(
-                    children: itemModel!.ended
-                        ? []
-                        : [
-                            Form(
-                                key: bidFormKey,
-                                child: Center(
-                                  child: !IAmTheSeller && token != null
-                                      ? Column(
-                                          children: [
-                                            Padding(
-                                              padding:
-                                                  const EdgeInsets.symmetric(
-                                                      horizontal: 20),
-                                              child: Expanded(
-                                                flex: 0,
-                                                child: TextFormField(
-                                                  controller: bidController,
-                                                  keyboardType:
-                                                      const TextInputType
-                                                              .numberWithOptions(
-                                                          decimal: true),
-                                                  inputFormatters: [
-                                                    FilteringTextInputFormatter
-                                                        .allow(Regexes.money),
-                                                  ],
-                                                  decoration:
-                                                      const InputDecoration(
-                                                    prefix: Text('£'),
-                                                    label: Text('Your Bid'),
-                                                    errorBorder:
-                                                        OutlineInputBorder(
-                                                            borderSide:
-                                                                BorderSide(
-                                                                    color: Colours
-                                                                        .red)),
-                                                    errorStyle: TextStyle(
-                                                        color: Colours.red),
-                                                  ),
-                                                  validator: (bid) {
-                                                    double minBid = double
-                                                            .parse(itemModel!
-                                                                .price) +
-                                                        double.parse(itemModel!
-                                                            .bidIncrement);
-                                                    if (bid! == '') {
-                                                      return 'Please enter a bid.';
-                                                    } else if (double.parse(
-                                                            bid) <
-                                                        minBid) {
-                                                      return 'Could not submit bid; minimum bid is $minBid';
-                                                    }
-                                                    return null;
-                                                  },
-                                                ),
+                  SizedBox(
+                    child: itemModel!.ended
+                        ? null
+                        : Form(
+                            key: bidFormKey,
+                            child: Center(
+                              child: !IAmTheSeller && token != null
+                                  ? Column(
+                                      children: [
+                                        Padding(
+                                          padding: const EdgeInsets.symmetric(
+                                              horizontal: 20),
+                                          child: Expanded(
+                                            flex: 0,
+                                            child: TextFormField(
+                                              controller: bidController,
+                                              keyboardType: const TextInputType
+                                                      .numberWithOptions(
+                                                  decimal: true),
+                                              inputFormatters: [
+                                                FilteringTextInputFormatter
+                                                    .allow(Regexes.money),
+                                              ],
+                                              decoration: const InputDecoration(
+                                                prefix: Text('£'),
+                                                label: Text('Your Bid'),
+                                                errorBorder: OutlineInputBorder(
+                                                    borderSide: BorderSide(
+                                                        color: Colours.red)),
+                                                errorStyle: TextStyle(
+                                                    color: Colours.red),
                                               ),
-                                            ),
-                                            const SizedBox(height: 8),
-                                            ElevatedButton(
-                                              onPressed: () async {
-                                                if (bidFormKey.currentState!
-                                                        .validate() &&
-                                                    token != null) {
-                                                  ApiService apiService =
-                                                      ApiService();
-                                                  double bid = double.parse(
-                                                      bidController.text);
-                                                  message = await apiService
-                                                      .submitBid(
-                                                    bid,
-                                                    widget._itemId,
-                                                    accountId!,
-                                                    token!,
-                                                  );
-                                                  messageColour =
-                                                      Colours.lightGray;
-                                                  _getData();
+                                              validator: (bid) {
+                                                double minBid = double.parse(
+                                                        itemModel!.price) +
+                                                    double.parse(itemModel!
+                                                        .bidIncrement);
+                                                if (bid! == '') {
+                                                  return 'Please enter a bid.';
+                                                } else if (double.parse(bid) <
+                                                    minBid) {
+                                                  return 'Could not submit bid; minimum bid is $minBid';
                                                 }
+                                                return null;
                                               },
-                                              child: const Text('Submit Bid',
-                                                  style: TextStyle(
-                                                      color:
-                                                          Colours.lightGray)),
                                             ),
-                                            Padding(
-                                              padding: const EdgeInsets.all(20),
-                                              child: Column(
-                                                children: [
-                                                  Text(
-                                                    message,
-                                                    style: TextStyle(
-                                                        color: messageColour),
-                                                    textAlign: TextAlign.center,
-                                                  ),
-                                                ],
+                                          ),
+                                        ),
+                                        const SizedBox(height: 8),
+                                        ElevatedButton(
+                                          onPressed: () async {
+                                            if (bidFormKey.currentState!
+                                                    .validate() &&
+                                                token != null) {
+                                              ApiService apiService =
+                                                  ApiService();
+                                              double bid = double.parse(
+                                                  bidController.text);
+                                              message =
+                                                  await apiService.submitBid(
+                                                bid,
+                                                widget._itemId,
+                                                accountId!,
+                                                token!,
+                                              );
+                                              messageColour = Colours.lightGray;
+                                              _getData();
+                                            }
+                                          },
+                                          child: const Text('Submit Bid',
+                                              style: TextStyle(
+                                                  color: Colours.lightGray)),
+                                        ),
+                                        Padding(
+                                          padding: const EdgeInsets.all(20),
+                                          child: Column(
+                                            children: [
+                                              Text(
+                                                message,
+                                                style: TextStyle(
+                                                    color: messageColour),
+                                                textAlign: TextAlign.center,
                                               ),
-                                            )
+                                            ],
+                                          ),
+                                        )
+                                      ],
+                                    )
+                                  : token != null
+                                      ? Column(
+                                          children: const [
+                                            Text('You listed this item.'),
+                                            SizedBox(height: 20),
                                           ],
                                         )
-                                      : token != null
-                                          ? Column(
-                                              children: const [
-                                                Text('You listed this item.'),
-                                                SizedBox(height: 20),
-                                              ],
-                                            )
-                                          : Column(
-                                              children: const [
-                                                Text(
-                                                    'You must be logged in to bid on items.'),
-                                                SizedBox(height: 20),
-                                              ],
-                                            ),
-                                )),
-                          ],
+                                      : Column(
+                                          children: const [
+                                            Text(
+                                                'You must be logged in to bid on items.'),
+                                            SizedBox(height: 20),
+                                          ],
+                                        ),
+                            )),
                   )
                 ],
               ),
