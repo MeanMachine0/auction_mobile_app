@@ -1,4 +1,3 @@
-import 'package:auction_mobile_app/elements.dart';
 import 'package:auction_mobile_app/pages/login.dart';
 import 'package:flutter/material.dart';
 
@@ -17,6 +16,7 @@ class Browse extends StatefulWidget {
 
 class _BrowseState extends State<Browse> {
   late List<ItemsModel>? _itemsModel = [];
+  late List<ItemsModel>? items = [];
   late int? accountId = 0;
   late String? token = '';
   late String? username = '';
@@ -90,65 +90,115 @@ class _BrowseState extends State<Browse> {
             )
           : Padding(
               padding: const EdgeInsets.symmetric(vertical: 20),
-              child: ListView.builder(
-                itemCount: _itemsModel!.length,
-                itemBuilder: (context, index) {
-                  return Container(
-                    margin: const EdgeInsets.symmetric(
-                      horizontal: 20,
-                      vertical: 6,
-                    ),
-                    child: ElevatedButton(
-                      style: ButtonStyle(
-                        backgroundColor:
-                            MaterialStateProperty.resolveWith<Color?>(
-                                (states) => Colours.darkGray),
-                      ),
-                      child: Row(
-                        children: [
-                          Flexible(
-                            child: Column(
-                              children: [
-                                Row(
-                                  children: [
-                                    Flexible(
-                                      child: Text(_itemsModel![index].name,
-                                          overflow: TextOverflow.ellipsis,
-                                          maxLines: 1,
-                                          textAlign: TextAlign.start,
-                                          style: Elements.boldCardText),
-                                    ),
-                                  ],
+              child: Column(
+                children: [
+                  SizedBox(
+                    height: 50,
+                    child: ListView.builder(
+                        scrollDirection: Axis.horizontal,
+                        itemCount: 10,
+                        itemBuilder: (content, index) {
+                          return Padding(
+                              padding:
+                                  const EdgeInsets.symmetric(horizontal: 8),
+                              child: ElevatedButton(
+                                style: ButtonStyle(
+                                  backgroundColor:
+                                      MaterialStateProperty.resolveWith<Color?>(
+                                          (states) => Colours.darkGray),
                                 ),
-                                const SizedBox(height: 2),
-                                Row(
-                                  children: [
-                                    Flexible(
-                                      child: Text(
-                                          '£${_itemsModel![index].price}, '
-                                          '${_itemsModel![index].numBids} ${_itemsModel![index].numBids != 1 ? 'bids' : 'bid'}, '
-                                          '${_itemsModel![index].condition != 'partsOnly' ? _itemsModel![index].condition : 'parts only'}, '
-                                          'listed by ${accountId == _itemsModel![index].seller ? 'you' : _itemsModel![index].seller}',
-                                          overflow: TextOverflow.ellipsis,
-                                          maxLines: 1,
-                                          textAlign: TextAlign.start,
-                                          style: Elements.cardText),
-                                    ),
-                                  ],
+                                child: Text(
+                                  Lists.categories[index],
+                                  style:
+                                      const TextStyle(color: Colours.lightGray),
                                 ),
-                              ],
-                            ),
+                                onPressed: () {
+                                  items = _itemsModel!
+                                      .where((item) =>
+                                          item.category ==
+                                          Dicts.categories[
+                                              Lists.categories[index]])
+                                      .toList();
+                                  setState(() {});
+                                },
+                              ));
+                        }),
+                  ),
+                  const SizedBox(height: 20),
+                  Expanded(
+                    child: items!.isEmpty
+                        ? Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: const [Text('No Listings to View')])
+                        : ListView.builder(
+                            itemCount: items!.length,
+                            itemBuilder: (context, index) {
+                              return Padding(
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: 20,
+                                  vertical: 6,
+                                ),
+                                child: ElevatedButton(
+                                  style: ButtonStyle(
+                                    backgroundColor: MaterialStateProperty
+                                        .resolveWith<Color?>(
+                                            (states) => Colours.darkGray),
+                                  ),
+                                  child: Row(
+                                    children: [
+                                      Flexible(
+                                        child: Column(
+                                          children: [
+                                            Row(
+                                              children: [
+                                                Flexible(
+                                                  child: Text(
+                                                      items![index].name,
+                                                      overflow:
+                                                          TextOverflow.ellipsis,
+                                                      maxLines: 1,
+                                                      textAlign:
+                                                          TextAlign.start,
+                                                      style: Elements
+                                                          .boldCardText),
+                                                ),
+                                              ],
+                                            ),
+                                            const SizedBox(height: 2),
+                                            Row(
+                                              children: [
+                                                Flexible(
+                                                  child: Text(
+                                                      '£${items![index].price}, '
+                                                      '${items![index].numBids} ${items![index].numBids != 1 ? 'bids' : 'bid'}, '
+                                                      '${items![index].condition != 'partsOnly' ? items![index].condition : 'parts only'}, '
+                                                      'listed by ${accountId == items![index].seller ? 'you' : items![index].seller}',
+                                                      overflow:
+                                                          TextOverflow.ellipsis,
+                                                      maxLines: 1,
+                                                      textAlign:
+                                                          TextAlign.start,
+                                                      style: Elements.cardText),
+                                                ),
+                                              ],
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                  onPressed: () {
+                                    Navigator.of(context).push(
+                                        MaterialPageRoute(
+                                            builder: (_) => ItemDetail(
+                                                itemId: items![index].id)));
+                                  },
+                                ),
+                              );
+                            },
                           ),
-                        ],
-                      ),
-                      onPressed: () {
-                        Navigator.of(context).push(MaterialPageRoute(
-                            builder: (_) =>
-                                ItemDetail(itemId: _itemsModel![index].id)));
-                      },
-                    ),
-                  );
-                },
+                  ),
+                ],
               ),
             ),
     );
