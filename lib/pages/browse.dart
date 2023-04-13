@@ -21,6 +21,8 @@ class _BrowseState extends State<Browse> {
   late String? token = '';
   late String? username = '';
   late String? password = '';
+  int selectedIndex = 0;
+
   @override
   void initState() {
     super.initState();
@@ -34,6 +36,7 @@ class _BrowseState extends State<Browse> {
     username = prefs.getString('username');
     password = prefs.getString('password');
     _itemsModel = (await ApiService().getItems(false, false));
+    items = _itemsModel;
     setState(() {});
   }
 
@@ -92,44 +95,51 @@ class _BrowseState extends State<Browse> {
               padding: const EdgeInsets.symmetric(vertical: 20),
               child: Column(
                 children: [
-                  SizedBox(
-                    height: 50,
-                    child: ListView.builder(
-                        scrollDirection: Axis.horizontal,
-                        itemCount: 10,
-                        itemBuilder: (content, index) {
-                          return Padding(
-                              padding:
-                                  const EdgeInsets.symmetric(horizontal: 8),
-                              child: ElevatedButton(
-                                style: ButtonStyle(
-                                  backgroundColor:
-                                      MaterialStateProperty.resolveWith<Color?>(
-                                          (states) => Colours.darkGray),
-                                ),
-                                child: Text(
-                                  Lists.categories[index],
-                                  style:
-                                      const TextStyle(color: Colours.lightGray),
-                                ),
-                                onPressed: () {
-                                  items = _itemsModel!
-                                      .where((item) =>
-                                          item.category ==
-                                          Dicts.categories[
-                                              Lists.categories[index]])
-                                      .toList();
-                                  setState(() {});
-                                },
-                              ));
-                        }),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 5),
+                    child: SizedBox(
+                      height: 70,
+                      child: ListView.builder(
+                          scrollDirection: Axis.horizontal,
+                          itemCount: 11,
+                          itemBuilder: (content, index) {
+                            return Padding(
+                                padding: const EdgeInsets.fromLTRB(6, 0, 6, 10),
+                                child: ElevatedButton(
+                                  style: ButtonStyle(
+                                    backgroundColor: MaterialStateProperty
+                                        .resolveWith<Color?>((states) =>
+                                            selectedIndex == index
+                                                ? Colours.deepGray
+                                                : Colours.darkGray),
+                                  ),
+                                  child: Text(
+                                    Lists.categories[index],
+                                    style: const TextStyle(
+                                        color: Colours.lightGray),
+                                  ),
+                                  onPressed: () {
+                                    items = index == 0
+                                        ? _itemsModel!
+                                        : _itemsModel!
+                                            .where((item) =>
+                                                item.category ==
+                                                Dicts.categories[
+                                                    Lists.categories[index]])
+                                            .toList();
+                                    selectedIndex = index;
+                                    setState(() {});
+                                  },
+                                ));
+                          }),
+                    ),
                   ),
                   const SizedBox(height: 20),
                   Expanded(
                     child: items!.isEmpty
-                        ? Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: const [Text('No Listings to View')])
+                        ? const Center(
+                            child:
+                                Text('No Listings to View in this category.'))
                         : ListView.builder(
                             itemCount: items!.length,
                             itemBuilder: (context, index) {
