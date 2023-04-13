@@ -19,6 +19,21 @@ class Regexes {
   static var money = RegExp(r'^\d{0,7}\.?\d{0,2}');
 }
 
+class Lists {
+  static List<String> categories = [
+    'Business, Office & Industrial Supplies',
+    'Health & Beauty',
+    'Fashion',
+    'Electronics',
+    'Home Garden',
+    'Sports, Hobbies & Leisure',
+    'Motors',
+    'Collectables & Art',
+    'Media',
+    'Others',
+  ];
+}
+
 class Dicts {
   static Map<bool, String> toYesNo = {
     true: 'yes',
@@ -46,4 +61,30 @@ class Dicts {
     'Media': 'mda',
     'Other': 'o',
   };
+}
+
+class Elements {
+  static const cardHeader = TextStyle(
+    fontSize: 18,
+    fontWeight: FontWeight.bold,
+    color: Colours.lightGray,
+  );
+
+  static const subHeader = TextStyle(
+    fontSize: 20,
+    fontWeight: FontWeight.bold,
+    color: Colours.lightGray,
+  );
+
+  static const cardText = TextStyle(
+    fontSize: 16,
+    fontWeight: FontWeight.normal,
+    color: Colours.lightGray,
+  );
+
+  static const boldCardText = TextStyle(
+    fontSize: 16,
+    fontWeight: FontWeight.bold,
+    color: Colours.lightGray,
+  );
 }
