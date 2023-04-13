@@ -20,6 +20,16 @@ class Regexes {
 }
 
 class Lists {
+  static List<String> conditions = [
+    'All',
+    'New',
+    'Excellent',
+    'Good',
+    'Used',
+    'Refurbished',
+    'Parts Only',
+  ];
+
   static List<String> categories = [
     'All',
     'Business, Office & Industrial Supplies',

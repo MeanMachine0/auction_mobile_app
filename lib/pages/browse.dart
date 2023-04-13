@@ -24,7 +24,8 @@ class _BrowseState extends State<Browse> {
   late String? token = '';
   late String? username = '';
   late String? password = '';
-  int selectedIndex = 0;
+  int categoryIndex = 0;
+  int filterIndex = 0;
 
   @override
   void initState() {
@@ -105,7 +106,7 @@ class _BrowseState extends State<Browse> {
                     height: 70,
                     child: ListView.builder(
                         scrollDirection: Axis.horizontal,
-                        itemCount: 11,
+                        itemCount: Lists.categories.length,
                         itemBuilder: (content, index) {
                           return Padding(
                               padding: const EdgeInsets.fromLTRB(6, 0, 6, 10),
@@ -113,7 +114,7 @@ class _BrowseState extends State<Browse> {
                                 style: ButtonStyle(
                                   backgroundColor:
                                       MaterialStateProperty.resolveWith<Color?>(
-                                          (states) => selectedIndex == index
+                                          (states) => categoryIndex == index
                                               ? Colours.deepGray
                                               : Colours.darkGray),
                                 ),
@@ -123,15 +124,95 @@ class _BrowseState extends State<Browse> {
                                       const TextStyle(color: Colours.lightGray),
                                 ),
                                 onPressed: () {
-                                  items = index == 0
+                                  categoryIndex = index;
+                                  items = categoryIndex == 0 && filterIndex == 0
                                       ? _itemsModel!
-                                      : _itemsModel!
-                                          .where((item) =>
-                                              item.category ==
-                                              Dicts.categories[
-                                                  Lists.categories[index]])
-                                          .toList();
-                                  selectedIndex = index;
+                                      : filterIndex == 0
+                                          ? _itemsModel!
+                                              .where((item) =>
+                                                  item.category ==
+                                                  Dicts.categories[
+                                                      Lists.categories[
+                                                          categoryIndex]])
+                                              .toList()
+                                          : categoryIndex == 0
+                                              ? _itemsModel!
+                                                  .where((item) =>
+                                                      item.condition ==
+                                                      Dicts.conditions[
+                                                          Lists.conditions[
+                                                              filterIndex]])
+                                                  .toList()
+                                              : _itemsModel!
+                                                  .where((item) =>
+                                                      item.category ==
+                                                          Dicts.categories[Lists
+                                                                  .categories[
+                                                              categoryIndex]] &&
+                                                      item.condition ==
+                                                          Dicts.conditions[Lists
+                                                              .conditions[filterIndex]])
+                                                  .toList();
+                                  setState(() {});
+                                },
+                              ));
+                        }),
+                  ),
+                ),
+                const SizedBox(height: 0),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 5),
+                  child: SizedBox(
+                    height: 55,
+                    child: ListView.builder(
+                        scrollDirection: Axis.horizontal,
+                        itemCount: Lists.conditions.length,
+                        itemBuilder: (content, index) {
+                          return Padding(
+                              padding: const EdgeInsets.fromLTRB(6, 0, 6, 10),
+                              child: ElevatedButton(
+                                style: ButtonStyle(
+                                  backgroundColor:
+                                      MaterialStateProperty.resolveWith<Color?>(
+                                          (states) => filterIndex == index
+                                              ? Colours.deepGray
+                                              : Colours.darkGray),
+                                ),
+                                child: Text(
+                                  Lists.conditions[index],
+                                  style:
+                                      const TextStyle(color: Colours.lightGray),
+                                ),
+                                onPressed: () {
+                                  filterIndex = index;
+                                  items = categoryIndex == 0 && filterIndex == 0
+                                      ? _itemsModel!
+                                      : filterIndex == 0
+                                          ? _itemsModel!
+                                              .where((item) =>
+                                                  item.category ==
+                                                  Dicts.categories[
+                                                      Lists.categories[
+                                                          categoryIndex]])
+                                              .toList()
+                                          : categoryIndex == 0
+                                              ? _itemsModel!
+                                                  .where((item) =>
+                                                      item.condition ==
+                                                      Dicts.conditions[
+                                                          Lists.conditions[
+                                                              filterIndex]])
+                                                  .toList()
+                                              : _itemsModel!
+                                                  .where((item) =>
+                                                      item.category ==
+                                                          Dicts.categories[Lists
+                                                                  .categories[
+                                                              categoryIndex]] &&
+                                                      item.condition ==
+                                                          Dicts.conditions[Lists
+                                                              .conditions[filterIndex]])
+                                                  .toList();
                                   setState(() {});
                                 },
                               ));
@@ -142,7 +223,8 @@ class _BrowseState extends State<Browse> {
                 Expanded(
                   child: items!.isEmpty
                       ? const Center(
-                          child: Text('No Listings to View in this category.'))
+                          child: Text(
+                              'No Listings to View in this category-condition.'))
                       : ListView.builder(
                           itemCount: items!.length,
                           itemBuilder: (context, index) {
