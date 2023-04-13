@@ -368,205 +368,213 @@ class _MyListingsState extends State<MyListings> {
                                         ),
                                   isExpanded: endedItemsExpanded,
                                 ),
-                                ExpansionPanel(
-                                  canTapOnHeader: true,
-                                  backgroundColor: Colours.deepGray,
-                                  headerBuilder:
-                                      (BuildContext context, bool isExpanded) {
-                                    return const ListTile(
-                                      title: Text(
-                                          'Active Listings Bid on by Me',
-                                          style: Elements.subHeader),
-                                    );
-                                  },
-                                  body: _itemsBidOnByMe!.isEmpty
-                                      ? const Center(
-                                          child: Text('No Listings to View.'))
-                                      : ListView.builder(
-                                          physics:
-                                              const NeverScrollableScrollPhysics(),
-                                          shrinkWrap: true,
-                                          itemCount: _itemsBidOnByMe!.length,
-                                          itemBuilder: (context, index) {
-                                            return Container(
-                                              margin:
-                                                  const EdgeInsets.symmetric(
-                                                vertical: 6,
-                                              ),
-                                              child: ElevatedButton(
-                                                style: ButtonStyle(
-                                                  backgroundColor:
-                                                      MaterialStateProperty
-                                                          .resolveWith<Color?>(
-                                                              (states) => Colours
-                                                                  .darkGray),
+                                if (widget.accountId == null)
+                                  ExpansionPanel(
+                                    canTapOnHeader: true,
+                                    backgroundColor: Colours.deepGray,
+                                    headerBuilder: (BuildContext context,
+                                        bool isExpanded) {
+                                      return const ListTile(
+                                        title: Text(
+                                            'Active Listings Bid on by Me',
+                                            style: Elements.subHeader),
+                                      );
+                                    },
+                                    body: _itemsBidOnByMe!.isEmpty
+                                        ? const Center(
+                                            child: Text('No Listings to View.'))
+                                        : ListView.builder(
+                                            physics:
+                                                const NeverScrollableScrollPhysics(),
+                                            shrinkWrap: true,
+                                            itemCount: _itemsBidOnByMe!.length,
+                                            itemBuilder: (context, index) {
+                                              return Container(
+                                                margin:
+                                                    const EdgeInsets.symmetric(
+                                                  vertical: 6,
                                                 ),
-                                                child: Row(
-                                                  children: [
-                                                    Flexible(
-                                                      child: Column(
-                                                        children: [
-                                                          Row(
-                                                            children: [
-                                                              Flexible(
-                                                                child: Text(
+                                                child: ElevatedButton(
+                                                  style: ButtonStyle(
+                                                    backgroundColor:
+                                                        MaterialStateProperty
+                                                            .resolveWith<
+                                                                    Color?>(
+                                                                (states) => Colours
+                                                                    .darkGray),
+                                                  ),
+                                                  child: Row(
+                                                    children: [
+                                                      Flexible(
+                                                        child: Column(
+                                                          children: [
+                                                            Row(
+                                                              children: [
+                                                                Flexible(
+                                                                  child: Text(
+                                                                      _itemsBidOnByMe![
+                                                                              index]
+                                                                          .name,
+                                                                      overflow:
+                                                                          TextOverflow
+                                                                              .ellipsis,
+                                                                      maxLines:
+                                                                          1,
+                                                                      textAlign:
+                                                                          TextAlign
+                                                                              .start,
+                                                                      style: Elements
+                                                                          .boldCardText),
+                                                                ),
+                                                              ],
+                                                            ),
+                                                            const SizedBox(
+                                                                height: 2),
+                                                            Row(
+                                                              children: [
+                                                                Flexible(
+                                                                  child: Text(
+                                                                      '£${_itemsBidOnByMe![index].price}, '
+                                                                      '${_itemsBidOnByMe![index].numBids} ${_itemsBidOnByMe![index].numBids != 1 ? 'bids' : 'bid'}, '
+                                                                      '${_itemsBidOnByMe![index].condition != 'partsOnly' ? _itemsBidOnByMe![index].condition : 'parts only'}, '
+                                                                      'listed by ${_itemsBidOnByMe![index].seller}',
+                                                                      overflow:
+                                                                          TextOverflow
+                                                                              .ellipsis,
+                                                                      maxLines:
+                                                                          1,
+                                                                      textAlign:
+                                                                          TextAlign
+                                                                              .start,
+                                                                      style: Elements
+                                                                          .cardText),
+                                                                ),
+                                                              ],
+                                                            ),
+                                                          ],
+                                                        ),
+                                                      ),
+                                                    ],
+                                                  ),
+                                                  onPressed: () {
+                                                    Navigator.of(context).push(
+                                                        MaterialPageRoute(
+                                                            builder: (_) => ItemDetail(
+                                                                itemId:
                                                                     _itemsBidOnByMe![
                                                                             index]
-                                                                        .name,
-                                                                    overflow:
-                                                                        TextOverflow
-                                                                            .ellipsis,
-                                                                    maxLines: 1,
-                                                                    textAlign:
-                                                                        TextAlign
-                                                                            .start,
-                                                                    style: Elements
-                                                                        .boldCardText),
-                                                              ),
-                                                            ],
-                                                          ),
-                                                          const SizedBox(
-                                                              height: 2),
-                                                          Row(
-                                                            children: [
-                                                              Flexible(
-                                                                child: Text(
-                                                                    '£${_itemsBidOnByMe![index].price}, '
-                                                                    '${_itemsBidOnByMe![index].numBids} ${_itemsBidOnByMe![index].numBids != 1 ? 'bids' : 'bid'}, '
-                                                                    '${_itemsBidOnByMe![index].condition != 'partsOnly' ? _itemsBidOnByMe![index].condition : 'parts only'}, '
-                                                                    'listed by ${_itemsBidOnByMe![index].seller}',
-                                                                    overflow:
-                                                                        TextOverflow
-                                                                            .ellipsis,
-                                                                    maxLines: 1,
-                                                                    textAlign:
-                                                                        TextAlign
-                                                                            .start,
-                                                                    style: Elements
-                                                                        .cardText),
-                                                              ),
-                                                            ],
-                                                          ),
-                                                        ],
+                                                                        .id)));
+                                                  },
+                                                ),
+                                              );
+                                            },
+                                          ),
+                                    isExpanded: itemsBidExpanded,
+                                  ),
+                                if (widget.accountId == null)
+                                  ExpansionPanel(
+                                    canTapOnHeader: true,
+                                    backgroundColor: Colours.deepGray,
+                                    headerBuilder: (BuildContext context,
+                                        bool isExpanded) {
+                                      return const ListTile(
+                                        title: Text(
+                                            'Inactive Listings Bid on by Me',
+                                            style: Elements.subHeader),
+                                      );
+                                    },
+                                    body: _endedItemsBidOnByMe!.isEmpty
+                                        ? const Center(
+                                            child: Text('No Listings to View.'))
+                                        : ListView.builder(
+                                            physics:
+                                                const NeverScrollableScrollPhysics(),
+                                            shrinkWrap: true,
+                                            itemCount:
+                                                _endedItemsBidOnByMe!.length,
+                                            itemBuilder: (context, index) {
+                                              return Container(
+                                                margin:
+                                                    const EdgeInsets.symmetric(
+                                                  vertical: 6,
+                                                ),
+                                                child: ElevatedButton(
+                                                  style: ButtonStyle(
+                                                    backgroundColor:
+                                                        MaterialStateProperty
+                                                            .resolveWith<
+                                                                    Color?>(
+                                                                (states) => Colours
+                                                                    .darkGray),
+                                                  ),
+                                                  child: Row(
+                                                    children: [
+                                                      Flexible(
+                                                        child: Column(
+                                                          children: [
+                                                            Row(
+                                                              children: [
+                                                                Flexible(
+                                                                  child: Text(
+                                                                      _endedItemsBidOnByMe![
+                                                                              index]
+                                                                          .name,
+                                                                      overflow:
+                                                                          TextOverflow
+                                                                              .ellipsis,
+                                                                      maxLines:
+                                                                          1,
+                                                                      textAlign:
+                                                                          TextAlign
+                                                                              .start,
+                                                                      style: Elements
+                                                                          .boldCardText),
+                                                                ),
+                                                              ],
+                                                            ),
+                                                            const SizedBox(
+                                                                height: 2),
+                                                            Row(
+                                                              children: [
+                                                                Flexible(
+                                                                  child: Text(
+                                                                      '£${_endedItemsBidOnByMe![index].price}, '
+                                                                      '${_endedItemsBidOnByMe![index].numBids} ${_endedItemsBidOnByMe![index].numBids != 1 ? 'bids' : 'bid'}, '
+                                                                      '${_endedItemsBidOnByMe![index].condition != 'partsOnly' ? _endedItemsBidOnByMe![index].condition : 'parts only'}, '
+                                                                      'listed by ${_endedItemsBidOnByMe![index].seller}',
+                                                                      overflow:
+                                                                          TextOverflow
+                                                                              .ellipsis,
+                                                                      maxLines:
+                                                                          1,
+                                                                      textAlign:
+                                                                          TextAlign
+                                                                              .start,
+                                                                      style: Elements
+                                                                          .cardText),
+                                                                ),
+                                                              ],
+                                                            ),
+                                                          ],
+                                                        ),
                                                       ),
-                                                    ),
-                                                  ],
-                                                ),
-                                                onPressed: () {
-                                                  Navigator.of(context).push(
-                                                      MaterialPageRoute(
-                                                          builder: (_) => ItemDetail(
-                                                              itemId:
-                                                                  _itemsBidOnByMe![
-                                                                          index]
-                                                                      .id)));
-                                                },
-                                              ),
-                                            );
-                                          },
-                                        ),
-                                  isExpanded: itemsBidExpanded,
-                                ),
-                                ExpansionPanel(
-                                  canTapOnHeader: true,
-                                  backgroundColor: Colours.deepGray,
-                                  headerBuilder:
-                                      (BuildContext context, bool isExpanded) {
-                                    return const ListTile(
-                                      title: Text(
-                                          'Inactive Listings Bid on by Me',
-                                          style: Elements.subHeader),
-                                    );
-                                  },
-                                  body: _endedItemsBidOnByMe!.isEmpty
-                                      ? const Center(
-                                          child: Text('No Listings to View.'))
-                                      : ListView.builder(
-                                          physics:
-                                              const NeverScrollableScrollPhysics(),
-                                          shrinkWrap: true,
-                                          itemCount:
-                                              _endedItemsBidOnByMe!.length,
-                                          itemBuilder: (context, index) {
-                                            return Container(
-                                              margin:
-                                                  const EdgeInsets.symmetric(
-                                                vertical: 6,
-                                              ),
-                                              child: ElevatedButton(
-                                                style: ButtonStyle(
-                                                  backgroundColor:
-                                                      MaterialStateProperty
-                                                          .resolveWith<Color?>(
-                                                              (states) => Colours
-                                                                  .darkGray),
-                                                ),
-                                                child: Row(
-                                                  children: [
-                                                    Flexible(
-                                                      child: Column(
-                                                        children: [
-                                                          Row(
-                                                            children: [
-                                                              Flexible(
-                                                                child: Text(
+                                                    ],
+                                                  ),
+                                                  onPressed: () {
+                                                    Navigator.of(context).push(
+                                                        MaterialPageRoute(
+                                                            builder: (_) => ItemDetail(
+                                                                itemId:
                                                                     _endedItemsBidOnByMe![
                                                                             index]
-                                                                        .name,
-                                                                    overflow:
-                                                                        TextOverflow
-                                                                            .ellipsis,
-                                                                    maxLines: 1,
-                                                                    textAlign:
-                                                                        TextAlign
-                                                                            .start,
-                                                                    style: Elements
-                                                                        .boldCardText),
-                                                              ),
-                                                            ],
-                                                          ),
-                                                          const SizedBox(
-                                                              height: 2),
-                                                          Row(
-                                                            children: [
-                                                              Flexible(
-                                                                child: Text(
-                                                                    '£${_endedItemsBidOnByMe![index].price}, '
-                                                                    '${_endedItemsBidOnByMe![index].numBids} ${_endedItemsBidOnByMe![index].numBids != 1 ? 'bids' : 'bid'}, '
-                                                                    '${_endedItemsBidOnByMe![index].condition != 'partsOnly' ? _endedItemsBidOnByMe![index].condition : 'parts only'}, '
-                                                                    'listed by ${_endedItemsBidOnByMe![index].seller}',
-                                                                    overflow:
-                                                                        TextOverflow
-                                                                            .ellipsis,
-                                                                    maxLines: 1,
-                                                                    textAlign:
-                                                                        TextAlign
-                                                                            .start,
-                                                                    style: Elements
-                                                                        .cardText),
-                                                              ),
-                                                            ],
-                                                          ),
-                                                        ],
-                                                      ),
-                                                    ),
-                                                  ],
+                                                                        .id)));
+                                                  },
                                                 ),
-                                                onPressed: () {
-                                                  Navigator.of(context).push(
-                                                      MaterialPageRoute(
-                                                          builder: (_) => ItemDetail(
-                                                              itemId:
-                                                                  _endedItemsBidOnByMe![
-                                                                          index]
-                                                                      .id)));
-                                                },
-                                              ),
-                                            );
-                                          },
-                                        ),
-                                  isExpanded: endedItemsBidExpanded,
-                                ),
+                                              );
+                                            },
+                                          ),
+                                    isExpanded: endedItemsBidExpanded,
+                                  ),
                               ]),
                         ],
                       ),
