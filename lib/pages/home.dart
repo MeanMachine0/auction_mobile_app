@@ -1,4 +1,3 @@
-import 'package:auction_mobile_app/elements.dart';
 import 'package:auction_mobile_app/pages/login.dart';
 import 'package:flutter/material.dart';
 
