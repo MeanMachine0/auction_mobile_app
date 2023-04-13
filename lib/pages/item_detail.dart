@@ -1,7 +1,7 @@
 import 'package:auction_mobile_app/constants.dart';
 import 'package:auction_mobile_app/pages/my_listings.dart';
 import 'package:flutter/material.dart';
-import 'package:auction_mobile_app/elements.dart';
+
 import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
 import 'package:auction_mobile_app/models/items_model.dart';
@@ -94,6 +94,7 @@ class _ItemDetailState extends State<ItemDetail> {
                                     children: [
                                       Text(
                                         'Price: £${itemModel!.price}',
+                                        style: Elements.cardText,
                                       ),
                                     ],
                                   ),
@@ -105,36 +106,48 @@ class _ItemDetailState extends State<ItemDetail> {
                                             : [
                                                 Text(
                                                   'P&P: £${itemModel!.postageCost}',
+                                                  style: Elements.cardText,
                                                 )
                                               ],
                                   ),
                                   Row(
                                     children: [
                                       Text(
-                                          'Bid Increment: £${itemModel!.bidIncrement}'),
+                                        'Bid Increment: £${itemModel!.bidIncrement}',
+                                        style: Elements.cardText,
+                                      ),
                                     ],
                                   ),
                                   Row(
                                     children: [
                                       Text(
-                                          'Condition: ${Dicts.conditions.keys.firstWhere((key) => Dicts.conditions[key] == itemModel!.condition)}'),
+                                        'Condition: ${Dicts.conditions.keys.firstWhere((key) => Dicts.conditions[key] == itemModel!.condition)}',
+                                        style: Elements.cardText,
+                                      ),
                                     ],
                                   ),
                                   Row(
                                     children: [
                                       Text(
-                                          'Ends on ${formatDateTime(itemModel!.endDateTime)}'),
+                                        'Ends on ${formatDateTime(itemModel!.endDateTime)}',
+                                        style: Elements.cardText,
+                                      ),
                                     ],
                                   ),
                                   Row(
                                     children: [
                                       Text(
-                                          'Returns accepted: ${Dicts.toYesNo[itemModel!.acceptReturns]}')
+                                        'Returns accepted: ${Dicts.toYesNo[itemModel!.acceptReturns]}',
+                                        style: Elements.cardText,
+                                      )
                                     ],
                                   ),
                                   Row(
                                     children: [
-                                      Text('Bids: ${itemModel!.numBids}'),
+                                      Text(
+                                        'Bids: ${itemModel!.numBids}',
+                                        style: Elements.cardText,
+                                      ),
                                     ],
                                   ),
                                   Row(
@@ -153,33 +166,45 @@ class _ItemDetailState extends State<ItemDetail> {
                                                     }
                                                   : null,
                                               child: Row(
-                                                children:
-                                                    itemModel!.buyer != null
-                                                        ? [
-                                                            Text(
-                                                              'Top Bidder: ${itemModel!.buyer}',
-                                                              style:
-                                                                  const TextStyle(
-                                                                decoration:
-                                                                    TextDecoration
-                                                                        .underline,
-                                                                decorationStyle:
-                                                                    TextDecorationStyle
-                                                                        .solid,
-                                                              ),
-                                                            ),
-                                                          ]
-                                                        : [
-                                                            const Text(
-                                                                'Top Bidder:'),
-                                                          ],
+                                                children: itemModel!.buyer !=
+                                                        null
+                                                    ? [
+                                                        Text(
+                                                          'Top Bidder: ${itemModel!.buyer}',
+                                                          style:
+                                                              const TextStyle(
+                                                            decoration:
+                                                                TextDecoration
+                                                                    .underline,
+                                                            decorationStyle:
+                                                                TextDecorationStyle
+                                                                    .solid,
+                                                            fontSize: 16,
+                                                          ),
+                                                        ),
+                                                      ]
+                                                    : [
+                                                        const Text(
+                                                          'Top Bidder:',
+                                                          style:
+                                                              Elements.cardText,
+                                                        ),
+                                                      ],
                                               ),
                                             ),
                                           ]
                                         : IAmTheTopBidder
-                                            ? const [Text('Top Bidder: You')]
+                                            ? const [
+                                                Text(
+                                                  'Top Bidder: You',
+                                                  style: Elements.cardText,
+                                                )
+                                              ]
                                             : const [
-                                                Text('Top Bidder: Not You')
+                                                Text(
+                                                  'Top Bidder: Not You',
+                                                  style: Elements.cardText,
+                                                )
                                               ],
                                   ),
                                   GestureDetector(
@@ -199,12 +224,13 @@ class _ItemDetailState extends State<ItemDetail> {
                                               ? 'Seller: You'
                                               : 'Seller: ${itemModel!.seller}',
                                           style: IAmTheSeller
-                                              ? null
+                                              ? Elements.cardText
                                               : const TextStyle(
                                                   decoration:
                                                       TextDecoration.underline,
                                                   decorationStyle:
                                                       TextDecorationStyle.solid,
+                                                  fontSize: 16,
                                                 ),
                                         ),
                                       ],
@@ -241,6 +267,7 @@ class _ItemDetailState extends State<ItemDetail> {
                                     const EdgeInsets.symmetric(horizontal: 8),
                                 child: Text(
                                   itemModel!.description,
+                                  style: Elements.cardText,
                                 ),
                               ),
                             ],

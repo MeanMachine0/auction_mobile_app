@@ -1,7 +1,6 @@
 import 'package:auction_mobile_app/constants.dart';
 import 'package:auction_mobile_app/pages/my_listings.dart';
 import 'package:flutter/material.dart';
-import 'package:auction_mobile_app/elements.dart';
 import 'package:intl/intl.dart';
 import 'package:auction_mobile_app/models/items_model.dart';
 import 'package:auction_mobile_app/services/api_service.dart';
@@ -88,6 +87,7 @@ class _EndedItemDetailState extends State<EndedItemDetail> {
                                       children: [
                                         Text(
                                           'Price: £${endedItemModel!.price}',
+                                          style: Elements.cardText,
                                         ),
                                       ],
                                     ),
@@ -99,37 +99,48 @@ class _EndedItemDetailState extends State<EndedItemDetail> {
                                           : [
                                               Text(
                                                 'P&P: £${endedItemModel!.postageCost}',
+                                                style: Elements.cardText,
                                               )
                                             ],
                                     ),
                                     Row(
                                       children: [
                                         Text(
-                                            'Bid Increment: £${endedItemModel!.bidIncrement}'),
+                                          'Bid Increment: £${endedItemModel!.bidIncrement}',
+                                          style: Elements.cardText,
+                                        ),
                                       ],
                                     ),
                                     Row(
                                       children: [
                                         Text(
-                                            'Condition: ${Dicts.conditions.keys.firstWhere((key) => Dicts.conditions[key] == endedItemModel!.condition)}'),
+                                          'Condition: ${Dicts.conditions.keys.firstWhere((key) => Dicts.conditions[key] == endedItemModel!.condition)}',
+                                          style: Elements.cardText,
+                                        ),
                                       ],
                                     ),
                                     Row(
                                       children: [
                                         Text(
-                                            'Ended on ${formatDateTime(endedItemModel!.endDateTime)}'),
+                                          'Ended on ${formatDateTime(endedItemModel!.endDateTime)}',
+                                          style: Elements.cardText,
+                                        ),
                                       ],
                                     ),
                                     Row(
                                       children: [
                                         Text(
-                                            'Returns accepted: ${Dicts.toYesNo[endedItemModel!.acceptReturns]}')
+                                          'Returns accepted: ${Dicts.toYesNo[endedItemModel!.acceptReturns]}',
+                                          style: Elements.cardText,
+                                        )
                                       ],
                                     ),
                                     Row(
                                       children: [
                                         Text(
-                                            'Bids: ${endedItemModel!.numBids}'),
+                                          'Bids: ${endedItemModel!.numBids}',
+                                          style: Elements.cardText,
+                                        ),
                                       ],
                                     ),
                                     Column(
@@ -149,46 +160,60 @@ class _EndedItemDetailState extends State<EndedItemDetail> {
                                                         }
                                                       : null,
                                                   child: Row(
-                                                    children:
-                                                        endedItemModel!.buyer !=
-                                                                null
-                                                            ? [
-                                                                Text(
-                                                                  'Buyer: ${endedItemModel!.buyer}',
-                                                                  style:
-                                                                      const TextStyle(
-                                                                    decoration:
-                                                                        TextDecoration
-                                                                            .underline,
-                                                                    decorationStyle:
-                                                                        TextDecorationStyle
-                                                                            .solid,
-                                                                  ),
-                                                                ),
-                                                              ]
-                                                            : [
-                                                                const Text(
-                                                                    'Buyer:'),
-                                                              ],
+                                                    children: endedItemModel!
+                                                                .buyer !=
+                                                            null
+                                                        ? [
+                                                            Text(
+                                                              'Buyer: ${endedItemModel!.buyer}',
+                                                              style:
+                                                                  const TextStyle(
+                                                                decoration:
+                                                                    TextDecoration
+                                                                        .underline,
+                                                                decorationStyle:
+                                                                    TextDecorationStyle
+                                                                        .solid,
+                                                                fontSize: 16,
+                                                              ),
+                                                            ),
+                                                          ]
+                                                        : [
+                                                            const Text(
+                                                              'Buyer:',
+                                                              style: Elements
+                                                                  .cardText,
+                                                            ),
+                                                          ],
                                                   ),
                                                 ),
                                                 Row(
                                                   children: [
                                                     Text(
-                                                        'Destination: ${endedItemModel!.destinationAddress}'),
+                                                      'Destination: ${endedItemModel!.destinationAddress}',
+                                                      style: Elements.cardText,
+                                                    ),
                                                   ],
                                                 ),
                                               ]
                                             : IAmTheBuyer
                                                 ? [
                                                     Row(children: const [
-                                                      Text('Buyer: You')
+                                                      Text(
+                                                        'Buyer: You',
+                                                        style:
+                                                            Elements.cardText,
+                                                      )
                                                     ])
                                                   ]
                                                 : [
                                                     Row(
                                                       children: const [
-                                                        Text('Buyer: Not You')
+                                                        Text(
+                                                          'Buyer: Not You',
+                                                          style:
+                                                              Elements.cardText,
+                                                        )
                                                       ],
                                                     )
                                                   ]),
@@ -210,13 +235,14 @@ class _EndedItemDetailState extends State<EndedItemDetail> {
                                                 ? 'Seller: You'
                                                 : 'Seller: ${endedItemModel!.seller}',
                                             style: IAmTheSeller
-                                                ? null
+                                                ? Elements.cardText
                                                 : const TextStyle(
                                                     decoration: TextDecoration
                                                         .underline,
                                                     decorationStyle:
                                                         TextDecorationStyle
                                                             .solid,
+                                                    fontSize: 16,
                                                   ),
                                           ),
                                         ],
@@ -254,6 +280,7 @@ class _EndedItemDetailState extends State<EndedItemDetail> {
                                     const EdgeInsets.symmetric(horizontal: 8),
                                 child: Text(
                                   endedItemModel!.description,
+                                  style: Elements.cardText,
                                 ),
                               ),
                             ],
