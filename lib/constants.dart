@@ -21,6 +21,7 @@ class Regexes {
 
 class Lists {
   static List<String> categories = [
+    'All',
     'Business, Office & Industrial Supplies',
     'Health & Beauty',
     'Fashion',
