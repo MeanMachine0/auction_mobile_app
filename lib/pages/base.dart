@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_nav_bar/google_nav_bar.dart';
 import 'package:auction_mobile_app/constants.dart';
-import 'package:auction_mobile_app/pages/home.dart';
 import 'package:auction_mobile_app/pages/my_listings.dart';
 import 'package:auction_mobile_app/pages/browse.dart';
 import 'package:auction_mobile_app/pages/list_an_item.dart';
@@ -16,8 +15,8 @@ class Base extends StatefulWidget {
 class _BaseState extends State<Base> {
   int _selectedIndex = 0;
   static const List<Widget> pages = <Widget>[
-    Home(),
-    Browse(),
+    Browse(home: true, key: ValueKey('home')),
+    Browse(home: false, key: ValueKey('notHome')),
     ListAnItem(),
     MyListings(),
   ];

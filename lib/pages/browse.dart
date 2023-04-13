@@ -8,7 +8,10 @@ import 'package:auction_mobile_app/constants.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class Browse extends StatefulWidget {
-  const Browse({Key? key}) : super(key: key);
+  final bool _home;
+  const Browse({Key? key, required bool home})
+      : _home = home,
+        super(key: key);
 
   @override
   _BrowseState createState() => _BrowseState();
@@ -35,7 +38,7 @@ class _BrowseState extends State<Browse> {
     token = prefs.getString('token');
     username = prefs.getString('username');
     password = prefs.getString('password');
-    _itemsModel = (await ApiService().getItems(false, false));
+    _itemsModel = (await ApiService().getItems(widget._home, widget._home));
     items = _itemsModel;
     setState(() {});
   }
@@ -51,6 +54,7 @@ class _BrowseState extends State<Browse> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+          scrolledUnderElevation: 0,
           title: const Text('Active Items'),
           actions: token != null
               ? [
@@ -91,125 +95,117 @@ class _BrowseState extends State<Browse> {
                 color: Colours.lightGray,
               ),
             )
-          : Padding(
-              padding: const EdgeInsets.symmetric(vertical: 20),
-              child: Column(
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 5),
-                    child: SizedBox(
-                      height: 70,
-                      child: ListView.builder(
-                          scrollDirection: Axis.horizontal,
-                          itemCount: 11,
-                          itemBuilder: (content, index) {
+          : Column(
+              children: [
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 5),
+                  child: SizedBox(
+                    height: 70,
+                    child: ListView.builder(
+                        scrollDirection: Axis.horizontal,
+                        itemCount: 11,
+                        itemBuilder: (content, index) {
+                          return Padding(
+                              padding: const EdgeInsets.fromLTRB(6, 0, 6, 10),
+                              child: ElevatedButton(
+                                style: ButtonStyle(
+                                  backgroundColor:
+                                      MaterialStateProperty.resolveWith<Color?>(
+                                          (states) => selectedIndex == index
+                                              ? Colours.deepGray
+                                              : Colours.darkGray),
+                                ),
+                                child: Text(
+                                  Lists.categories[index],
+                                  style:
+                                      const TextStyle(color: Colours.lightGray),
+                                ),
+                                onPressed: () {
+                                  items = index == 0
+                                      ? _itemsModel!
+                                      : _itemsModel!
+                                          .where((item) =>
+                                              item.category ==
+                                              Dicts.categories[
+                                                  Lists.categories[index]])
+                                          .toList();
+                                  selectedIndex = index;
+                                  setState(() {});
+                                },
+                              ));
+                        }),
+                  ),
+                ),
+                const SizedBox(height: 10),
+                Expanded(
+                  child: items!.isEmpty
+                      ? const Center(
+                          child: Text('No Listings to View in this category.'))
+                      : ListView.builder(
+                          itemCount: items!.length,
+                          itemBuilder: (context, index) {
                             return Padding(
-                                padding: const EdgeInsets.fromLTRB(6, 0, 6, 10),
-                                child: ElevatedButton(
-                                  style: ButtonStyle(
-                                    backgroundColor: MaterialStateProperty
-                                        .resolveWith<Color?>((states) =>
-                                            selectedIndex == index
-                                                ? Colours.deepGray
-                                                : Colours.darkGray),
-                                  ),
-                                  child: Text(
-                                    Lists.categories[index],
-                                    style: const TextStyle(
-                                        color: Colours.lightGray),
-                                  ),
-                                  onPressed: () {
-                                    items = index == 0
-                                        ? _itemsModel!
-                                        : _itemsModel!
-                                            .where((item) =>
-                                                item.category ==
-                                                Dicts.categories[
-                                                    Lists.categories[index]])
-                                            .toList();
-                                    selectedIndex = index;
-                                    setState(() {});
-                                  },
-                                ));
-                          }),
-                    ),
-                  ),
-                  const SizedBox(height: 20),
-                  Expanded(
-                    child: items!.isEmpty
-                        ? const Center(
-                            child:
-                                Text('No Listings to View in this category.'))
-                        : ListView.builder(
-                            itemCount: items!.length,
-                            itemBuilder: (context, index) {
-                              return Padding(
-                                padding: const EdgeInsets.symmetric(
-                                  horizontal: 20,
-                                  vertical: 6,
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 20,
+                                vertical: 6,
+                              ),
+                              child: ElevatedButton(
+                                style: ButtonStyle(
+                                  backgroundColor:
+                                      MaterialStateProperty.resolveWith<Color?>(
+                                          (states) => Colours.darkGray),
                                 ),
-                                child: ElevatedButton(
-                                  style: ButtonStyle(
-                                    backgroundColor: MaterialStateProperty
-                                        .resolveWith<Color?>(
-                                            (states) => Colours.darkGray),
-                                  ),
-                                  child: Row(
-                                    children: [
-                                      Flexible(
-                                        child: Column(
-                                          children: [
-                                            Row(
-                                              children: [
-                                                Flexible(
-                                                  child: Text(
-                                                      items![index].name,
-                                                      overflow:
-                                                          TextOverflow.ellipsis,
-                                                      maxLines: 1,
-                                                      textAlign:
-                                                          TextAlign.start,
-                                                      style: Elements
-                                                          .boldCardText),
-                                                ),
-                                              ],
-                                            ),
-                                            const SizedBox(height: 2),
-                                            Row(
-                                              children: [
-                                                Flexible(
-                                                  child: Text(
-                                                      '£${items![index].price}, '
-                                                      '${items![index].numBids} ${items![index].numBids != 1 ? 'bids' : 'bid'}, '
-                                                      '${items![index].condition != 'partsOnly' ? items![index].condition : 'parts only'}, '
-                                                      'listed by ${accountId == items![index].seller ? 'you' : items![index].seller}',
-                                                      overflow:
-                                                          TextOverflow.ellipsis,
-                                                      maxLines: 1,
-                                                      textAlign:
-                                                          TextAlign.start,
-                                                      style: Elements.cardText),
-                                                ),
-                                              ],
-                                            ),
-                                          ],
-                                        ),
+                                child: Row(
+                                  children: [
+                                    Flexible(
+                                      child: Column(
+                                        children: [
+                                          Row(
+                                            children: [
+                                              Flexible(
+                                                child: Text(items![index].name,
+                                                    overflow:
+                                                        TextOverflow.ellipsis,
+                                                    maxLines: 1,
+                                                    textAlign: TextAlign.start,
+                                                    style:
+                                                        Elements.boldCardText),
+                                              ),
+                                            ],
+                                          ),
+                                          const SizedBox(height: 2),
+                                          Row(
+                                            children: [
+                                              Flexible(
+                                                child: Text(
+                                                    '£${items![index].price}, '
+                                                    '${items![index].numBids} ${items![index].numBids != 1 ? 'bids' : 'bid'}, '
+                                                    '${items![index].condition != 'partsOnly' ? items![index].condition : 'parts only'}, '
+                                                    'listed by ${accountId == items![index].seller ? 'you' : items![index].seller}',
+                                                    overflow:
+                                                        TextOverflow.ellipsis,
+                                                    maxLines: 1,
+                                                    textAlign: TextAlign.start,
+                                                    style: Elements.cardText),
+                                              ),
+                                            ],
+                                          ),
+                                        ],
                                       ),
-                                    ],
-                                  ),
-                                  onPressed: () {
-                                    Navigator.of(context).push(
-                                        MaterialPageRoute(
-                                            builder: (_) => ItemDetail(
-                                                itemId: items![index].id)));
-                                  },
+                                    ),
+                                  ],
                                 ),
-                              );
-                            },
-                          ),
-                  ),
-                ],
-              ),
+                                onPressed: () {
+                                  Navigator.of(context).push(MaterialPageRoute(
+                                      builder: (_) => ItemDetail(
+                                          itemId: items![index].id)));
+                                },
+                              ),
+                            );
+                          },
+                        ),
+                ),
+              ],
             ),
     );
   }

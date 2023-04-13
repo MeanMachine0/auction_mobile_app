@@ -1,6 +1,5 @@
 // ignore_for_file: avoid_init_to_null
 
-import 'package:auction_mobile_app/pages/ended_item_detail.dart';
 import 'package:auction_mobile_app/pages/item_detail.dart';
 import 'package:auction_mobile_app/pages/login.dart';
 import 'package:flutter/material.dart';
