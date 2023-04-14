@@ -187,10 +187,6 @@ class _BrowseState extends State<Browse> {
                 ),
                 const SizedBox(width: 15),
                 DropdownButton(
-                  icon: Icon(
-                    ascending ? Icons.arrow_upward : Icons.arrow_downward,
-                    color: Colours.lightGray,
-                  ),
                   value: sortBy,
                   items: Lists.sorters
                       .map<DropdownMenuItem<String>>((String value) {
@@ -207,12 +203,15 @@ class _BrowseState extends State<Browse> {
                 const SizedBox(width: 2),
                 Flexible(
                   flex: 1,
-                  child: Checkbox(
-                      value: ascending,
-                      onChanged: ((value) {
+                  child: GestureDetector(
+                      onTap: (() {
                         ascending = !ascending;
                         _getData();
-                      })),
+                      }),
+                      child: Icon(
+                        ascending ? Icons.arrow_upward : Icons.arrow_downward,
+                        color: Colours.lightGray,
+                      )),
                 )
               ],
             ),
