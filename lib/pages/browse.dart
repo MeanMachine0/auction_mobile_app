@@ -28,6 +28,7 @@ class _BrowseState extends State<Browse> {
   int categoryIndex = 0;
   int conditionIndex = 0;
   String sortBy = 'Price';
+  bool ascending = true;
 
   @override
   void initState() {
@@ -48,7 +49,7 @@ class _BrowseState extends State<Browse> {
     // ignore: no_leading_underscores_for_local_identifiers
     String _sortBy = Dicts.sorters[sortBy]!;
     _itemsModel = (await ApiService().getItems(widget._home, widget._home,
-        searchBool, search, category, condition, _sortBy));
+        searchBool, search, category, condition, _sortBy, ascending));
     setState(() {});
   }
 
@@ -132,7 +133,6 @@ class _BrowseState extends State<Browse> {
                   }),
             ),
           ),
-          const SizedBox(height: 0),
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 5),
             child: SizedBox(
@@ -168,6 +168,7 @@ class _BrowseState extends State<Browse> {
             child: Row(
               children: [
                 Expanded(
+                  flex: 10,
                   child: SizedBox(
                     height: 50,
                     child: TextField(
@@ -184,10 +185,10 @@ class _BrowseState extends State<Browse> {
                     ),
                   ),
                 ),
-                const SizedBox(width: 10),
+                const SizedBox(width: 15),
                 DropdownButton(
-                  icon: const Icon(
-                    Icons.compare_arrows,
+                  icon: Icon(
+                    ascending ? Icons.arrow_upward : Icons.arrow_downward,
                     color: Colours.lightGray,
                   ),
                   value: sortBy,
@@ -202,6 +203,16 @@ class _BrowseState extends State<Browse> {
                     sortBy = value!;
                     _getData();
                   },
+                ),
+                const SizedBox(width: 2),
+                Flexible(
+                  flex: 1,
+                  child: Checkbox(
+                      value: ascending,
+                      onChanged: ((value) {
+                        ascending = !ascending;
+                        _getData();
+                      })),
                 )
               ],
             ),
