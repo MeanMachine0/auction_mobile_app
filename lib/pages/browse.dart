@@ -168,7 +168,6 @@ class _BrowseState extends State<Browse> {
             child: Row(
               children: [
                 Expanded(
-                  flex: 10,
                   child: SizedBox(
                     height: 50,
                     child: TextField(
@@ -201,18 +200,15 @@ class _BrowseState extends State<Browse> {
                   },
                 ),
                 const SizedBox(width: 2),
-                Flexible(
-                  flex: 1,
-                  child: GestureDetector(
-                      onTap: (() {
-                        ascending = !ascending;
-                        _getData();
-                      }),
-                      child: Icon(
-                        ascending ? Icons.arrow_upward : Icons.arrow_downward,
-                        color: Colours.lightGray,
-                      )),
-                )
+                GestureDetector(
+                    onTap: (() {
+                      ascending = !ascending;
+                      _getData();
+                    }),
+                    child: Icon(
+                      ascending ? Icons.arrow_upward : Icons.arrow_downward,
+                      color: Colours.lightGray,
+                    ))
               ],
             ),
           ),
