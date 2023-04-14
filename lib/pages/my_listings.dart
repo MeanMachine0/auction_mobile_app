@@ -194,68 +194,69 @@ class _MyListingsState extends State<MyListings> {
                                             return Container(
                                               margin:
                                                   const EdgeInsets.symmetric(
-                                                vertical: 6,
+                                                vertical: 2,
                                               ),
-                                              child: ElevatedButton(
-                                                style: ButtonStyle(
-                                                  backgroundColor:
-                                                      MaterialStateProperty
-                                                          .resolveWith<Color?>(
-                                                              (states) => Colours
-                                                                  .darkGray),
-                                                ),
-                                                child: Row(
-                                                  children: [
-                                                    Flexible(
-                                                      child: Column(
-                                                        children: [
-                                                          Row(
+                                              child: GestureDetector(
+                                                child: Card(
+                                                  child: Row(
+                                                    children: [
+                                                      Flexible(
+                                                        child: Padding(
+                                                          padding:
+                                                              const EdgeInsets
+                                                                  .all(6),
+                                                          child: Column(
                                                             children: [
-                                                              Flexible(
-                                                                child: Text(
-                                                                    _itemsModel![
-                                                                            index]
-                                                                        .name,
-                                                                    overflow:
-                                                                        TextOverflow
-                                                                            .ellipsis,
-                                                                    maxLines: 1,
-                                                                    textAlign:
-                                                                        TextAlign
-                                                                            .start,
-                                                                    style: Elements
-                                                                        .boldCardText),
+                                                              Row(
+                                                                children: [
+                                                                  Flexible(
+                                                                    child: Text(
+                                                                        _itemsModel![index]
+                                                                            .name,
+                                                                        overflow:
+                                                                            TextOverflow
+                                                                                .ellipsis,
+                                                                        maxLines:
+                                                                            1,
+                                                                        textAlign:
+                                                                            TextAlign
+                                                                                .start,
+                                                                        style: Elements
+                                                                            .boldCardText),
+                                                                  ),
+                                                                ],
+                                                              ),
+                                                              const SizedBox(
+                                                                  height: 2),
+                                                              Row(
+                                                                children: [
+                                                                  Flexible(
+                                                                    child: Text(
+                                                                        '£${_itemsModel![index].price}, '
+                                                                        '${_itemsModel![index].numBids} ${_itemsModel![index].numBids != 1 ? 'bids' : 'bid'}, '
+                                                                        '${_itemsModel![index].condition != 'partsOnly' ? _itemsModel![index].condition : 'parts only'}, '
+                                                                        'listed by ${widget.accountId ?? 'you'}',
+                                                                        overflow:
+                                                                            TextOverflow
+                                                                                .ellipsis,
+                                                                        maxLines:
+                                                                            1,
+                                                                        textAlign:
+                                                                            TextAlign
+                                                                                .start,
+                                                                        style: Elements
+                                                                            .cardText),
+                                                                  ),
+                                                                ],
                                                               ),
                                                             ],
                                                           ),
-                                                          const SizedBox(
-                                                              height: 2),
-                                                          Row(
-                                                            children: [
-                                                              Flexible(
-                                                                child: Text(
-                                                                    '£${_itemsModel![index].price}, '
-                                                                    '${_itemsModel![index].numBids} ${_itemsModel![index].numBids != 1 ? 'bids' : 'bid'}, '
-                                                                    '${_itemsModel![index].condition != 'partsOnly' ? _itemsModel![index].condition : 'parts only'}, '
-                                                                    'listed by ${widget.accountId ?? 'you'}',
-                                                                    overflow:
-                                                                        TextOverflow
-                                                                            .ellipsis,
-                                                                    maxLines: 1,
-                                                                    textAlign:
-                                                                        TextAlign
-                                                                            .start,
-                                                                    style: Elements
-                                                                        .cardText),
-                                                              ),
-                                                            ],
-                                                          ),
-                                                        ],
+                                                        ),
                                                       ),
-                                                    ),
-                                                  ],
+                                                    ],
+                                                  ),
                                                 ),
-                                                onPressed: () {
+                                                onTap: () {
                                                   Navigator.of(context).push(
                                                       MaterialPageRoute(
                                                           builder: (_) => ItemDetail(
@@ -292,68 +293,69 @@ class _MyListingsState extends State<MyListings> {
                                             return Container(
                                               margin:
                                                   const EdgeInsets.symmetric(
-                                                vertical: 6,
+                                                vertical: 2,
                                               ),
-                                              child: ElevatedButton(
-                                                style: ButtonStyle(
-                                                  backgroundColor:
-                                                      MaterialStateProperty
-                                                          .resolveWith<Color?>(
-                                                              (states) => Colours
-                                                                  .darkGray),
-                                                ),
-                                                child: Row(
-                                                  children: [
-                                                    Flexible(
-                                                      child: Column(
-                                                        children: [
-                                                          Row(
+                                              child: GestureDetector(
+                                                child: Card(
+                                                  child: Row(
+                                                    children: [
+                                                      Flexible(
+                                                        child: Padding(
+                                                          padding:
+                                                              const EdgeInsets
+                                                                  .all(6),
+                                                          child: Column(
                                                             children: [
-                                                              Flexible(
-                                                                child: Text(
-                                                                    _endedItemsModel![
-                                                                            index]
-                                                                        .name,
-                                                                    overflow:
-                                                                        TextOverflow
-                                                                            .ellipsis,
-                                                                    maxLines: 1,
-                                                                    textAlign:
-                                                                        TextAlign
-                                                                            .start,
-                                                                    style: Elements
-                                                                        .boldCardText),
+                                                              Row(
+                                                                children: [
+                                                                  Flexible(
+                                                                    child: Text(
+                                                                        _endedItemsModel![index]
+                                                                            .name,
+                                                                        overflow:
+                                                                            TextOverflow
+                                                                                .ellipsis,
+                                                                        maxLines:
+                                                                            1,
+                                                                        textAlign:
+                                                                            TextAlign
+                                                                                .start,
+                                                                        style: Elements
+                                                                            .boldCardText),
+                                                                  ),
+                                                                ],
+                                                              ),
+                                                              const SizedBox(
+                                                                  height: 2),
+                                                              Row(
+                                                                children: [
+                                                                  Flexible(
+                                                                    child: Text(
+                                                                        '£${_endedItemsModel![index].price}, '
+                                                                        '${_endedItemsModel![index].numBids} ${_endedItemsModel![index].numBids != 1 ? 'bids' : 'bid'}, '
+                                                                        '${_endedItemsModel![index].condition != 'partsOnly' ? _endedItemsModel![index].condition : 'parts only'}, '
+                                                                        'listed by ${widget.accountId ?? 'you'}',
+                                                                        overflow:
+                                                                            TextOverflow
+                                                                                .ellipsis,
+                                                                        maxLines:
+                                                                            1,
+                                                                        textAlign:
+                                                                            TextAlign
+                                                                                .start,
+                                                                        style: Elements
+                                                                            .cardText),
+                                                                  ),
+                                                                ],
                                                               ),
                                                             ],
                                                           ),
-                                                          const SizedBox(
-                                                              height: 2),
-                                                          Row(
-                                                            children: [
-                                                              Flexible(
-                                                                child: Text(
-                                                                    '£${_endedItemsModel![index].price}, '
-                                                                    '${_endedItemsModel![index].numBids} ${_endedItemsModel![index].numBids != 1 ? 'bids' : 'bid'}, '
-                                                                    '${_endedItemsModel![index].condition != 'partsOnly' ? _endedItemsModel![index].condition : 'parts only'}, '
-                                                                    'listed by ${widget.accountId ?? 'you'}',
-                                                                    overflow:
-                                                                        TextOverflow
-                                                                            .ellipsis,
-                                                                    maxLines: 1,
-                                                                    textAlign:
-                                                                        TextAlign
-                                                                            .start,
-                                                                    style: Elements
-                                                                        .cardText),
-                                                              ),
-                                                            ],
-                                                          ),
-                                                        ],
+                                                        ),
                                                       ),
-                                                    ),
-                                                  ],
+                                                    ],
+                                                  ),
                                                 ),
-                                                onPressed: () {
+                                                onTap: () {
                                                   Navigator.of(context).push(
                                                       MaterialPageRoute(
                                                           builder: (_) => ItemDetail(
@@ -392,71 +394,61 @@ class _MyListingsState extends State<MyListings> {
                                               return Container(
                                                 margin:
                                                     const EdgeInsets.symmetric(
-                                                  vertical: 6,
+                                                  vertical: 2,
                                                 ),
-                                                child: ElevatedButton(
-                                                  style: ButtonStyle(
-                                                    backgroundColor:
-                                                        MaterialStateProperty
-                                                            .resolveWith<
-                                                                    Color?>(
-                                                                (states) => Colours
-                                                                    .darkGray),
-                                                  ),
-                                                  child: Row(
-                                                    children: [
-                                                      Flexible(
-                                                        child: Column(
-                                                          children: [
-                                                            Row(
+                                                child: GestureDetector(
+                                                  child: Card(
+                                                    child: Row(
+                                                      children: [
+                                                        Flexible(
+                                                          child: Padding(
+                                                            padding:
+                                                                const EdgeInsets
+                                                                    .all(6),
+                                                            child: Column(
                                                               children: [
-                                                                Flexible(
-                                                                  child: Text(
-                                                                      _itemsBidOnByMe![
-                                                                              index]
-                                                                          .name,
-                                                                      overflow:
-                                                                          TextOverflow
+                                                                Row(
+                                                                  children: [
+                                                                    Flexible(
+                                                                      child: Text(
+                                                                          _itemsBidOnByMe![index]
+                                                                              .name,
+                                                                          overflow: TextOverflow
                                                                               .ellipsis,
-                                                                      maxLines:
-                                                                          1,
-                                                                      textAlign:
-                                                                          TextAlign
+                                                                          maxLines:
+                                                                              1,
+                                                                          textAlign: TextAlign
                                                                               .start,
-                                                                      style: Elements
-                                                                          .boldCardText),
+                                                                          style:
+                                                                              Elements.boldCardText),
+                                                                    ),
+                                                                  ],
+                                                                ),
+                                                                const SizedBox(
+                                                                    height: 2),
+                                                                Row(
+                                                                  children: [
+                                                                    Flexible(
+                                                                      child: Text(
+                                                                          '£${_itemsBidOnByMe![index].price}, '
+                                                                          '${_itemsBidOnByMe![index].numBids} ${_itemsBidOnByMe![index].numBids != 1 ? 'bids' : 'bid'}, '
+                                                                          '${_itemsBidOnByMe![index].condition != 'partsOnly' ? _itemsBidOnByMe![index].condition : 'parts only'}, '
+                                                                          'listed by ${_itemsBidOnByMe![index].seller}',
+                                                                          overflow: TextOverflow.ellipsis,
+                                                                          maxLines: 1,
+                                                                          textAlign: TextAlign.start,
+                                                                          style: Elements.cardText),
+                                                                    ),
+                                                                  ],
                                                                 ),
                                                               ],
                                                             ),
-                                                            const SizedBox(
-                                                                height: 2),
-                                                            Row(
-                                                              children: [
-                                                                Flexible(
-                                                                  child: Text(
-                                                                      '£${_itemsBidOnByMe![index].price}, '
-                                                                      '${_itemsBidOnByMe![index].numBids} ${_itemsBidOnByMe![index].numBids != 1 ? 'bids' : 'bid'}, '
-                                                                      '${_itemsBidOnByMe![index].condition != 'partsOnly' ? _itemsBidOnByMe![index].condition : 'parts only'}, '
-                                                                      'listed by ${_itemsBidOnByMe![index].seller}',
-                                                                      overflow:
-                                                                          TextOverflow
-                                                                              .ellipsis,
-                                                                      maxLines:
-                                                                          1,
-                                                                      textAlign:
-                                                                          TextAlign
-                                                                              .start,
-                                                                      style: Elements
-                                                                          .cardText),
-                                                                ),
-                                                              ],
-                                                            ),
-                                                          ],
+                                                          ),
                                                         ),
-                                                      ),
-                                                    ],
+                                                      ],
+                                                    ),
                                                   ),
-                                                  onPressed: () {
+                                                  onTap: () {
                                                     Navigator.of(context).push(
                                                         MaterialPageRoute(
                                                             builder: (_) => ItemDetail(
@@ -496,71 +488,61 @@ class _MyListingsState extends State<MyListings> {
                                               return Container(
                                                 margin:
                                                     const EdgeInsets.symmetric(
-                                                  vertical: 6,
+                                                  vertical: 2,
                                                 ),
-                                                child: ElevatedButton(
-                                                  style: ButtonStyle(
-                                                    backgroundColor:
-                                                        MaterialStateProperty
-                                                            .resolveWith<
-                                                                    Color?>(
-                                                                (states) => Colours
-                                                                    .darkGray),
-                                                  ),
-                                                  child: Row(
-                                                    children: [
-                                                      Flexible(
-                                                        child: Column(
-                                                          children: [
-                                                            Row(
+                                                child: GestureDetector(
+                                                  child: Card(
+                                                    child: Row(
+                                                      children: [
+                                                        Flexible(
+                                                          child: Padding(
+                                                            padding:
+                                                                const EdgeInsets
+                                                                    .all(6),
+                                                            child: Column(
                                                               children: [
-                                                                Flexible(
-                                                                  child: Text(
-                                                                      _endedItemsBidOnByMe![
-                                                                              index]
-                                                                          .name,
-                                                                      overflow:
-                                                                          TextOverflow
+                                                                Row(
+                                                                  children: [
+                                                                    Flexible(
+                                                                      child: Text(
+                                                                          _endedItemsBidOnByMe![index]
+                                                                              .name,
+                                                                          overflow: TextOverflow
                                                                               .ellipsis,
-                                                                      maxLines:
-                                                                          1,
-                                                                      textAlign:
-                                                                          TextAlign
+                                                                          maxLines:
+                                                                              1,
+                                                                          textAlign: TextAlign
                                                                               .start,
-                                                                      style: Elements
-                                                                          .boldCardText),
+                                                                          style:
+                                                                              Elements.boldCardText),
+                                                                    ),
+                                                                  ],
+                                                                ),
+                                                                const SizedBox(
+                                                                    height: 2),
+                                                                Row(
+                                                                  children: [
+                                                                    Flexible(
+                                                                      child: Text(
+                                                                          '£${_endedItemsBidOnByMe![index].price}, '
+                                                                          '${_endedItemsBidOnByMe![index].numBids} ${_endedItemsBidOnByMe![index].numBids != 1 ? 'bids' : 'bid'}, '
+                                                                          '${_endedItemsBidOnByMe![index].condition != 'partsOnly' ? _endedItemsBidOnByMe![index].condition : 'parts only'}, '
+                                                                          'listed by ${_endedItemsBidOnByMe![index].seller}',
+                                                                          overflow: TextOverflow.ellipsis,
+                                                                          maxLines: 1,
+                                                                          textAlign: TextAlign.start,
+                                                                          style: Elements.cardText),
+                                                                    ),
+                                                                  ],
                                                                 ),
                                                               ],
                                                             ),
-                                                            const SizedBox(
-                                                                height: 2),
-                                                            Row(
-                                                              children: [
-                                                                Flexible(
-                                                                  child: Text(
-                                                                      '£${_endedItemsBidOnByMe![index].price}, '
-                                                                      '${_endedItemsBidOnByMe![index].numBids} ${_endedItemsBidOnByMe![index].numBids != 1 ? 'bids' : 'bid'}, '
-                                                                      '${_endedItemsBidOnByMe![index].condition != 'partsOnly' ? _endedItemsBidOnByMe![index].condition : 'parts only'}, '
-                                                                      'listed by ${_endedItemsBidOnByMe![index].seller}',
-                                                                      overflow:
-                                                                          TextOverflow
-                                                                              .ellipsis,
-                                                                      maxLines:
-                                                                          1,
-                                                                      textAlign:
-                                                                          TextAlign
-                                                                              .start,
-                                                                      style: Elements
-                                                                          .cardText),
-                                                                ),
-                                                              ],
-                                                            ),
-                                                          ],
+                                                          ),
                                                         ),
-                                                      ),
-                                                    ],
+                                                      ],
+                                                    ),
                                                   ),
-                                                  onPressed: () {
+                                                  onTap: () {
                                                     Navigator.of(context).push(
                                                         MaterialPageRoute(
                                                             builder: (_) => ItemDetail(

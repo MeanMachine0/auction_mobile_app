@@ -209,56 +209,60 @@ class _BrowseState extends State<Browse> {
                             return Padding(
                               padding: const EdgeInsets.symmetric(
                                 horizontal: 20,
-                                vertical: 6,
+                                vertical: 2,
                               ),
-                              child: ElevatedButton(
-                                style: ButtonStyle(
-                                  backgroundColor:
-                                      MaterialStateProperty.resolveWith<Color?>(
-                                          (states) => Colours.darkGray),
-                                ),
-                                child: Row(
-                                  children: [
-                                    Flexible(
-                                      child: Column(
-                                        children: [
-                                          Row(
+                              child: GestureDetector(
+                                child: Card(
+                                  child: Row(
+                                    children: [
+                                      Flexible(
+                                        child: Padding(
+                                          padding: const EdgeInsets.all(6),
+                                          child: Column(
                                             children: [
-                                              Flexible(
-                                                child: Text(
-                                                    _itemsModel![index].name,
-                                                    overflow:
-                                                        TextOverflow.ellipsis,
-                                                    maxLines: 1,
-                                                    textAlign: TextAlign.start,
-                                                    style:
-                                                        Elements.boldCardText),
+                                              Row(
+                                                children: [
+                                                  Flexible(
+                                                    child: Text(
+                                                        _itemsModel![index]
+                                                            .name,
+                                                        overflow: TextOverflow
+                                                            .ellipsis,
+                                                        maxLines: 1,
+                                                        textAlign:
+                                                            TextAlign.start,
+                                                        style: Elements
+                                                            .boldCardText),
+                                                  ),
+                                                ],
+                                              ),
+                                              const SizedBox(height: 2),
+                                              Row(
+                                                children: [
+                                                  Flexible(
+                                                    child: Text(
+                                                        '£${_itemsModel![index].price}, '
+                                                        '${_itemsModel![index].numBids} ${_itemsModel![index].numBids != 1 ? 'bids' : 'bid'}, '
+                                                        '${_itemsModel![index].condition != 'partsOnly' ? _itemsModel![index].condition : 'parts only'}, '
+                                                        'listed by ${accountId == _itemsModel![index].seller ? 'you' : _itemsModel![index].seller}',
+                                                        overflow: TextOverflow
+                                                            .ellipsis,
+                                                        maxLines: 1,
+                                                        textAlign:
+                                                            TextAlign.start,
+                                                        style:
+                                                            Elements.cardText),
+                                                  ),
+                                                ],
                                               ),
                                             ],
                                           ),
-                                          const SizedBox(height: 2),
-                                          Row(
-                                            children: [
-                                              Flexible(
-                                                child: Text(
-                                                    '£${_itemsModel![index].price}, '
-                                                    '${_itemsModel![index].numBids} ${_itemsModel![index].numBids != 1 ? 'bids' : 'bid'}, '
-                                                    '${_itemsModel![index].condition != 'partsOnly' ? _itemsModel![index].condition : 'parts only'}, '
-                                                    'listed by ${accountId == _itemsModel![index].seller ? 'you' : _itemsModel![index].seller}',
-                                                    overflow:
-                                                        TextOverflow.ellipsis,
-                                                    maxLines: 1,
-                                                    textAlign: TextAlign.start,
-                                                    style: Elements.cardText),
-                                              ),
-                                            ],
-                                          ),
-                                        ],
+                                        ),
                                       ),
-                                    ),
-                                  ],
+                                    ],
+                                  ),
                                 ),
-                                onPressed: () {
+                                onTap: () {
                                   Navigator.of(context).push(MaterialPageRoute(
                                       builder: (_) => ItemDetail(
                                           itemId: _itemsModel![index].id)));
