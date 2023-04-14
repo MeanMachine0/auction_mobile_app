@@ -28,7 +28,6 @@ class _BrowseState extends State<Browse> {
   int categoryIndex = 0;
   int conditionIndex = 0;
   String sortBy = 'Price';
-  TextEditingController searchController = TextEditingController();
 
   @override
   void initState() {
@@ -66,8 +65,8 @@ class _BrowseState extends State<Browse> {
       appBar: AppBar(
           scrolledUnderElevation: 0,
           title: !widget._home
-              ? const Text('Active Items')
-              : const Text('Recently Sold Items'),
+              ? Text('Active Items (${_itemsModel!.length})')
+              : Text('Recently Sold Items (${_itemsModel!.length})'),
           actions: token != null
               ? [
                   Padding(
@@ -127,7 +126,6 @@ class _BrowseState extends State<Browse> {
                           ),
                           onPressed: () {
                             categoryIndex = index;
-                            search = searchController.text;
                             _getData();
                           },
                         ));
@@ -159,7 +157,6 @@ class _BrowseState extends State<Browse> {
                           ),
                           onPressed: () {
                             conditionIndex = index;
-                            search = searchController.text;
                             _getData();
                           },
                         ));
@@ -170,17 +167,13 @@ class _BrowseState extends State<Browse> {
             padding: const EdgeInsets.symmetric(horizontal: 30),
             child: Row(
               children: [
-                Text('${_itemsModel!.length} items',
-                    style: const TextStyle(fontSize: 16)),
-                const SizedBox(width: 10),
                 Expanded(
                   child: SizedBox(
                     height: 50,
                     child: TextField(
-                      controller: searchController,
-                      onEditingComplete: () {
+                      onSubmitted: (string) {
                         searchBool = true;
-                        search = searchController.text;
+                        search = string;
                         _getData();
                       },
                       decoration: const InputDecoration(
@@ -207,7 +200,6 @@ class _BrowseState extends State<Browse> {
                   }).toList(),
                   onChanged: (value) {
                     sortBy = value!;
-                    search = searchController.text;
                     _getData();
                   },
                 )
