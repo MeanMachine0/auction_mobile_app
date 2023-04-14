@@ -98,182 +98,169 @@ class _BrowseState extends State<Browse> {
                             style: TextStyle(color: Colours.lightGray))),
                   )
                 ]),
-      body: _itemsModel == null || _itemsModel!.isEmpty
-          ? const Center(
-              child: CircularProgressIndicator(
-                color: Colours.lightGray,
-              ),
-            )
-          : Column(
-              children: [
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 5),
-                  child: SizedBox(
-                    height: 70,
-                    child: ListView.builder(
-                        scrollDirection: Axis.horizontal,
-                        itemCount: Lists.categories.length,
-                        itemBuilder: (content, index) {
-                          return Padding(
-                              padding: const EdgeInsets.fromLTRB(6, 0, 6, 10),
-                              child: ElevatedButton(
-                                style: ButtonStyle(
-                                  backgroundColor:
-                                      MaterialStateProperty.resolveWith<Color?>(
-                                          (states) => categoryIndex == index
-                                              ? Colours.deepGray
-                                              : Colours.darkGray),
-                                ),
-                                child: Text(
-                                  Lists.categories[index],
-                                  style:
-                                      const TextStyle(color: Colours.lightGray),
-                                ),
-                                onPressed: () {
-                                  categoryIndex = index;
-                                  _getData();
-                                },
-                              ));
-                        }),
-                  ),
-                ),
-                const SizedBox(height: 0),
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 5),
-                  child: SizedBox(
-                    height: 55,
-                    child: ListView.builder(
-                        scrollDirection: Axis.horizontal,
-                        itemCount: Lists.conditions.length,
-                        itemBuilder: (content, index) {
-                          return Padding(
-                              padding: const EdgeInsets.fromLTRB(6, 0, 6, 10),
-                              child: ElevatedButton(
-                                style: ButtonStyle(
-                                  backgroundColor:
-                                      MaterialStateProperty.resolveWith<Color?>(
-                                          (states) => conditionIndex == index
-                                              ? Colours.deepGray
-                                              : Colours.darkGray),
-                                ),
-                                child: Text(
-                                  Lists.conditions[index],
-                                  style:
-                                      const TextStyle(color: Colours.lightGray),
-                                ),
-                                onPressed: () {
-                                  conditionIndex = index;
-                                  _getData();
-                                },
-                              ));
-                        }),
-                  ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 30),
-                  child: Row(
-                    children: [
-                      Expanded(
-                          child: Text('${_itemsModel!.length} items',
-                              style: const TextStyle(fontSize: 16))),
-                      DropdownButton(
-                        icon: const Icon(
-                          Icons.compare_arrows,
-                          color: Colours.lightGray,
-                        ),
-                        value: sortBy,
-                        items: Lists.sorters
-                            .map<DropdownMenuItem<String>>((String value) {
-                          return DropdownMenuItem<String>(
-                            value: value,
-                            child: Text(value),
-                          );
-                        }).toList(),
-                        onChanged: (value) {
-                          sortBy = value!;
-                          _getData();
-                        },
-                      )
-                    ],
-                  ),
-                ),
-                const SizedBox(height: 10),
-                Expanded(
-                  child: _itemsModel!.isEmpty
-                      ? const Center(
+      body: Column(
+        children: [
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 5),
+            child: SizedBox(
+              height: 70,
+              child: ListView.builder(
+                  scrollDirection: Axis.horizontal,
+                  itemCount: Lists.categories.length,
+                  itemBuilder: (content, index) {
+                    return Padding(
+                        padding: const EdgeInsets.fromLTRB(6, 0, 6, 10),
+                        child: ElevatedButton(
+                          style: ButtonStyle(
+                            backgroundColor:
+                                MaterialStateProperty.resolveWith<Color?>(
+                                    (states) => categoryIndex == index
+                                        ? Colours.deepGray
+                                        : Colours.darkGray),
+                          ),
                           child: Text(
-                              'No Listings to View in this category-condition.'))
-                      : ListView.builder(
-                          itemCount: _itemsModel!.length,
-                          itemBuilder: (context, index) {
-                            return Padding(
-                              padding: const EdgeInsets.symmetric(
-                                horizontal: 20,
-                                vertical: 2,
-                              ),
-                              child: GestureDetector(
-                                child: Card(
-                                  child: Row(
-                                    children: [
-                                      Flexible(
-                                        child: Padding(
-                                          padding: const EdgeInsets.all(6),
-                                          child: Column(
-                                            children: [
-                                              Row(
-                                                children: [
-                                                  Flexible(
-                                                    child: Text(
-                                                        _itemsModel![index]
-                                                            .name,
-                                                        overflow: TextOverflow
-                                                            .ellipsis,
-                                                        maxLines: 1,
-                                                        textAlign:
-                                                            TextAlign.start,
-                                                        style: Elements
-                                                            .boldCardText),
-                                                  ),
-                                                ],
-                                              ),
-                                              const SizedBox(height: 2),
-                                              Row(
-                                                children: [
-                                                  Flexible(
-                                                    child: Text(
-                                                        '£${_itemsModel![index].price}, '
-                                                        '${_itemsModel![index].numBids} ${_itemsModel![index].numBids != 1 ? 'bids' : 'bid'}, '
-                                                        '${_itemsModel![index].condition != 'partsOnly' ? _itemsModel![index].condition : 'parts only'}, '
-                                                        'listed by ${accountId == _itemsModel![index].seller ? 'you' : _itemsModel![index].seller}',
-                                                        overflow: TextOverflow
-                                                            .ellipsis,
-                                                        maxLines: 1,
-                                                        textAlign:
-                                                            TextAlign.start,
-                                                        style:
-                                                            Elements.cardText),
-                                                  ),
-                                                ],
-                                              ),
-                                            ],
-                                          ),
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                                onTap: () {
-                                  Navigator.of(context).push(MaterialPageRoute(
-                                      builder: (_) => ItemDetail(
-                                          itemId: _itemsModel![index].id)));
-                                },
-                              ),
-                            );
+                            Lists.categories[index],
+                            style: const TextStyle(color: Colours.lightGray),
+                          ),
+                          onPressed: () {
+                            categoryIndex = index;
+                            _getData();
                           },
-                        ),
-                ),
+                        ));
+                  }),
+            ),
+          ),
+          const SizedBox(height: 0),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 5),
+            child: SizedBox(
+              height: 55,
+              child: ListView.builder(
+                  scrollDirection: Axis.horizontal,
+                  itemCount: Lists.conditions.length,
+                  itemBuilder: (content, index) {
+                    return Padding(
+                        padding: const EdgeInsets.fromLTRB(6, 0, 6, 10),
+                        child: ElevatedButton(
+                          style: ButtonStyle(
+                            backgroundColor:
+                                MaterialStateProperty.resolveWith<Color?>(
+                                    (states) => conditionIndex == index
+                                        ? Colours.deepGray
+                                        : Colours.darkGray),
+                          ),
+                          child: Text(
+                            Lists.conditions[index],
+                            style: const TextStyle(color: Colours.lightGray),
+                          ),
+                          onPressed: () {
+                            conditionIndex = index;
+                            _getData();
+                          },
+                        ));
+                  }),
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 30),
+            child: Row(
+              children: [
+                Expanded(
+                    child: Text('${_itemsModel!.length} items',
+                        style: const TextStyle(fontSize: 16))),
+                DropdownButton(
+                  icon: const Icon(
+                    Icons.compare_arrows,
+                    color: Colours.lightGray,
+                  ),
+                  value: sortBy,
+                  items: Lists.sorters
+                      .map<DropdownMenuItem<String>>((String value) {
+                    return DropdownMenuItem<String>(
+                      value: value,
+                      child: Text(value),
+                    );
+                  }).toList(),
+                  onChanged: (value) {
+                    sortBy = value!;
+                    _getData();
+                  },
+                )
               ],
             ),
+          ),
+          const SizedBox(height: 10),
+          Expanded(
+            child: _itemsModel!.isEmpty
+                ? const Center(
+                    child:
+                        Text('No Listings to View in this category-condition.'))
+                : ListView.builder(
+                    itemCount: _itemsModel!.length,
+                    itemBuilder: (context, index) {
+                      return Padding(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 20,
+                          vertical: 2,
+                        ),
+                        child: GestureDetector(
+                          child: Card(
+                            child: Row(
+                              children: [
+                                Flexible(
+                                  child: Padding(
+                                    padding: const EdgeInsets.all(6),
+                                    child: Column(
+                                      children: [
+                                        Row(
+                                          children: [
+                                            Flexible(
+                                              child: Text(
+                                                  _itemsModel![index].name,
+                                                  overflow:
+                                                      TextOverflow.ellipsis,
+                                                  maxLines: 1,
+                                                  textAlign: TextAlign.start,
+                                                  style: Elements.boldCardText),
+                                            ),
+                                          ],
+                                        ),
+                                        const SizedBox(height: 2),
+                                        Row(
+                                          children: [
+                                            Flexible(
+                                              child: Text(
+                                                  '£${_itemsModel![index].price}, '
+                                                  '${_itemsModel![index].numBids} ${_itemsModel![index].numBids != 1 ? 'bids' : 'bid'}, '
+                                                  '${_itemsModel![index].condition != 'partsOnly' ? _itemsModel![index].condition : 'parts only'}, '
+                                                  'listed by ${accountId == _itemsModel![index].seller ? 'you' : _itemsModel![index].seller}',
+                                                  overflow:
+                                                      TextOverflow.ellipsis,
+                                                  maxLines: 1,
+                                                  textAlign: TextAlign.start,
+                                                  style: Elements.cardText),
+                                            ),
+                                          ],
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                          onTap: () {
+                            Navigator.of(context).push(MaterialPageRoute(
+                                builder: (_) => ItemDetail(
+                                    itemId: _itemsModel![index].id)));
+                          },
+                        ),
+                      );
+                    },
+                  ),
+          ),
+        ],
+      ),
     );
   }
 }
