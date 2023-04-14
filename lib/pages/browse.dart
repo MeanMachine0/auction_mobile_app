@@ -23,9 +23,12 @@ class _BrowseState extends State<Browse> {
   late String? token = '';
   late String? username = '';
   late String? password = '';
+  bool searchBool = false;
+  String search = '';
   int categoryIndex = 0;
   int conditionIndex = 0;
   String sortBy = 'Price';
+  TextEditingController searchController = TextEditingController();
 
   @override
   void initState() {
@@ -45,8 +48,8 @@ class _BrowseState extends State<Browse> {
         Dicts.conditions[Lists.conditions[conditionIndex]] ?? 'all';
     // ignore: no_leading_underscores_for_local_identifiers
     String _sortBy = Dicts.sorters[sortBy]!;
-    _itemsModel = (await ApiService()
-        .getItems(widget._home, widget._home, category, condition, _sortBy));
+    _itemsModel = (await ApiService().getItems(widget._home, widget._home,
+        searchBool, search, category, condition, _sortBy));
     setState(() {});
   }
 
@@ -124,6 +127,7 @@ class _BrowseState extends State<Browse> {
                           ),
                           onPressed: () {
                             categoryIndex = index;
+                            search = searchController.text;
                             _getData();
                           },
                         ));
@@ -155,6 +159,7 @@ class _BrowseState extends State<Browse> {
                           ),
                           onPressed: () {
                             conditionIndex = index;
+                            search = searchController.text;
                             _getData();
                           },
                         ));
@@ -165,9 +170,28 @@ class _BrowseState extends State<Browse> {
             padding: const EdgeInsets.symmetric(horizontal: 30),
             child: Row(
               children: [
+                Text('${_itemsModel!.length} items',
+                    style: const TextStyle(fontSize: 16)),
+                const SizedBox(width: 10),
                 Expanded(
-                    child: Text('${_itemsModel!.length} items',
-                        style: const TextStyle(fontSize: 16))),
+                  child: SizedBox(
+                    height: 50,
+                    child: TextField(
+                      controller: searchController,
+                      onEditingComplete: () {
+                        searchBool = true;
+                        search = searchController.text;
+                        _getData();
+                      },
+                      decoration: const InputDecoration(
+                        label: Text('Search'),
+                        suffixIcon: Icon(Icons.search),
+                        iconColor: Colours.lightGray,
+                      ),
+                    ),
+                  ),
+                ),
+                const SizedBox(width: 10),
                 DropdownButton(
                   icon: const Icon(
                     Icons.compare_arrows,
@@ -183,6 +207,7 @@ class _BrowseState extends State<Browse> {
                   }).toList(),
                   onChanged: (value) {
                     sortBy = value!;
+                    search = searchController.text;
                     _getData();
                   },
                 )
@@ -194,7 +219,7 @@ class _BrowseState extends State<Browse> {
             child: _itemsModel!.isEmpty
                 ? const Center(
                     child:
-                        Text('No Listings to View in this category-condition.'))
+                        Text('No Listings to View in this Category-Condition.'))
                 : ListView.builder(
                     itemCount: _itemsModel!.length,
                     itemBuilder: (context, index) {

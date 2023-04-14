@@ -76,13 +76,15 @@ class ApiService {
     return null;
   }
 
-  Future<List<ItemsModel>?> getItems(bool ended, bool sold, String category,
-      String condition, String sortBy) async {
+  Future<List<ItemsModel>?> getItems(bool ended, bool sold, bool searchBool,
+      String search, String category, String condition, String sortBy) async {
     try {
       var url = Uri.parse('${baseUrl}items/');
       var response = await http.get(url, headers: {
         'ended': '$ended',
         'sold': '$sold',
+        'searchBool': '$searchBool',
+        'search': search,
         'category': category,
         'condition': condition,
         'sortBy': sortBy
