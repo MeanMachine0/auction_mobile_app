@@ -47,7 +47,7 @@ class Lists {
   static List<String> sorters = [
     'Price',
     'Name',
-    'Time Remaining',
+    'End',
   ];
 }
 
@@ -82,7 +82,7 @@ class Dicts {
   static Map<String, String> sorters = {
     'Price': 'price',
     'Name': 'name',
-    'Time Remaining': 'endDateTime',
+    'End': 'endDateTime',
   };
 }
 
