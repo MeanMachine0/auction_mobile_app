@@ -205,7 +205,7 @@ class _MyListingsState extends State<MyListings> {
                                                         child: Padding(
                                                           padding:
                                                               const EdgeInsets
-                                                                  .all(6),
+                                                                  .all(10),
                                                           child: Column(
                                                             children: [
                                                               Row(
@@ -305,7 +305,7 @@ class _MyListingsState extends State<MyListings> {
                                                         child: Padding(
                                                           padding:
                                                               const EdgeInsets
-                                                                  .all(6),
+                                                                  .all(10),
                                                           child: Column(
                                                             children: [
                                                               Row(
@@ -406,7 +406,7 @@ class _MyListingsState extends State<MyListings> {
                                                           child: Padding(
                                                             padding:
                                                                 const EdgeInsets
-                                                                    .all(6),
+                                                                    .all(10),
                                                             child: Column(
                                                               children: [
                                                                 Row(
@@ -500,7 +500,7 @@ class _MyListingsState extends State<MyListings> {
                                                           child: Padding(
                                                             padding:
                                                                 const EdgeInsets
-                                                                    .all(6),
+                                                                    .all(10),
                                                             child: Column(
                                                               children: [
                                                                 Row(

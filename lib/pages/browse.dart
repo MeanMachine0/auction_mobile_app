@@ -237,7 +237,7 @@ class _BrowseState extends State<Browse> {
                               children: [
                                 Flexible(
                                   child: Padding(
-                                    padding: const EdgeInsets.all(6),
+                                    padding: const EdgeInsets.all(10),
                                     child: Column(
                                       children: [
                                         Row(
