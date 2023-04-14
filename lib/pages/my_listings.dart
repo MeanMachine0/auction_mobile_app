@@ -177,8 +177,9 @@ class _MyListingsState extends State<MyListings> {
                                   backgroundColor: Colours.deepGray,
                                   headerBuilder:
                                       (BuildContext context, bool isExpanded) {
-                                    return const ListTile(
-                                      title: Text('Active Listings',
+                                    return ListTile(
+                                      title: Text(
+                                          'Active Listings (${_itemsModel!.length})',
                                           style: Elements.subHeader),
                                     );
                                   },
@@ -276,8 +277,9 @@ class _MyListingsState extends State<MyListings> {
                                   backgroundColor: Colours.deepGray,
                                   headerBuilder:
                                       (BuildContext context, bool isExpanded) {
-                                    return const ListTile(
-                                      title: Text('Inactive Listings',
+                                    return ListTile(
+                                      title: Text(
+                                          'Inactive Listings (${_endedItemsModel!.length})',
                                           style: Elements.subHeader),
                                     );
                                   },
@@ -376,9 +378,9 @@ class _MyListingsState extends State<MyListings> {
                                     backgroundColor: Colours.deepGray,
                                     headerBuilder: (BuildContext context,
                                         bool isExpanded) {
-                                      return const ListTile(
+                                      return ListTile(
                                         title: Text(
-                                            'Active Listings Bid on by Me',
+                                            'Active Listings Bid on by Me (${_itemsBidOnByMe!.length})',
                                             style: Elements.subHeader),
                                       );
                                     },
@@ -469,9 +471,9 @@ class _MyListingsState extends State<MyListings> {
                                     backgroundColor: Colours.deepGray,
                                     headerBuilder: (BuildContext context,
                                         bool isExpanded) {
-                                      return const ListTile(
+                                      return ListTile(
                                         title: Text(
-                                            'Inactive Listings Bid on by Me',
+                                            'Inactive Listings Bid on by Me (${_endedItemsBidOnByMe!.length})',
                                             style: Elements.subHeader),
                                       );
                                     },
