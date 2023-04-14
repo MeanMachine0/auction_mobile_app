@@ -19,13 +19,13 @@ class Browse extends StatefulWidget {
 
 class _BrowseState extends State<Browse> {
   late List<ItemsModel>? _itemsModel = [];
-  late List<ItemsModel>? items = [];
   late int? accountId = 0;
   late String? token = '';
   late String? username = '';
   late String? password = '';
   int categoryIndex = 0;
-  int filterIndex = 0;
+  int conditionIndex = 0;
+  String sortBy = 'Price';
 
   @override
   void initState() {
@@ -39,8 +39,14 @@ class _BrowseState extends State<Browse> {
     token = prefs.getString('token');
     username = prefs.getString('username');
     password = prefs.getString('password');
-    _itemsModel = (await ApiService().getItems(widget._home, widget._home));
-    items = _itemsModel;
+    String category =
+        Dicts.categories[Lists.categories[categoryIndex]] ?? 'all';
+    String condition =
+        Dicts.conditions[Lists.conditions[conditionIndex]] ?? 'all';
+    // ignore: no_leading_underscores_for_local_identifiers
+    String _sortBy = Dicts.sorters[sortBy]!;
+    _itemsModel = (await ApiService()
+        .getItems(widget._home, widget._home, category, condition, _sortBy));
     setState(() {});
   }
 
@@ -125,35 +131,7 @@ class _BrowseState extends State<Browse> {
                                 ),
                                 onPressed: () {
                                   categoryIndex = index;
-                                  items = categoryIndex == 0 && filterIndex == 0
-                                      ? _itemsModel!
-                                      : filterIndex == 0
-                                          ? _itemsModel!
-                                              .where((item) =>
-                                                  item.category ==
-                                                  Dicts.categories[
-                                                      Lists.categories[
-                                                          categoryIndex]])
-                                              .toList()
-                                          : categoryIndex == 0
-                                              ? _itemsModel!
-                                                  .where((item) =>
-                                                      item.condition ==
-                                                      Dicts.conditions[
-                                                          Lists.conditions[
-                                                              filterIndex]])
-                                                  .toList()
-                                              : _itemsModel!
-                                                  .where((item) =>
-                                                      item.category ==
-                                                          Dicts.categories[Lists
-                                                                  .categories[
-                                                              categoryIndex]] &&
-                                                      item.condition ==
-                                                          Dicts.conditions[Lists
-                                                              .conditions[filterIndex]])
-                                                  .toList();
-                                  setState(() {});
+                                  _getData();
                                 },
                               ));
                         }),
@@ -174,7 +152,7 @@ class _BrowseState extends State<Browse> {
                                 style: ButtonStyle(
                                   backgroundColor:
                                       MaterialStateProperty.resolveWith<Color?>(
-                                          (states) => filterIndex == index
+                                          (states) => conditionIndex == index
                                               ? Colours.deepGray
                                               : Colours.darkGray),
                                 ),
@@ -184,49 +162,49 @@ class _BrowseState extends State<Browse> {
                                       const TextStyle(color: Colours.lightGray),
                                 ),
                                 onPressed: () {
-                                  filterIndex = index;
-                                  items = categoryIndex == 0 && filterIndex == 0
-                                      ? _itemsModel!
-                                      : filterIndex == 0
-                                          ? _itemsModel!
-                                              .where((item) =>
-                                                  item.category ==
-                                                  Dicts.categories[
-                                                      Lists.categories[
-                                                          categoryIndex]])
-                                              .toList()
-                                          : categoryIndex == 0
-                                              ? _itemsModel!
-                                                  .where((item) =>
-                                                      item.condition ==
-                                                      Dicts.conditions[
-                                                          Lists.conditions[
-                                                              filterIndex]])
-                                                  .toList()
-                                              : _itemsModel!
-                                                  .where((item) =>
-                                                      item.category ==
-                                                          Dicts.categories[Lists
-                                                                  .categories[
-                                                              categoryIndex]] &&
-                                                      item.condition ==
-                                                          Dicts.conditions[Lists
-                                                              .conditions[filterIndex]])
-                                                  .toList();
-                                  setState(() {});
+                                  conditionIndex = index;
+                                  _getData();
                                 },
                               ));
                         }),
                   ),
                 ),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 30),
+                  child: Row(
+                    children: [
+                      Expanded(
+                          child: Text('${_itemsModel!.length} items',
+                              style: const TextStyle(fontSize: 16))),
+                      DropdownButton(
+                        icon: const Icon(
+                          Icons.compare_arrows,
+                          color: Colours.lightGray,
+                        ),
+                        value: sortBy,
+                        items: Lists.sorters
+                            .map<DropdownMenuItem<String>>((String value) {
+                          return DropdownMenuItem<String>(
+                            value: value,
+                            child: Text(value),
+                          );
+                        }).toList(),
+                        onChanged: (value) {
+                          sortBy = value!;
+                          _getData();
+                        },
+                      )
+                    ],
+                  ),
+                ),
                 const SizedBox(height: 10),
                 Expanded(
-                  child: items!.isEmpty
+                  child: _itemsModel!.isEmpty
                       ? const Center(
                           child: Text(
                               'No Listings to View in this category-condition.'))
                       : ListView.builder(
-                          itemCount: items!.length,
+                          itemCount: _itemsModel!.length,
                           itemBuilder: (context, index) {
                             return Padding(
                               padding: const EdgeInsets.symmetric(
@@ -247,7 +225,8 @@ class _BrowseState extends State<Browse> {
                                           Row(
                                             children: [
                                               Flexible(
-                                                child: Text(items![index].name,
+                                                child: Text(
+                                                    _itemsModel![index].name,
                                                     overflow:
                                                         TextOverflow.ellipsis,
                                                     maxLines: 1,
@@ -262,10 +241,10 @@ class _BrowseState extends State<Browse> {
                                             children: [
                                               Flexible(
                                                 child: Text(
-                                                    '£${items![index].price}, '
-                                                    '${items![index].numBids} ${items![index].numBids != 1 ? 'bids' : 'bid'}, '
-                                                    '${items![index].condition != 'partsOnly' ? items![index].condition : 'parts only'}, '
-                                                    'listed by ${accountId == items![index].seller ? 'you' : items![index].seller}',
+                                                    '£${_itemsModel![index].price}, '
+                                                    '${_itemsModel![index].numBids} ${_itemsModel![index].numBids != 1 ? 'bids' : 'bid'}, '
+                                                    '${_itemsModel![index].condition != 'partsOnly' ? _itemsModel![index].condition : 'parts only'}, '
+                                                    'listed by ${accountId == _itemsModel![index].seller ? 'you' : _itemsModel![index].seller}',
                                                     overflow:
                                                         TextOverflow.ellipsis,
                                                     maxLines: 1,
@@ -282,7 +261,7 @@ class _BrowseState extends State<Browse> {
                                 onPressed: () {
                                   Navigator.of(context).push(MaterialPageRoute(
                                       builder: (_) => ItemDetail(
-                                          itemId: items![index].id)));
+                                          itemId: _itemsModel![index].id)));
                                 },
                               ),
                             );
