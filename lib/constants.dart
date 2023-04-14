@@ -43,6 +43,12 @@ class Lists {
     'Media',
     'Others',
   ];
+
+  static List<String> sorters = [
+    'Price',
+    'Name',
+    'Time Remaining',
+  ];
 }
 
 class Dicts {
@@ -71,6 +77,12 @@ class Dicts {
     'Collectables & Art': 'cA',
     'Media': 'mda',
     'Other': 'o',
+  };
+
+  static Map<String, String> sorters = {
+    'Price': 'price',
+    'Name': 'name',
+    'Time Remaining': 'endDateTime',
   };
 }
 
