@@ -1,11 +1,20 @@
+import 'dart:developer';
+
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:auction_mobile_app/pages/base.dart';
 import 'package:auction_mobile_app/constants.dart';
 import 'package:intl/intl.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 
-void main() {
+void main() async {
   Intl.defaultLocale = 'en-GB';
+  WidgetsFlutterBinding.ensureInitialized();
+  try {
+    await Firebase.initializeApp();
+  } catch (e) {
+    log(e.toString());
+  }
   runApp(const MyApp());
 }
 
