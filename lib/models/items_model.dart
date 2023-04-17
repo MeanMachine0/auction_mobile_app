@@ -26,6 +26,7 @@ class ItemsModel {
     this.destinationAddress,
     this.transactionSuccess,
     required this.category,
+    required this.imageName,
   });
 
   int id;
@@ -46,6 +47,7 @@ class ItemsModel {
   String? destinationAddress;
   bool? transactionSuccess;
   String category;
+  String imageName;
 
   factory ItemsModel.fromJson(Map<String, dynamic> json) => ItemsModel(
         id: json["id"],
@@ -66,6 +68,7 @@ class ItemsModel {
         destinationAddress: json["destinationAddress"],
         transactionSuccess: json["transactionSuccess"],
         category: json["category"],
+        imageName: json["imageName"],
       );
 
   Map<String, dynamic> toJson() => {
@@ -86,5 +89,6 @@ class ItemsModel {
         "destinationAddress": destinationAddress,
         "transactionSuccess": transactionSuccess,
         "category": category,
+        "imageName": imageName,
       };
 }

@@ -1,16 +1,17 @@
 // ignore_for_file: avoid_init_to_null
 
 import 'dart:io';
-
 import 'package:auction_mobile_app/pages/item_detail.dart';
 import 'package:auction_mobile_app/pages/login.dart';
 import 'package:flutter/material.dart';
-
 import 'package:auction_mobile_app/services/api_service.dart';
 import 'package:auction_mobile_app/constants.dart';
 import 'package:flutter/services.dart';
-
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:firebase_storage/firebase_storage.dart';
+import 'package:permission_handler/permission_handler.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:path/path.dart' as Path;
 
 class ListAnItem extends StatefulWidget {
   const ListAnItem({Key? key}) : super(key: key);
@@ -77,6 +78,10 @@ class _ListAnItemState extends State<ListAnItem> {
   late int? accountId = null;
   late String? token = null;
   late String? username = null;
+  File? imageFile;
+  String? imageName;
+  String imageErrorMessage = 'Please select or take a picture.';
+  bool displayImageErrorMessage = false;
 
   @override
   void initState() {
@@ -97,6 +102,14 @@ class _ListAnItemState extends State<ListAnItem> {
       ApiService().logout(token);
       _getData();
     }
+  }
+
+  Future<void> uploadFile(File file) async {
+    String fileName = Path.basename(file.path);
+    Reference storageReference =
+        FirebaseStorage.instance.ref().child('uploads/images/$fileName');
+    imageName = storageReference.name;
+    await storageReference.putFile(file);
   }
 
   @override
@@ -248,6 +261,7 @@ class _ListAnItemState extends State<ListAnItem> {
                       ),
                       const SizedBox(height: 13),
                       InputDatePickerFormField(
+                        keyboardType: TextInputType.text,
                         firstDate: DateTime.now(),
                         lastDate: DateTime.now().add(const Duration(days: 30)),
                         fieldLabelText: 'End Date',
@@ -262,7 +276,7 @@ class _ListAnItemState extends State<ListAnItem> {
                       const SizedBox(height: 13),
                       TextFormField(
                           controller: endTimeController,
-                          keyboardType: TextInputType.datetime,
+                          keyboardType: TextInputType.text,
                           inputFormatters: [
                             RegexInputFormatter([
                               RegExp(r'[0-2]'),
@@ -312,6 +326,7 @@ class _ListAnItemState extends State<ListAnItem> {
                       ),
                       const SizedBox(height: 13),
                       DropdownButtonFormField<String>(
+                        style: const TextStyle(overflow: TextOverflow.ellipsis),
                         decoration: const InputDecoration(
                           label: Text('Category'),
                         ),
@@ -330,15 +345,68 @@ class _ListAnItemState extends State<ListAnItem> {
                             .map<DropdownMenuItem<String>>((String value) {
                           return DropdownMenuItem<String>(
                             value: value,
-                            child: Text(value),
+                            child: Text(
+                              value,
+                              style: const TextStyle(
+                                  overflow: TextOverflow.ellipsis),
+                            ),
                           );
                         }).toList(),
                       ),
                       const SizedBox(height: 13),
+                      const Text(
+                        'Image',
+                        style: TextStyle(fontSize: 18),
+                      ),
+                      const SizedBox(height: 2),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          ElevatedButton(
+                            onPressed: () async {
+                              final ImagePicker picker = ImagePicker();
+                              XFile? imageXFile = await picker.pickImage(
+                                  source: ImageSource.gallery);
+                              if (imageXFile != null) {
+                                imageFile = File(imageXFile.path);
+                              }
+                              setState(() {});
+                            },
+                            child: const Icon(
+                              Icons.photo_library,
+                              color: Colours.lightGray,
+                            ),
+                          ),
+                          const SizedBox(width: 8),
+                          ElevatedButton(
+                              onPressed: () async {
+                                final ImagePicker picker = ImagePicker();
+                                XFile? imageXFile = await picker.pickImage(
+                                    source: ImageSource.camera);
+                                if (imageXFile != null) {
+                                  imageFile = File(imageXFile.path);
+                                }
+                                setState(() {});
+                              },
+                              child: const Icon(
+                                Icons.camera_alt,
+                                color: Colours.lightGray,
+                              )),
+                        ],
+                      ),
+                      const SizedBox(height: 13),
+                      imageFile != null
+                          ? Image.file(imageFile!)
+                          : displayImageErrorMessage
+                              ? Text(imageErrorMessage,
+                                  style: const TextStyle(color: Colours.red))
+                              : const SizedBox(height: 0),
+                      const SizedBox(height: 13),
                       ElevatedButton(
                           onPressed: () async {
                             listFormKey.currentState!.save();
-                            if (listFormKey.currentState!.validate()) {
+                            if (listFormKey.currentState!.validate() &&
+                                imageFile != null) {
                               ApiService apiService = ApiService();
                               try {
                                 conditionChoice =
@@ -355,6 +423,7 @@ class _ListAnItemState extends State<ListAnItem> {
                               int _minutes = int.parse(hoursMinutes[1]);
                               DateTime endDateTime = endDate.add(
                                   Duration(hours: _hours, minutes: _minutes));
+                              await uploadFile(imageFile!);
                               int itemId = await apiService.createItem(
                                 itemNameController.text,
                                 double.parse(startingPriceController.text),
@@ -365,6 +434,7 @@ class _ListAnItemState extends State<ListAnItem> {
                                 acceptReturns,
                                 descriptionController.text,
                                 categoryChoice,
+                                imageName!,
                                 accountId!,
                                 token!,
                               );
@@ -386,6 +456,10 @@ class _ListAnItemState extends State<ListAnItem> {
                               setState(() {});
                               Navigator.of(context).push(MaterialPageRoute(
                                   builder: (_) => ItemDetail(itemId: itemId)));
+                            } else if (imageFile == null) {
+                              setState(() {
+                                displayImageErrorMessage = true;
+                              });
                             }
                           },
                           child: const Text(

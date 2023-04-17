@@ -2,13 +2,12 @@ import 'dart:convert';
 import 'dart:developer';
 
 import 'package:http/http.dart' as http;
-import 'package:auction_mobile_app/models/user_model.dart';
 import 'package:auction_mobile_app/models/accounts_model.dart';
 import 'package:auction_mobile_app/models/items_model.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class ApiService {
-  static String baseUrl = 'http://10.0.2.2:8000/api/';
+  static String baseUrl = 'https://6066-90-240-130-51.ngrok-free.app/api/';
   Future<List<String>?> login(String username, String password) async {
     try {
       Map<String, dynamic> data = {'username': username, 'password': password};
@@ -116,6 +115,7 @@ class ApiService {
     bool acceptsReturns,
     String description,
     String category,
+    String imageName,
     int sellerId,
     String token,
   ) async {
@@ -131,6 +131,7 @@ class ApiService {
         'acceptsReturns': acceptsReturns,
         'description': description,
         'category': category,
+        'imageName': imageName,
         'seller': sellerId,
       };
       var response = await http.post(url, body: json.encode(data), headers: {

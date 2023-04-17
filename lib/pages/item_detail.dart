@@ -1,5 +1,6 @@
 import 'package:auction_mobile_app/constants.dart';
 import 'package:auction_mobile_app/pages/my_listings.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 
 import 'package:flutter/services.dart';
@@ -29,6 +30,7 @@ class _ItemDetailState extends State<ItemDetail> {
   var messageColour = Colours.lightGray;
   bool IAmTheSeller = false;
   bool IAmTheTopBidder = false;
+  String? downloadURL;
 
   @override
   void initState() {
@@ -47,13 +49,20 @@ class _ItemDetailState extends State<ItemDetail> {
     IAmTheTopBidder = IAmTheSeller
         ? false
         : await apiService.amITheBuyer(itemModel!.id, token, false);
-
+    downloadURL = await getDownloadURL(
+        FirebaseConstants.uploadedImages + itemModel!.imageName);
     setState(() {});
   }
 
   String formatDateTime(DateTime dateTime) {
     var formatter = DateFormat('MMM d y \'at\' HH:mm');
     return formatter.format(dateTime);
+  }
+
+  Future<String> getDownloadURL(String url) async {
+    Reference reference = FirebaseStorage.instance.refFromURL(url);
+    String downloadURL = await reference.getDownloadURL();
+    return downloadURL;
   }
 
   @override
@@ -279,6 +288,26 @@ class _ItemDetailState extends State<ItemDetail> {
                       ),
                     ),
                   ),
+                  const SizedBox(height: 20),
+                  if (downloadURL != null)
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 20),
+                      child: Image.network(
+                        downloadURL!,
+                        loadingBuilder: ((context, child, loadingProgress) {
+                          if (loadingProgress == null) return child;
+                          return Center(
+                            child: CircularProgressIndicator(
+                              color: Colours.lightBlue,
+                              value: loadingProgress.expectedTotalBytes != null
+                                  ? loadingProgress.cumulativeBytesLoaded /
+                                      loadingProgress.expectedTotalBytes!
+                                  : null,
+                            ),
+                          );
+                        }),
+                      ),
+                    ),
                   const SizedBox(height: 20),
                   SizedBox(
                     child: itemModel!.ended
