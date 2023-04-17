@@ -48,5 +48,3 @@ firebase_options.dart
 google-services.json
 firebase_app_id_file.json
 *.plist
-/generated_*/
-
