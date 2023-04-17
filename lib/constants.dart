@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 
-class ApiConstants {}
-
 class Colours {
   static const lightBlue = Color.fromARGB(255, 173, 216, 230);
   static const darkGray = Color.fromARGB(255, 84, 84, 84);
@@ -110,4 +108,9 @@ class Elements {
     fontWeight: FontWeight.bold,
     color: Colours.lightGray,
   );
+}
+
+class FirebaseConstants {
+  static const basePath = 'gs://auction-mobile-app.appspot.com/';
+  static const uploadedImages = '${basePath}uploads/images/';
 }
