@@ -8,6 +8,8 @@ import 'package:auction_mobile_app/constants.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 
+import '../widgets/item_card_row.dart';
+
 class Browse extends StatefulWidget {
   final bool _home;
   const Browse({Key? key, required bool home})
@@ -52,9 +54,6 @@ class _BrowseState extends State<Browse> {
     String _sortBy = Dicts.sorters[sortBy]!;
     _itemsModel = (await ApiService().getItems(widget._home, widget._home,
         searchBool, search, category, condition, _sortBy, ascending));
-    Reference reference = FirebaseStorage.instance
-        .refFromURL('${FirebaseConstants.uploadedImages}50/thumbNail.jpeg');
-    downloadURL = await reference.getDownloadURL();
     setState(() {});
   }
 
@@ -63,6 +62,13 @@ class _BrowseState extends State<Browse> {
       ApiService().logout(token);
       _getData();
     }
+  }
+
+  Future<String> getDownloadURL(int index) async {
+    Reference reference = FirebaseStorage.instance.refFromURL(
+        '${FirebaseConstants.uploadedImages}${_itemsModel![index].id}/thumbNail.jpeg');
+    downloadURL = await reference.getDownloadURL();
+    return downloadURL!;
   }
 
   @override
@@ -111,13 +117,13 @@ class _BrowseState extends State<Browse> {
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 5),
             child: SizedBox(
-              height: 70,
+              height: 60,
               child: ListView.builder(
                   scrollDirection: Axis.horizontal,
                   itemCount: Lists.categories.length,
                   itemBuilder: (content, index) {
                     return Padding(
-                        padding: const EdgeInsets.fromLTRB(6, 0, 6, 10),
+                        padding: const EdgeInsets.fromLTRB(5, 0, 5, 10),
                         child: ElevatedButton(
                           style: ButtonStyle(
                             backgroundColor:
@@ -141,13 +147,13 @@ class _BrowseState extends State<Browse> {
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 5),
             child: SizedBox(
-              height: 55,
+              height: 50,
               child: ListView.builder(
                   scrollDirection: Axis.horizontal,
                   itemCount: Lists.conditions.length,
                   itemBuilder: (content, index) {
                     return Padding(
-                        padding: const EdgeInsets.fromLTRB(6, 0, 6, 10),
+                        padding: const EdgeInsets.fromLTRB(3, 0, 3, 10),
                         child: ElevatedButton(
                           style: ButtonStyle(
                             backgroundColor:
@@ -158,7 +164,10 @@ class _BrowseState extends State<Browse> {
                           ),
                           child: Text(
                             Lists.conditions[index],
-                            style: const TextStyle(color: Colours.lightGray),
+                            style: const TextStyle(
+                              color: Colours.lightGray,
+                              fontSize: 14,
+                            ),
                           ),
                           onPressed: () {
                             conditionIndex = index;
@@ -241,92 +250,57 @@ class _BrowseState extends State<Browse> {
                                   Column(
                                     children: [
                                       Container(
-                                        alignment: Alignment.topLeft,
-                                        height: 150,
-                                        child: Image.network(
-                                          downloadURL!,
-                                          loadingBuilder:
-                                              Widgets().customLoadingBuilder,
-                                        ),
-                                      ),
+                                          alignment: Alignment.topLeft,
+                                          width: 100,
+                                          child: FutureBuilder<String>(
+                                            future: getDownloadURL(index),
+                                            builder: (BuildContext context,
+                                                AsyncSnapshot<String>
+                                                    snapshot) {
+                                              if (snapshot.connectionState ==
+                                                  ConnectionState.waiting) {
+                                                return const Center(
+                                                  child:
+                                                      CircularProgressIndicator(
+                                                    color: Colours.lightBlue,
+                                                  ),
+                                                );
+                                              } else if (snapshot.hasError) {
+                                                return Text(
+                                                    'Error: ${snapshot.error}');
+                                              } else {
+                                                return Image.network(
+                                                  snapshot.data!,
+                                                );
+                                              }
+                                            },
+                                          ))
                                     ],
                                   ),
                                   const SizedBox(width: 10),
                                   Expanded(
                                     child: Column(
                                       children: [
-                                        Row(
-                                          children: [
-                                            Flexible(
-                                              fit: FlexFit.loose,
-                                              child: Text(
-                                                _itemsModel![index].name,
-                                                overflow: TextOverflow.ellipsis,
-                                                maxLines: 1,
-                                                textAlign: TextAlign.start,
-                                                style: Elements.boldCardText,
-                                              ),
-                                            ),
-                                          ],
+                                        ItemCardRow(
+                                          text: _itemsModel![index].name,
+                                          isBold: true,
                                         ),
-                                        Row(children: [
-                                          Flexible(
-                                            fit: FlexFit.loose,
-                                            child: Text(
-                                              '£${_itemsModel![index].price}',
-                                              overflow: TextOverflow.ellipsis,
-                                              maxLines: 1,
-                                              textAlign: TextAlign.start,
-                                              style: Elements.cardText,
-                                            ),
-                                          ),
-                                        ]),
-                                        Row(
-                                          children: [
-                                            Flexible(
-                                              fit: FlexFit.loose,
-                                              child: Text(
-                                                '${_itemsModel![index].numBids} ${_itemsModel![index].numBids != 1 ? 'bids' : 'bid'}',
-                                                overflow: TextOverflow.ellipsis,
-                                                maxLines: 1,
-                                                textAlign: TextAlign.start,
-                                                style: Elements.cardText,
-                                              ),
-                                            ),
-                                          ],
+                                        ItemCardRow(
+                                            text:
+                                                '£${_itemsModel![index].price}'),
+                                        ItemCardRow(
+                                            text:
+                                                '${_itemsModel![index].numBids} ${_itemsModel![index].numBids != 1 ? 'bids' : 'bid'}'),
+                                        ItemCardRow(
+                                          text: Dicts.conditions.keys
+                                              .firstWhere((key) =>
+                                                  Dicts.conditions[key] ==
+                                                  _itemsModel![index]
+                                                      .condition),
                                         ),
-                                        Row(
-                                          children: [
-                                            Flexible(
-                                              fit: FlexFit.loose,
-                                              child: Text(
-                                                Dicts.conditions.keys
-                                                    .firstWhere((key) =>
-                                                        Dicts.conditions[key] ==
-                                                        _itemsModel![index]
-                                                            .condition),
-                                                overflow: TextOverflow.ellipsis,
-                                                maxLines: 1,
-                                                textAlign: TextAlign.start,
-                                                style: Elements.cardText,
-                                              ),
-                                            ),
-                                          ],
-                                        ),
-                                        Row(
-                                          children: [
-                                            Flexible(
-                                              fit: FlexFit.loose,
-                                              child: Text(
-                                                'listed by ${accountId == _itemsModel![index].seller ? 'you' : _itemsModel![index].seller}',
-                                                overflow: TextOverflow.ellipsis,
-                                                maxLines: 1,
-                                                textAlign: TextAlign.start,
-                                                style: Elements.cardText,
-                                              ),
-                                            ),
-                                          ],
-                                        ),
+                                        ItemCardRow(
+                                            text:
+                                                'listed by ${accountId == _itemsModel![index].seller ? 'you' : _itemsModel![index].seller}'),
                                       ],
                                     ),
                                   )
