@@ -115,7 +115,6 @@ class ApiService {
     bool acceptsReturns,
     String description,
     String category,
-    String imageName,
     int sellerId,
     String token,
   ) async {
@@ -131,7 +130,6 @@ class ApiService {
         'acceptsReturns': acceptsReturns,
         'description': description,
         'category': category,
-        'imageName': imageName,
         'seller': sellerId,
       };
       var response = await http.post(url, body: json.encode(data), headers: {
