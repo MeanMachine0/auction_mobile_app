@@ -2,6 +2,7 @@
 
 import 'dart:developer';
 import 'dart:io';
+import 'dart:ffi';
 import 'package:auction_mobile_app/pages/item_detail.dart';
 import 'package:auction_mobile_app/pages/login.dart';
 import 'package:flutter/material.dart';
@@ -123,15 +124,6 @@ class _ListAnItemState extends State<ListAnItem> {
         .ref()
         .child('uploads/images/$itemId/thumbNail.jpeg');
     await thumbNailStorageReference.putFile(thumbNailFile);
-  }
-
-  File resizeImage(File imageFile, int newWidth) {
-    img.Image? image = img.decodeImage(imageFile.readAsBytesSync());
-    img.Image resizedImage = img.copyResize(image!, width: newWidth);
-    File resizedImageFile =
-        File(path.join(imageFile.parent.path, 'resizedImage.jpg'));
-    resizedImageFile.writeAsBytesSync(img.encodeJpg(resizedImage));
-    return resizedImageFile;
   }
 
   @override
