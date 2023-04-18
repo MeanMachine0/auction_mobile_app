@@ -39,7 +39,7 @@ class Lists {
     'Motors',
     'Collectables & Art',
     'Media',
-    'Others',
+    'Other',
   ];
 
   static List<String> sorters = [
