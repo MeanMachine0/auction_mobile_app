@@ -88,29 +88,43 @@ class Elements {
   static const cardHeader = TextStyle(
     fontSize: 18,
     fontWeight: FontWeight.bold,
-    color: Colours.lightGray,
   );
 
   static const subHeader = TextStyle(
     fontSize: 20,
     fontWeight: FontWeight.bold,
-    color: Colours.lightGray,
   );
 
   static const cardText = TextStyle(
     fontSize: 16,
     fontWeight: FontWeight.normal,
-    color: Colours.lightGray,
   );
 
   static const boldCardText = TextStyle(
     fontSize: 16,
     fontWeight: FontWeight.bold,
-    color: Colours.lightGray,
   );
 }
 
 class FirebaseConstants {
   static const basePath = 'gs://auction-mobile-app.appspot.com/';
   static const uploadedImages = '${basePath}uploads/images/';
+}
+
+class Widgets {
+  Widget customLoadingBuilder(
+      BuildContext context, Widget child, ImageChunkEvent? loadingProgress) {
+    if (loadingProgress == null) {
+      return child;
+    }
+    return Center(
+      child: CircularProgressIndicator(
+        color: Colours.lightBlue,
+        value: loadingProgress.expectedTotalBytes != null
+            ? loadingProgress.cumulativeBytesLoaded /
+                loadingProgress.expectedTotalBytes!
+            : null,
+      ),
+    );
+  }
 }
