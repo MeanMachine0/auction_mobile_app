@@ -1,5 +1,6 @@
 // ignore_for_file: avoid_init_to_null
 
+import 'dart:developer';
 import 'dart:io';
 import 'package:auction_mobile_app/pages/item_detail.dart';
 import 'package:auction_mobile_app/pages/login.dart';
@@ -11,7 +12,8 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:path/path.dart' as Path;
+import 'package:path/path.dart' as path;
+import 'package:image/image.dart' as img;
 
 class ListAnItem extends StatefulWidget {
   const ListAnItem({Key? key}) : super(key: key);
@@ -79,7 +81,6 @@ class _ListAnItemState extends State<ListAnItem> {
   late String? token = null;
   late String? username = null;
   File? imageFile;
-  String? imageName;
   String imageErrorMessage = 'Please select or take a picture.';
   bool displayImageErrorMessage = false;
 
@@ -104,12 +105,33 @@ class _ListAnItemState extends State<ListAnItem> {
     }
   }
 
-  Future<void> uploadFile(File file) async {
-    String fileName = Path.basename(file.path);
-    Reference storageReference =
-        FirebaseStorage.instance.ref().child('uploads/images/$fileName');
-    imageName = storageReference.name;
-    await storageReference.putFile(file);
+  Future<void> uploadImage(File file, int itemId) async {
+    final image = img.decodeImage(file.readAsBytesSync());
+    final smallerImage = img.copyResize(image!, width: 800);
+    File smallerImageFile = File(
+        '/data/user/0/com.example.auction_mobile_app/cache/smallerImage.jpeg');
+    smallerImageFile.writeAsBytesSync(img.encodeJpg(smallerImage));
+    Reference smallerImageStorageReference = FirebaseStorage.instance
+        .ref()
+        .child('uploads/images/$itemId/smallerImage.jpeg');
+    await smallerImageStorageReference.putFile(smallerImageFile);
+    final thumbNail = img.copyResize(image, width: 400);
+    File thumbNailFile = File(
+        '/data/user/0/com.example.auction_mobile_app/cache/thumbNail.jpeg');
+    thumbNailFile.writeAsBytesSync(img.encodeJpg(thumbNail));
+    Reference thumbNailStorageReference = FirebaseStorage.instance
+        .ref()
+        .child('uploads/images/$itemId/thumbNail.jpeg');
+    await thumbNailStorageReference.putFile(thumbNailFile);
+  }
+
+  File resizeImage(File imageFile, int newWidth) {
+    img.Image? image = img.decodeImage(imageFile.readAsBytesSync());
+    img.Image resizedImage = img.copyResize(image!, width: newWidth);
+    File resizedImageFile =
+        File(path.join(imageFile.parent.path, 'resizedImage.jpg'));
+    resizedImageFile.writeAsBytesSync(img.encodeJpg(resizedImage));
+    return resizedImageFile;
   }
 
   @override
@@ -417,13 +439,10 @@ class _ListAnItemState extends State<ListAnItem> {
                               } catch (e) {}
                               var hoursMinutes =
                                   endTimeController.text.split(':');
-                              // ignore: no_leading_underscores_for_local_identifiers
-                              int _hours = int.parse(hoursMinutes[0]);
-                              // ignore: no_leading_underscores_for_local_identifiers
-                              int _minutes = int.parse(hoursMinutes[1]);
+                              int hours = int.parse(hoursMinutes[0]);
+                              int minutes = int.parse(hoursMinutes[1]);
                               DateTime endDateTime = endDate.add(
-                                  Duration(hours: _hours, minutes: _minutes));
-                              await uploadFile(imageFile!);
+                                  Duration(hours: hours, minutes: minutes));
                               int itemId = await apiService.createItem(
                                 itemNameController.text,
                                 double.parse(startingPriceController.text),
@@ -434,10 +453,10 @@ class _ListAnItemState extends State<ListAnItem> {
                                 acceptReturns,
                                 descriptionController.text,
                                 categoryChoice,
-                                imageName!,
                                 accountId!,
                                 token!,
                               );
+                              await uploadImage(imageFile!, itemId);
                               listFormKey.currentState!.reset();
                               List<TextEditingController> controllers = [
                                 itemNameController,
