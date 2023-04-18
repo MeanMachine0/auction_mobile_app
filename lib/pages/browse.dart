@@ -6,6 +6,7 @@ import 'package:auction_mobile_app/pages/item_detail.dart';
 import 'package:auction_mobile_app/services/api_service.dart';
 import 'package:auction_mobile_app/constants.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 
 class Browse extends StatefulWidget {
   final bool _home;
@@ -29,6 +30,7 @@ class _BrowseState extends State<Browse> {
   int conditionIndex = 0;
   String sortBy = 'Price';
   bool ascending = true;
+  String? downloadURL;
 
   @override
   void initState() {
@@ -50,6 +52,9 @@ class _BrowseState extends State<Browse> {
     String _sortBy = Dicts.sorters[sortBy]!;
     _itemsModel = (await ApiService().getItems(widget._home, widget._home,
         searchBool, search, category, condition, _sortBy, ascending));
+    Reference reference = FirebaseStorage.instance
+        .refFromURL('${FirebaseConstants.uploadedImages}50/thumbNail.jpeg');
+    downloadURL = await reference.getDownloadURL();
     setState(() {});
   }
 
@@ -228,48 +233,105 @@ class _BrowseState extends State<Browse> {
                         ),
                         child: GestureDetector(
                           child: Card(
-                            child: Row(
-                              children: [
-                                Flexible(
-                                  child: Padding(
-                                    padding: const EdgeInsets.all(10),
+                            child: Padding(
+                              padding: const EdgeInsets.all(10),
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                children: [
+                                  Column(
+                                    children: [
+                                      Container(
+                                        alignment: Alignment.topLeft,
+                                        height: 150,
+                                        child: Image.network(
+                                          downloadURL!,
+                                          loadingBuilder:
+                                              Widgets().customLoadingBuilder,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                  const SizedBox(width: 10),
+                                  Expanded(
                                     child: Column(
                                       children: [
                                         Row(
                                           children: [
                                             Flexible(
+                                              fit: FlexFit.loose,
                                               child: Text(
-                                                  _itemsModel![index].name,
-                                                  overflow:
-                                                      TextOverflow.ellipsis,
-                                                  maxLines: 1,
-                                                  textAlign: TextAlign.start,
-                                                  style: Elements.boldCardText),
+                                                _itemsModel![index].name,
+                                                overflow: TextOverflow.ellipsis,
+                                                maxLines: 1,
+                                                textAlign: TextAlign.start,
+                                                style: Elements.boldCardText,
+                                              ),
                                             ),
                                           ],
                                         ),
-                                        const SizedBox(height: 2),
+                                        Row(children: [
+                                          Flexible(
+                                            fit: FlexFit.loose,
+                                            child: Text(
+                                              '£${_itemsModel![index].price}',
+                                              overflow: TextOverflow.ellipsis,
+                                              maxLines: 1,
+                                              textAlign: TextAlign.start,
+                                              style: Elements.cardText,
+                                            ),
+                                          ),
+                                        ]),
                                         Row(
                                           children: [
                                             Flexible(
+                                              fit: FlexFit.loose,
                                               child: Text(
-                                                  '£${_itemsModel![index].price}, '
-                                                  '${_itemsModel![index].numBids} ${_itemsModel![index].numBids != 1 ? 'bids' : 'bid'}, '
-                                                  '${_itemsModel![index].condition != 'partsOnly' ? _itemsModel![index].condition : 'parts only'}, '
-                                                  'listed by ${accountId == _itemsModel![index].seller ? 'you' : _itemsModel![index].seller}',
-                                                  overflow:
-                                                      TextOverflow.ellipsis,
-                                                  maxLines: 1,
-                                                  textAlign: TextAlign.start,
-                                                  style: Elements.cardText),
+                                                '${_itemsModel![index].numBids} ${_itemsModel![index].numBids != 1 ? 'bids' : 'bid'}',
+                                                overflow: TextOverflow.ellipsis,
+                                                maxLines: 1,
+                                                textAlign: TextAlign.start,
+                                                style: Elements.cardText,
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                        Row(
+                                          children: [
+                                            Flexible(
+                                              fit: FlexFit.loose,
+                                              child: Text(
+                                                Dicts.conditions.keys
+                                                    .firstWhere((key) =>
+                                                        Dicts.conditions[key] ==
+                                                        _itemsModel![index]
+                                                            .condition),
+                                                overflow: TextOverflow.ellipsis,
+                                                maxLines: 1,
+                                                textAlign: TextAlign.start,
+                                                style: Elements.cardText,
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                        Row(
+                                          children: [
+                                            Flexible(
+                                              fit: FlexFit.loose,
+                                              child: Text(
+                                                'listed by ${accountId == _itemsModel![index].seller ? 'you' : _itemsModel![index].seller}',
+                                                overflow: TextOverflow.ellipsis,
+                                                maxLines: 1,
+                                                textAlign: TextAlign.start,
+                                                style: Elements.cardText,
+                                              ),
                                             ),
                                           ],
                                         ),
                                       ],
                                     ),
-                                  ),
-                                ),
-                              ],
+                                  )
+                                ],
+                              ),
                             ),
                           ),
                           onTap: () {
