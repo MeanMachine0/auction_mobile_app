@@ -8,7 +8,7 @@ import 'package:auction_mobile_app/constants.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 
-import '../widgets/item_card_row.dart';
+import '../widgets/item_card_list.dart';
 
 class Browse extends StatefulWidget {
   final bool _home;
@@ -62,13 +62,6 @@ class _BrowseState extends State<Browse> {
       ApiService().logout(token);
       _getData();
     }
-  }
-
-  Future<String> getDownloadURL(int index) async {
-    Reference reference = FirebaseStorage.instance.refFromURL(
-        '${FirebaseConstants.uploadedImages}${_itemsModel![index].id}/thumbNail.jpeg');
-    downloadURL = await reference.getDownloadURL();
-    return downloadURL!;
   }
 
   @override
@@ -232,91 +225,7 @@ class _BrowseState extends State<Browse> {
                 ? const Center(
                     child:
                         Text('No Listings to View in this Category-Condition.'))
-                : ListView.builder(
-                    itemCount: _itemsModel!.length,
-                    itemBuilder: (context, index) {
-                      return Padding(
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 20,
-                          vertical: 2,
-                        ),
-                        child: GestureDetector(
-                          child: Card(
-                            child: Padding(
-                              padding: const EdgeInsets.all(10),
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.start,
-                                children: [
-                                  Column(
-                                    children: [
-                                      Container(
-                                          alignment: Alignment.topLeft,
-                                          width: 100,
-                                          child: FutureBuilder<String>(
-                                            future: getDownloadURL(index),
-                                            builder: (BuildContext context,
-                                                AsyncSnapshot<String>
-                                                    snapshot) {
-                                              if (snapshot.connectionState ==
-                                                  ConnectionState.waiting) {
-                                                return const Center(
-                                                  child:
-                                                      CircularProgressIndicator(
-                                                    color: Colours.lightBlue,
-                                                  ),
-                                                );
-                                              } else if (snapshot.hasError) {
-                                                return Text(
-                                                    'Error: ${snapshot.error}');
-                                              } else {
-                                                return Image.network(
-                                                  snapshot.data!,
-                                                );
-                                              }
-                                            },
-                                          ))
-                                    ],
-                                  ),
-                                  const SizedBox(width: 10),
-                                  Expanded(
-                                    child: Column(
-                                      children: [
-                                        ItemCardRow(
-                                          text: _itemsModel![index].name,
-                                          isBold: true,
-                                        ),
-                                        ItemCardRow(
-                                            text:
-                                                '£${_itemsModel![index].price}'),
-                                        ItemCardRow(
-                                            text:
-                                                '${_itemsModel![index].numBids} ${_itemsModel![index].numBids != 1 ? 'bids' : 'bid'}'),
-                                        ItemCardRow(
-                                          text: Dicts.conditions.keys
-                                              .firstWhere((key) =>
-                                                  Dicts.conditions[key] ==
-                                                  _itemsModel![index]
-                                                      .condition),
-                                        ),
-                                        ItemCardRow(
-                                            text:
-                                                'listed by ${accountId == _itemsModel![index].seller ? 'you' : _itemsModel![index].seller}'),
-                                      ],
-                                    ),
-                                  )
-                                ],
-                              ),
-                            ),
-                          ),
-                          onTap: () {
-                            Navigator.of(context).push(MaterialPageRoute(
-                                builder: (_) => ItemDetail(
-                                    itemId: _itemsModel![index].id)));
-                          },
-                        ),
-                      );
-                    },
-                  ),
+                : ItemCardList(itemsModel: _itemsModel!, accountId: accountId!),
           ),
         ],
       ),

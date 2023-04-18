@@ -2,11 +2,14 @@
 
 import 'package:auction_mobile_app/pages/item_detail.dart';
 import 'package:auction_mobile_app/pages/login.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:auction_mobile_app/models/items_model.dart';
 import 'package:auction_mobile_app/services/api_service.dart';
 import 'package:auction_mobile_app/constants.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+
+import '../widgets/item_card_list.dart';
 
 class MyListings extends StatefulWidget {
   final int? accountId;
@@ -30,6 +33,7 @@ class _MyListingsState extends State<MyListings> {
   bool endedItemsExpanded = false;
   bool itemsBidExpanded = false;
   bool endedItemsBidExpanded = false;
+  String? downloadURL;
 
   @override
   void initState() {
@@ -186,89 +190,10 @@ class _MyListingsState extends State<MyListings> {
                                   body: _itemsModel!.isEmpty
                                       ? const Center(
                                           child: Text('No Listings to View.'))
-                                      : ListView.builder(
-                                          physics:
-                                              const NeverScrollableScrollPhysics(),
-                                          shrinkWrap: true,
-                                          itemCount: _itemsModel!.length,
-                                          itemBuilder: (context, index) {
-                                            return Container(
-                                              margin:
-                                                  const EdgeInsets.symmetric(
-                                                vertical: 2,
-                                              ),
-                                              child: GestureDetector(
-                                                child: Card(
-                                                  child: Row(
-                                                    children: [
-                                                      Flexible(
-                                                        child: Padding(
-                                                          padding:
-                                                              const EdgeInsets
-                                                                  .all(10),
-                                                          child: Column(
-                                                            children: [
-                                                              Row(
-                                                                children: [
-                                                                  Flexible(
-                                                                    child: Text(
-                                                                        _itemsModel![index]
-                                                                            .name,
-                                                                        overflow:
-                                                                            TextOverflow
-                                                                                .ellipsis,
-                                                                        maxLines:
-                                                                            1,
-                                                                        textAlign:
-                                                                            TextAlign
-                                                                                .start,
-                                                                        style: Elements
-                                                                            .boldCardText),
-                                                                  ),
-                                                                ],
-                                                              ),
-                                                              const SizedBox(
-                                                                  height: 2),
-                                                              Row(
-                                                                children: [
-                                                                  Flexible(
-                                                                    child: Text(
-                                                                        '£${_itemsModel![index].price}, '
-                                                                        '${_itemsModel![index].numBids} ${_itemsModel![index].numBids != 1 ? 'bids' : 'bid'}, '
-                                                                        '${_itemsModel![index].condition != 'partsOnly' ? _itemsModel![index].condition : 'parts only'}, '
-                                                                        'listed by ${widget.accountId ?? 'you'}',
-                                                                        overflow:
-                                                                            TextOverflow
-                                                                                .ellipsis,
-                                                                        maxLines:
-                                                                            1,
-                                                                        textAlign:
-                                                                            TextAlign
-                                                                                .start,
-                                                                        style: Elements
-                                                                            .cardText),
-                                                                  ),
-                                                                ],
-                                                              ),
-                                                            ],
-                                                          ),
-                                                        ),
-                                                      ),
-                                                    ],
-                                                  ),
-                                                ),
-                                                onTap: () {
-                                                  Navigator.of(context).push(
-                                                      MaterialPageRoute(
-                                                          builder: (_) => ItemDetail(
-                                                              itemId:
-                                                                  _itemsModel![
-                                                                          index]
-                                                                      .id)));
-                                                },
-                                              ),
-                                            );
-                                          },
+                                      : ItemCardList(
+                                          itemsModel: _itemsModel!,
+                                          accountId: accountId!,
+                                          scrollable: false,
                                         ),
                                   isExpanded: itemsExpanded,
                                 ),
@@ -286,89 +211,10 @@ class _MyListingsState extends State<MyListings> {
                                   body: _endedItemsModel!.isEmpty
                                       ? const Center(
                                           child: Text('No Listings to View.'))
-                                      : ListView.builder(
-                                          physics:
-                                              const NeverScrollableScrollPhysics(),
-                                          shrinkWrap: true,
-                                          itemCount: _endedItemsModel!.length,
-                                          itemBuilder: (context, index) {
-                                            return Container(
-                                              margin:
-                                                  const EdgeInsets.symmetric(
-                                                vertical: 2,
-                                              ),
-                                              child: GestureDetector(
-                                                child: Card(
-                                                  child: Row(
-                                                    children: [
-                                                      Flexible(
-                                                        child: Padding(
-                                                          padding:
-                                                              const EdgeInsets
-                                                                  .all(10),
-                                                          child: Column(
-                                                            children: [
-                                                              Row(
-                                                                children: [
-                                                                  Flexible(
-                                                                    child: Text(
-                                                                        _endedItemsModel![index]
-                                                                            .name,
-                                                                        overflow:
-                                                                            TextOverflow
-                                                                                .ellipsis,
-                                                                        maxLines:
-                                                                            1,
-                                                                        textAlign:
-                                                                            TextAlign
-                                                                                .start,
-                                                                        style: Elements
-                                                                            .boldCardText),
-                                                                  ),
-                                                                ],
-                                                              ),
-                                                              const SizedBox(
-                                                                  height: 2),
-                                                              Row(
-                                                                children: [
-                                                                  Flexible(
-                                                                    child: Text(
-                                                                        '£${_endedItemsModel![index].price}, '
-                                                                        '${_endedItemsModel![index].numBids} ${_endedItemsModel![index].numBids != 1 ? 'bids' : 'bid'}, '
-                                                                        '${_endedItemsModel![index].condition != 'partsOnly' ? _endedItemsModel![index].condition : 'parts only'}, '
-                                                                        'listed by ${widget.accountId ?? 'you'}',
-                                                                        overflow:
-                                                                            TextOverflow
-                                                                                .ellipsis,
-                                                                        maxLines:
-                                                                            1,
-                                                                        textAlign:
-                                                                            TextAlign
-                                                                                .start,
-                                                                        style: Elements
-                                                                            .cardText),
-                                                                  ),
-                                                                ],
-                                                              ),
-                                                            ],
-                                                          ),
-                                                        ),
-                                                      ),
-                                                    ],
-                                                  ),
-                                                ),
-                                                onTap: () {
-                                                  Navigator.of(context).push(
-                                                      MaterialPageRoute(
-                                                          builder: (_) => ItemDetail(
-                                                              itemId:
-                                                                  _endedItemsModel![
-                                                                          index]
-                                                                      .id)));
-                                                },
-                                              ),
-                                            );
-                                          },
+                                      : ItemCardList(
+                                          itemsModel: _endedItemsModel!,
+                                          accountId: accountId!,
+                                          scrollable: false,
                                         ),
                                   isExpanded: endedItemsExpanded,
                                 ),
@@ -387,81 +233,10 @@ class _MyListingsState extends State<MyListings> {
                                     body: _itemsBidOnByMe!.isEmpty
                                         ? const Center(
                                             child: Text('No Listings to View.'))
-                                        : ListView.builder(
-                                            physics:
-                                                const NeverScrollableScrollPhysics(),
-                                            shrinkWrap: true,
-                                            itemCount: _itemsBidOnByMe!.length,
-                                            itemBuilder: (context, index) {
-                                              return Container(
-                                                margin:
-                                                    const EdgeInsets.symmetric(
-                                                  vertical: 2,
-                                                ),
-                                                child: GestureDetector(
-                                                  child: Card(
-                                                    child: Row(
-                                                      children: [
-                                                        Flexible(
-                                                          child: Padding(
-                                                            padding:
-                                                                const EdgeInsets
-                                                                    .all(10),
-                                                            child: Column(
-                                                              children: [
-                                                                Row(
-                                                                  children: [
-                                                                    Flexible(
-                                                                      child: Text(
-                                                                          _itemsBidOnByMe![index]
-                                                                              .name,
-                                                                          overflow: TextOverflow
-                                                                              .ellipsis,
-                                                                          maxLines:
-                                                                              1,
-                                                                          textAlign: TextAlign
-                                                                              .start,
-                                                                          style:
-                                                                              Elements.boldCardText),
-                                                                    ),
-                                                                  ],
-                                                                ),
-                                                                const SizedBox(
-                                                                    height: 2),
-                                                                Row(
-                                                                  children: [
-                                                                    Flexible(
-                                                                      child: Text(
-                                                                          '£${_itemsBidOnByMe![index].price}, '
-                                                                          '${_itemsBidOnByMe![index].numBids} ${_itemsBidOnByMe![index].numBids != 1 ? 'bids' : 'bid'}, '
-                                                                          '${_itemsBidOnByMe![index].condition != 'partsOnly' ? _itemsBidOnByMe![index].condition : 'parts only'}, '
-                                                                          'listed by ${_itemsBidOnByMe![index].seller}',
-                                                                          overflow: TextOverflow.ellipsis,
-                                                                          maxLines: 1,
-                                                                          textAlign: TextAlign.start,
-                                                                          style: Elements.cardText),
-                                                                    ),
-                                                                  ],
-                                                                ),
-                                                              ],
-                                                            ),
-                                                          ),
-                                                        ),
-                                                      ],
-                                                    ),
-                                                  ),
-                                                  onTap: () {
-                                                    Navigator.of(context).push(
-                                                        MaterialPageRoute(
-                                                            builder: (_) => ItemDetail(
-                                                                itemId:
-                                                                    _itemsBidOnByMe![
-                                                                            index]
-                                                                        .id)));
-                                                  },
-                                                ),
-                                              );
-                                            },
+                                        : ItemCardList(
+                                            itemsModel: _itemsBidOnByMe!,
+                                            accountId: accountId!,
+                                            scrollable: false,
                                           ),
                                     isExpanded: itemsBidExpanded,
                                   ),
@@ -480,82 +255,10 @@ class _MyListingsState extends State<MyListings> {
                                     body: _endedItemsBidOnByMe!.isEmpty
                                         ? const Center(
                                             child: Text('No Listings to View.'))
-                                        : ListView.builder(
-                                            physics:
-                                                const NeverScrollableScrollPhysics(),
-                                            shrinkWrap: true,
-                                            itemCount:
-                                                _endedItemsBidOnByMe!.length,
-                                            itemBuilder: (context, index) {
-                                              return Container(
-                                                margin:
-                                                    const EdgeInsets.symmetric(
-                                                  vertical: 2,
-                                                ),
-                                                child: GestureDetector(
-                                                  child: Card(
-                                                    child: Row(
-                                                      children: [
-                                                        Flexible(
-                                                          child: Padding(
-                                                            padding:
-                                                                const EdgeInsets
-                                                                    .all(10),
-                                                            child: Column(
-                                                              children: [
-                                                                Row(
-                                                                  children: [
-                                                                    Flexible(
-                                                                      child: Text(
-                                                                          _endedItemsBidOnByMe![index]
-                                                                              .name,
-                                                                          overflow: TextOverflow
-                                                                              .ellipsis,
-                                                                          maxLines:
-                                                                              1,
-                                                                          textAlign: TextAlign
-                                                                              .start,
-                                                                          style:
-                                                                              Elements.boldCardText),
-                                                                    ),
-                                                                  ],
-                                                                ),
-                                                                const SizedBox(
-                                                                    height: 2),
-                                                                Row(
-                                                                  children: [
-                                                                    Flexible(
-                                                                      child: Text(
-                                                                          '£${_endedItemsBidOnByMe![index].price}, '
-                                                                          '${_endedItemsBidOnByMe![index].numBids} ${_endedItemsBidOnByMe![index].numBids != 1 ? 'bids' : 'bid'}, '
-                                                                          '${_endedItemsBidOnByMe![index].condition != 'partsOnly' ? _endedItemsBidOnByMe![index].condition : 'parts only'}, '
-                                                                          'listed by ${_endedItemsBidOnByMe![index].seller}',
-                                                                          overflow: TextOverflow.ellipsis,
-                                                                          maxLines: 1,
-                                                                          textAlign: TextAlign.start,
-                                                                          style: Elements.cardText),
-                                                                    ),
-                                                                  ],
-                                                                ),
-                                                              ],
-                                                            ),
-                                                          ),
-                                                        ),
-                                                      ],
-                                                    ),
-                                                  ),
-                                                  onTap: () {
-                                                    Navigator.of(context).push(
-                                                        MaterialPageRoute(
-                                                            builder: (_) => ItemDetail(
-                                                                itemId:
-                                                                    _endedItemsBidOnByMe![
-                                                                            index]
-                                                                        .id)));
-                                                  },
-                                                ),
-                                              );
-                                            },
+                                        : ItemCardList(
+                                            itemsModel: _endedItemsBidOnByMe!,
+                                            accountId: accountId!,
+                                            scrollable: false,
                                           ),
                                     isExpanded: endedItemsBidExpanded,
                                   ),
