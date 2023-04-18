@@ -1,4 +1,3 @@
-import 'package:auction_mobile_app/pages/upload.dart';
 import 'package:flutter/material.dart';
 import 'package:google_nav_bar/google_nav_bar.dart';
 import 'package:auction_mobile_app/constants.dart';
@@ -18,7 +17,7 @@ class _BaseState extends State<Base> {
   static const List<Widget> pages = <Widget>[
     Browse(home: true, key: ValueKey('home')),
     Browse(home: false, key: ValueKey('notHome')),
-    Upload(),
+    ListAnItem(),
     MyListings(),
   ];
   late int? accountId = 0;
