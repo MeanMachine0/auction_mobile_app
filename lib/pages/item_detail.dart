@@ -49,20 +49,15 @@ class _ItemDetailState extends State<ItemDetail> {
     IAmTheTopBidder = IAmTheSeller
         ? false
         : await apiService.amITheBuyer(itemModel!.id, token, false);
-    downloadURL = await getDownloadURL(
-        FirebaseConstants.uploadedImages + itemModel!.imageName);
+    Reference reference = FirebaseStorage.instance.refFromURL(
+        '${FirebaseConstants.uploadedImages}${itemModel!.id}/smallerImage.jpeg');
+    downloadURL = await reference.getDownloadURL();
     setState(() {});
   }
 
   String formatDateTime(DateTime dateTime) {
     var formatter = DateFormat('MMM d y \'at\' HH:mm');
     return formatter.format(dateTime);
-  }
-
-  Future<String> getDownloadURL(String url) async {
-    Reference reference = FirebaseStorage.instance.refFromURL(url);
-    String downloadURL = await reference.getDownloadURL();
-    return downloadURL;
   }
 
   @override
@@ -294,18 +289,7 @@ class _ItemDetailState extends State<ItemDetail> {
                       padding: const EdgeInsets.symmetric(horizontal: 20),
                       child: Image.network(
                         downloadURL!,
-                        loadingBuilder: ((context, child, loadingProgress) {
-                          if (loadingProgress == null) return child;
-                          return Center(
-                            child: CircularProgressIndicator(
-                              color: Colours.lightBlue,
-                              value: loadingProgress.expectedTotalBytes != null
-                                  ? loadingProgress.cumulativeBytesLoaded /
-                                      loadingProgress.expectedTotalBytes!
-                                  : null,
-                            ),
-                          );
-                        }),
+                        loadingBuilder: Widgets().customLoadingBuilder,
                       ),
                     ),
                   const SizedBox(height: 20),
