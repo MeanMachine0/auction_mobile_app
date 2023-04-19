@@ -78,7 +78,7 @@ class ItemCard extends StatelessWidget {
                     ),
                     ItemCardRow(
                         text:
-                            'listed by ${_accountId == _item.seller ? 'you' : _item.seller}'),
+                            'Listed by ${_accountId == _item.seller ? 'you' : _item.bidders}'),
                   ],
                 ),
               )
