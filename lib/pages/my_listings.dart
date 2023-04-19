@@ -12,9 +12,11 @@ import 'package:shared_preferences/shared_preferences.dart';
 import '../widgets/item_card_list.dart';
 
 class MyListings extends StatefulWidget {
+  const MyListings({Key? key, this.accountId, String? username})
+      : _username = username,
+        super(key: key);
   final int? accountId;
-  const MyListings({Key? key, this.accountId}) : super(key: key);
-
+  final String? _username;
   @override
   _MyListingsState createState() => _MyListingsState();
 }
@@ -95,7 +97,7 @@ class _MyListingsState extends State<MyListings> {
         appBar: AppBar(
             title: Text(widget.accountId == null
                 ? 'My Listings'
-                : '${widget.accountId}\'s Listings'),
+                : '${widget._username}\'s Listings'),
             actions: token != null
                 ? [
                     Padding(

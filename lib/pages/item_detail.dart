@@ -218,18 +218,21 @@ class _ItemDetailState extends State<ItemDetail> {
                                     onTap: IAmTheSeller
                                         ? null
                                         : () {
-                                            Navigator.of(context).push(
-                                                MaterialPageRoute(
+                                            Navigator.of(context)
+                                                .push(MaterialPageRoute(
                                                     builder: (_) => MyListings(
-                                                        accountId: itemModel!
-                                                            .seller)));
+                                                          accountId:
+                                                              itemModel!.seller,
+                                                          username: itemModel!
+                                                              .bidders,
+                                                        )));
                                           },
                                     child: Row(
                                       children: [
                                         Text(
                                           IAmTheSeller
                                               ? 'Seller: You'
-                                              : 'Seller: ${itemModel!.seller}',
+                                              : 'Seller: ${itemModel!.bidders}',
                                           style: IAmTheSeller
                                               ? Elements.cardText
                                               : const TextStyle(
