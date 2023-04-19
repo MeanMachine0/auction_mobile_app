@@ -150,7 +150,7 @@ class _MyListingsState extends State<MyListings> {
                   )
                 : SingleChildScrollView(
                     child: Padding(
-                      padding: const EdgeInsets.all(20),
+                      padding: const EdgeInsets.symmetric(horizontal: 20),
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.start,
                         children: [
@@ -192,7 +192,7 @@ class _MyListingsState extends State<MyListings> {
                                           child: Text('No Listings to View.'))
                                       : ItemCardList(
                                           itemsModel: _itemsModel!,
-                                          accountId: accountId!,
+                                          accountId: myAccountId ?? 0,
                                           scrollable: false,
                                         ),
                                   isExpanded: itemsExpanded,
@@ -213,7 +213,7 @@ class _MyListingsState extends State<MyListings> {
                                           child: Text('No Listings to View.'))
                                       : ItemCardList(
                                           itemsModel: _endedItemsModel!,
-                                          accountId: accountId!,
+                                          accountId: myAccountId ?? 0,
                                           scrollable: false,
                                         ),
                                   isExpanded: endedItemsExpanded,
@@ -235,7 +235,7 @@ class _MyListingsState extends State<MyListings> {
                                             child: Text('No Listings to View.'))
                                         : ItemCardList(
                                             itemsModel: _itemsBidOnByMe!,
-                                            accountId: accountId!,
+                                            accountId: myAccountId ?? 0,
                                             scrollable: false,
                                           ),
                                     isExpanded: itemsBidExpanded,
@@ -257,7 +257,7 @@ class _MyListingsState extends State<MyListings> {
                                             child: Text('No Listings to View.'))
                                         : ItemCardList(
                                             itemsModel: _endedItemsBidOnByMe!,
-                                            accountId: accountId!,
+                                            accountId: myAccountId ?? 0,
                                             scrollable: false,
                                           ),
                                     isExpanded: endedItemsBidExpanded,

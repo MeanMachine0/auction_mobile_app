@@ -76,7 +76,7 @@ class _ItemDetailState extends State<ItemDetail> {
               child: Column(
                 children: [
                   Padding(
-                    padding: const EdgeInsets.fromLTRB(20, 20, 20, 0),
+                    padding: const EdgeInsets.symmetric(horizontal: 20),
                     child: Card(
                       child: Padding(
                         padding: const EdgeInsets.all(10),
