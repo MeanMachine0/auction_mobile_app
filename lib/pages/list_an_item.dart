@@ -108,7 +108,9 @@ class _ListAnItemState extends State<ListAnItem> {
 
   Future<void> uploadImage(File file, int itemId) async {
     final image = img.decodeImage(file.readAsBytesSync());
-    final smallerImage = img.copyResize(image!, width: 800);
+    int width = image!.width;
+    final smallerImage =
+        width > 800 ? img.copyResize(image, width: 800) : image;
     File smallerImageFile = File(
         '/data/user/0/com.example.auction_mobile_app/cache/smallerImage.jpeg');
     smallerImageFile.writeAsBytesSync(img.encodeJpg(smallerImage));
@@ -116,7 +118,7 @@ class _ListAnItemState extends State<ListAnItem> {
         .ref()
         .child('uploads/images/$itemId/smallerImage.jpeg');
     await smallerImageStorageReference.putFile(smallerImageFile);
-    final thumbNail = img.copyResize(image, width: 400);
+    final thumbNail = width > 400 ? img.copyResize(image, width: 400) : image;
     File thumbNailFile = File(
         '/data/user/0/com.example.auction_mobile_app/cache/thumbNail.jpeg');
     thumbNailFile.writeAsBytesSync(img.encodeJpg(thumbNail));
