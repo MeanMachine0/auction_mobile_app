@@ -225,7 +225,8 @@ class _BrowseState extends State<Browse> {
                 ? const Center(
                     child:
                         Text('No Listings to View in this Category-Condition.'))
-                : ItemCardList(itemsModel: _itemsModel!, accountId: accountId!),
+                : ItemCardList(
+                    itemsModel: _itemsModel!, accountId: accountId ?? 0),
           ),
         ],
       ),
