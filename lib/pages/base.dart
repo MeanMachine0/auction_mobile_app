@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:google_nav_bar/google_nav_bar.dart';
 import 'package:auction_mobile_app/constants.dart';
 import 'package:auction_mobile_app/pages/my_listings.dart';
 import 'package:auction_mobile_app/pages/browse.dart';
