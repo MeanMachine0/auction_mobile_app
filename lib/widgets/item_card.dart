@@ -18,9 +18,22 @@ class ItemCard extends StatelessWidget {
   final int _accountId;
 
   Future<String> getDownloadURL(ItemsModel item) async {
-    Reference reference = FirebaseStorage.instance.refFromURL(
-        '${FirebaseConstants.uploadedImages}${item.id}/thumbNail.jpeg');
-    String downloadURL = await reference.getDownloadURL();
+    String? downloadURL;
+    try {
+      Reference reference = FirebaseStorage.instance.refFromURL(
+          '${FirebaseConstants.uploadedImages}${item.id}/thumbNail.jpeg');
+      downloadURL = await reference.getDownloadURL();
+    } catch (e) {
+      try {
+        Reference reference = FirebaseStorage.instance.refFromURL(
+            '${FirebaseConstants.uploadedImages}${item.id}/thumbNail.HEIC');
+        downloadURL = await reference.getDownloadURL();
+      } catch (e) {
+        Reference reference = FirebaseStorage.instance.refFromURL(
+            '${FirebaseConstants.uploadedImages}${item.id}/thumbNail.HEIF');
+        downloadURL = await reference.getDownloadURL();
+      }
+    }
     return downloadURL;
   }
 

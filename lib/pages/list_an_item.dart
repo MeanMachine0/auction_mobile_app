@@ -2,7 +2,6 @@
 
 import 'dart:developer';
 import 'dart:io';
-import 'dart:ffi';
 import 'package:auction_mobile_app/pages/item_detail.dart';
 import 'package:auction_mobile_app/pages/login.dart';
 import 'package:flutter/material.dart';
@@ -107,25 +106,39 @@ class _ListAnItemState extends State<ListAnItem> {
   }
 
   Future<void> uploadImage(File file, int itemId) async {
-    final image = img.decodeImage(file.readAsBytesSync());
-    int width = image!.width;
-    final smallerImage =
-        width > 800 ? img.copyResize(image, width: 800) : image;
-    File smallerImageFile = File(
-        '/data/user/0/com.example.auction_mobile_app/cache/smallerImage.jpeg');
-    smallerImageFile.writeAsBytesSync(img.encodeJpg(smallerImage));
-    Reference smallerImageStorageReference = FirebaseStorage.instance
-        .ref()
-        .child('uploads/images/$itemId/smallerImage.jpeg');
-    await smallerImageStorageReference.putFile(smallerImageFile);
-    final thumbNail = width > 400 ? img.copyResize(image, width: 400) : image;
-    File thumbNailFile = File(
-        '/data/user/0/com.example.auction_mobile_app/cache/thumbNail.jpeg');
-    thumbNailFile.writeAsBytesSync(img.encodeJpg(thumbNail));
-    Reference thumbNailStorageReference = FirebaseStorage.instance
-        .ref()
-        .child('uploads/images/$itemId/thumbNail.jpeg');
-    await thumbNailStorageReference.putFile(thumbNailFile);
+    String ext = path.extension(file.path).toUpperCase();
+    if (ext == '.HEIC' || ext == '.HEIF') {
+      final smallerImageFile = file;
+      Reference smallerImageStorageReference = FirebaseStorage.instance
+          .ref()
+          .child('uploads/images/$itemId/smallerImage$ext');
+      await smallerImageStorageReference.putFile(smallerImageFile);
+      final thumbNailFile = file;
+      Reference thumbNailStorageReference = FirebaseStorage.instance
+          .ref()
+          .child('uploads/images/$itemId/thumbNail$ext');
+      await thumbNailStorageReference.putFile(thumbNailFile);
+    } else {
+      final image = img.decodeImage(file.readAsBytesSync());
+      int width = image!.width;
+      final smallerImage =
+          width > 800 ? img.copyResize(image, width: 800) : image;
+      File smallerImageFile = File(
+          '/data/user/0/com.example.auction_mobile_app/cache/smallerImage.jpeg');
+      smallerImageFile.writeAsBytesSync(img.encodeJpg(smallerImage));
+      Reference smallerImageStorageReference = FirebaseStorage.instance
+          .ref()
+          .child('uploads/images/$itemId/smallerImage.jpeg');
+      await smallerImageStorageReference.putFile(smallerImageFile);
+      final thumbNail = width > 400 ? img.copyResize(image, width: 400) : image;
+      File thumbNailFile = File(
+          '/data/user/0/com.example.auction_mobile_app/cache/thumbNail.jpeg');
+      thumbNailFile.writeAsBytesSync(img.encodeJpg(thumbNail));
+      Reference thumbNailStorageReference = FirebaseStorage.instance
+          .ref()
+          .child('uploads/images/$itemId/thumbNail.jpeg');
+      await thumbNailStorageReference.putFile(thumbNailFile);
+    }
   }
 
   @override

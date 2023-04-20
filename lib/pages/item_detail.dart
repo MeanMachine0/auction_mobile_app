@@ -49,9 +49,22 @@ class _ItemDetailState extends State<ItemDetail> {
     IAmTheTopBidder = IAmTheSeller
         ? false
         : await apiService.amITheBuyer(itemModel!.id, token, false);
-    Reference reference = FirebaseStorage.instance.refFromURL(
-        '${FirebaseConstants.uploadedImages}${itemModel!.id}/smallerImage.jpeg');
-    downloadURL = await reference.getDownloadURL();
+    try {
+      Reference reference = FirebaseStorage.instance.refFromURL(
+          '${FirebaseConstants.uploadedImages}${itemModel!.id}/smallerImage.jpeg');
+      downloadURL = await reference.getDownloadURL();
+    } catch (e) {
+      try {
+        Reference reference = FirebaseStorage.instance.refFromURL(
+            '${FirebaseConstants.uploadedImages}${itemModel!.id}/smallerImage.HEIC');
+        downloadURL = await reference.getDownloadURL();
+      } catch (e) {
+        Reference reference = FirebaseStorage.instance.refFromURL(
+            '${FirebaseConstants.uploadedImages}${itemModel!.id}/smallerImage.HEIF');
+        downloadURL = await reference.getDownloadURL();
+      }
+    }
+
     setState(() {});
   }
 
