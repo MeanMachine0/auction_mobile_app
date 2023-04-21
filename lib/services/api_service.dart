@@ -7,7 +7,7 @@ import 'package:auction_mobile_app/models/items_model.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class ApiService {
-  static String baseUrl = 'https://6066-90-240-130-51.ngrok-free.app/api/';
+  static String baseUrl = 'http://meanmachine0.pythonanywhere.com/api/';
   Future<List<String>?> login(String username, String password) async {
     try {
       Map<String, dynamic> data = {'username': username, 'password': password};
