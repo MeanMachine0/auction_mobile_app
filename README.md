@@ -15,7 +15,7 @@ A Flutter app that fetches JSON data from a REST API built in a Django web app v
 ## Firebase Integration
 - Stores a significantly downscaled image (browsing view) and a moderately downscaled image (listing view) of items.
 - App distribution - testing on both android and ios.
-- Crashlytics - detailed reports of crashes.
+- Crashlytics - logs crash reports.
 - Monitor performance stats.
 
 ## Aims
