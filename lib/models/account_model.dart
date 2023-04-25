@@ -1,14 +1,13 @@
 import 'dart:convert';
 
-List<AccountsModel> accountsModelFromJson(String str) =>
-    List<AccountsModel>.from(
-        json.decode(str).map((x) => AccountsModel.fromJson(x)));
+List<AccountModel> accountsModelFromJson(String str) => List<AccountModel>.from(
+    json.decode(str).map((x) => AccountModel.fromJson(x)));
 
-String accountsModelToJson(List<AccountsModel> data) =>
+String accountsModelToJson(List<AccountModel> data) =>
     json.encode(List<dynamic>.from(data.map((x) => x.toJson())));
 
-class AccountsModel {
-  AccountsModel({
+class AccountModel {
+  AccountModel({
     required this.id,
     required this.user,
     required this.address,
@@ -20,7 +19,7 @@ class AccountsModel {
   String address;
   String balance;
 
-  factory AccountsModel.fromJson(Map<String, dynamic> json) => AccountsModel(
+  factory AccountModel.fromJson(Map<String, dynamic> json) => AccountModel(
         id: json["id"],
         user: json["user"],
         address: json["address"],
