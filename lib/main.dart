@@ -59,6 +59,8 @@ class MyApp extends StatelessWidget {
           headingRowColor: MaterialStatePropertyAll(Colours.deepBlue),
           dataRowColor: MaterialStatePropertyAll(Colours.darkGray),
         ),
+        progressIndicatorTheme:
+            const ProgressIndicatorThemeData(color: Colours.lightBlue),
         inputDecorationTheme: const InputDecorationTheme(
           border: OutlineInputBorder(),
           filled: true,
