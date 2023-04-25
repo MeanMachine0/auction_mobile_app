@@ -321,40 +321,37 @@ class _ItemDetailState extends State<ItemDetail> {
                                         Padding(
                                           padding: const EdgeInsets.symmetric(
                                               horizontal: 20),
-                                          child: Expanded(
-                                            flex: 0,
-                                            child: TextFormField(
-                                              controller: bidController,
-                                              keyboardType: const TextInputType
-                                                      .numberWithOptions(
-                                                  decimal: true),
-                                              inputFormatters: [
-                                                FilteringTextInputFormatter
-                                                    .allow(Regexes.money),
-                                              ],
-                                              decoration: const InputDecoration(
-                                                prefix: Text('£'),
-                                                label: Text('Your Bid'),
-                                                errorBorder: OutlineInputBorder(
-                                                    borderSide: BorderSide(
-                                                        color: Colours.red)),
-                                                errorStyle: TextStyle(
-                                                    color: Colours.red),
-                                              ),
-                                              validator: (bid) {
-                                                double minBid = double.parse(
-                                                        itemModel!.price) +
-                                                    double.parse(itemModel!
-                                                        .bidIncrement);
-                                                if (bid! == '') {
-                                                  return 'Please enter a bid.';
-                                                } else if (double.parse(bid) <
-                                                    minBid) {
-                                                  return 'Could not submit bid; minimum bid is $minBid';
-                                                }
-                                                return null;
-                                              },
+                                          child: TextFormField(
+                                            controller: bidController,
+                                            keyboardType: const TextInputType
+                                                    .numberWithOptions(
+                                                decimal: true),
+                                            inputFormatters: [
+                                              FilteringTextInputFormatter.allow(
+                                                  Regexes.money),
+                                            ],
+                                            decoration: const InputDecoration(
+                                              prefix: Text('£'),
+                                              label: Text('Your Bid'),
+                                              errorBorder: OutlineInputBorder(
+                                                  borderSide: BorderSide(
+                                                      color: Colours.red)),
+                                              errorStyle:
+                                                  TextStyle(color: Colours.red),
                                             ),
+                                            validator: (bid) {
+                                              double minBid = double.parse(
+                                                      itemModel!.price) +
+                                                  double.parse(
+                                                      itemModel!.bidIncrement);
+                                              if (bid! == '') {
+                                                return 'Please enter a bid.';
+                                              } else if (double.parse(bid) <
+                                                  minBid) {
+                                                return 'Could not submit bid; minimum bid is $minBid';
+                                              }
+                                              return null;
+                                            },
                                           ),
                                         ),
                                         const SizedBox(height: 8),
