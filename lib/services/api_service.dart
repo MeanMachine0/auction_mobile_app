@@ -7,7 +7,7 @@ import 'package:auction_mobile_app/models/items_model.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class ApiService {
-  static String baseUrl = 'http://meanmachine0.pythonanywhere.com/api/';
+  static String baseUrl = 'https://meanmachine0.pythonanywhere.com/api/';
   Future<List<String>?> login(String username, String password) async {
     try {
       Map<String, dynamic> data = {'username': username, 'password': password};
