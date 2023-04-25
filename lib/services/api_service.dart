@@ -2,8 +2,8 @@ import 'dart:convert';
 import 'dart:developer';
 
 import 'package:http/http.dart' as http;
-import 'package:auction_mobile_app/models/accounts_model.dart';
-import 'package:auction_mobile_app/models/items_model.dart';
+import 'package:auction_mobile_app/models/account_model.dart';
+import 'package:auction_mobile_app/models/item_model.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class ApiService {
@@ -38,13 +38,13 @@ class ApiService {
     }
   }
 
-  Future<AccountsModel?> getAccount(int accountId) async {
+  Future<AccountModel?> getAccount(int accountId) async {
     try {
       var url = Uri.parse('${baseUrl}accounts/$accountId/');
       var response = await http.get(url);
       if (response.statusCode == 200) {
         var jsonResponse = jsonDecode(response.body);
-        AccountsModel _model = AccountsModel.fromJson(jsonResponse);
+        AccountModel _model = AccountModel.fromJson(jsonResponse);
         return _model;
       }
     } catch (e) {
@@ -52,7 +52,7 @@ class ApiService {
     }
   }
 
-  Future<ItemsModel?> getItem(int itemId, String? token) async {
+  Future<ItemModel?> getItem(int itemId, String? token) async {
     try {
       var url = Uri.parse('${baseUrl}items/$itemId/');
       var response = await http.get(
@@ -65,7 +65,7 @@ class ApiService {
       );
       if (response.statusCode == 200) {
         var jsonResponse = json.decode(response.body);
-        ItemsModel item = ItemsModel.fromJson(jsonResponse);
+        ItemModel item = ItemModel.fromJson(jsonResponse);
         return item;
       }
     } catch (e) {
@@ -75,7 +75,7 @@ class ApiService {
     return null;
   }
 
-  Future<List<ItemsModel>?> getItems(
+  Future<List<ItemModel>?> getItems(
       bool ended,
       bool sold,
       bool searchBool,
@@ -97,7 +97,7 @@ class ApiService {
         'ascending': '$ascending',
       });
       if (response.statusCode == 200) {
-        List<ItemsModel> _model = itemsModelFromJson(response.body);
+        List<ItemModel> _model = itemsModelFromJson(response.body);
         return _model;
       }
     } catch (e) {
@@ -193,12 +193,12 @@ class ApiService {
       );
       if (response.statusCode == 200) {
         try {
-          List<ItemsModel> _model = itemsModelFromJson(response.body);
+          List<ItemModel> _model = itemsModelFromJson(response.body);
           return _model;
         } catch (e) {
           var jsonResponse = json.decode(response.body);
-          ItemsModel _item = ItemsModel.fromJson(jsonResponse);
-          List<ItemsModel> _model = [_item];
+          ItemModel _item = ItemModel.fromJson(jsonResponse);
+          List<ItemModel> _model = [_item];
           return _model;
         }
       }
@@ -234,12 +234,12 @@ class ApiService {
       );
       if (response.statusCode == 200) {
         try {
-          List<ItemsModel> _model = itemsModelFromJson(response.body);
+          List<ItemModel> _model = itemsModelFromJson(response.body);
           return _model;
         } catch (e) {
           var jsonResponse = json.decode(response.body);
-          ItemsModel _item = ItemsModel.fromJson(jsonResponse);
-          List<ItemsModel> _model = [_item];
+          ItemModel _item = ItemModel.fromJson(jsonResponse);
+          List<ItemModel> _model = [_item];
           return _model;
         }
       }

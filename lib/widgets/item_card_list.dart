@@ -1,18 +1,18 @@
 import 'package:flutter/material.dart';
-import '../models/items_model.dart';
+import '../models/item_model.dart';
 import '../widgets/item_card.dart';
 
 class ItemCardList extends StatelessWidget {
   const ItemCardList({
     super.key,
-    required List<ItemsModel> itemsModel,
+    required List<ItemModel> itemsModel,
     required int accountId,
     bool scrollable = true,
   })  : _itemsModel = itemsModel,
         _accountId = accountId,
         _scrollable = scrollable;
 
-  final List<ItemsModel>? _itemsModel;
+  final List<ItemModel>? _itemsModel;
   final int _accountId;
   final bool _scrollable;
 

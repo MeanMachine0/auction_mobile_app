@@ -2,22 +2,22 @@ import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 
 import '../constants.dart';
-import '../models/items_model.dart';
+import '../models/item_model.dart';
 import '../pages/item_detail.dart';
 import '../widgets/item_card_row.dart';
 
 class ItemCard extends StatelessWidget {
   const ItemCard({
     super.key,
-    required ItemsModel item,
+    required ItemModel item,
     required int accountId,
   })  : _item = item,
         _accountId = accountId;
 
-  final ItemsModel _item;
+  final ItemModel _item;
   final int _accountId;
 
-  Future<String> getDownloadURL(ItemsModel item) async {
+  Future<String> getDownloadURL(ItemModel item) async {
     String? downloadURL;
     try {
       Reference reference = FirebaseStorage.instance.refFromURL(
@@ -58,9 +58,7 @@ class ItemCard extends StatelessWidget {
                           if (snapshot.connectionState ==
                               ConnectionState.waiting) {
                             return const Center(
-                              child: CircularProgressIndicator(
-                                color: Colours.lightBlue,
-                              ),
+                              child: CircularProgressIndicator(),
                             );
                           } else if (snapshot.hasError) {
                             return Text('Error: ${snapshot.error}');
