@@ -119,7 +119,6 @@ class Widgets {
     }
     return Center(
       child: CircularProgressIndicator(
-        color: Colours.lightBlue,
         value: loadingProgress.expectedTotalBytes != null
             ? loadingProgress.cumulativeBytesLoaded /
                 loadingProgress.expectedTotalBytes!
