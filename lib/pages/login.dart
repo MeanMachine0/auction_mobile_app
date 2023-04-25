@@ -21,6 +21,7 @@ class _LoginState extends State<Login> {
   bool passVis = true;
   TextEditingController usernameController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
+  bool isLoading = false;
 
   @override
   void initState() {
@@ -29,6 +30,9 @@ class _LoginState extends State<Login> {
   }
 
   void _getData() async {
+    setState(() {
+      isLoading = true;
+    });
     SharedPreferences prefs = await SharedPreferences.getInstance();
     accountId = prefs.getInt('accountId');
     token = prefs.getString('token');
@@ -60,98 +64,110 @@ class _LoginState extends State<Login> {
         (usernameController.text.isEmpty || passwordController.text.isEmpty)) {
       invalidLogin = false;
     }
-    setState(() {});
+    if (mounted) {
+      setState(() {
+        isLoading = false;
+      });
+    }
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(title: const Text('Login')),
-        body: token == null
-            ? Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 10),
-                child: Form(
-                    key: loginFormKey,
-                    autovalidateMode: AutovalidateMode.disabled,
-                    child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          TextFormField(
-                            controller: usernameController,
-                            keyboardType: TextInputType.visiblePassword,
-                            validator: (uN) {
-                              if (uN == '') {
-                                return 'Please enter a username';
-                              }
-                              return null;
-                            },
-                            decoration: const InputDecoration(
-                              errorBorder: OutlineInputBorder(
-                                  borderSide: BorderSide(color: Colours.red)),
-                              errorStyle: TextStyle(color: Colours.red),
-                              label: Text(
-                                'Username',
+      appBar: AppBar(title: const Text('Login')),
+      body: token == null
+          ? Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 10),
+              child: Form(
+                  key: loginFormKey,
+                  autovalidateMode: AutovalidateMode.disabled,
+                  child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        TextFormField(
+                          controller: usernameController,
+                          keyboardType: TextInputType.visiblePassword,
+                          validator: (uN) {
+                            if (uN == '') {
+                              return 'Please enter a username';
+                            }
+                            return null;
+                          },
+                          decoration: const InputDecoration(
+                            errorBorder: OutlineInputBorder(
+                                borderSide: BorderSide(color: Colours.red)),
+                            errorStyle: TextStyle(color: Colours.red),
+                            label: Text(
+                              'Username',
+                              style: TextStyle(color: Colours.lightGray),
+                            ),
+                            prefixIcon: Icon(Icons.person_outline),
+                          ),
+                        ),
+                        const SizedBox(height: 20),
+                        TextFormField(
+                          controller: passwordController,
+                          obscureText: passVis,
+                          keyboardType: TextInputType.visiblePassword,
+                          validator: (pW) {
+                            if (pW == '') {
+                              return 'Please enter a password.';
+                            }
+                            return null;
+                          },
+                          decoration: InputDecoration(
+                              errorBorder: const OutlineInputBorder(
+                                borderSide: BorderSide(color: Colours.red),
+                              ),
+                              errorStyle: const TextStyle(color: Colours.red),
+                              label: const Text(
+                                'Password',
                                 style: TextStyle(color: Colours.lightGray),
                               ),
-                              prefixIcon: Icon(Icons.person_outline),
-                            ),
-                          ),
-                          const SizedBox(height: 20),
-                          TextFormField(
-                            controller: passwordController,
-                            obscureText: passVis,
-                            keyboardType: TextInputType.visiblePassword,
-                            validator: (pW) {
-                              if (pW == '') {
-                                return 'Please enter a password.';
+                              prefixIcon: const Icon(Icons.lock_outline),
+                              suffixIcon: IconButton(
+                                icon: passVis
+                                    ? const Icon(Icons.visibility_off_outlined)
+                                    : const Icon(Icons.visibility_outlined),
+                                onPressed: () {
+                                  passVis = !passVis;
+                                  setState(() {});
+                                },
+                                splashColor: Colors.transparent,
+                              )),
+                        ),
+                        SizedBox(height: invalidLogin ? 10 : 5),
+                        Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: invalidLogin
+                                ? const [
+                                    Text(
+                                      'Invalid username and/or password.',
+                                      style: TextStyle(color: Colours.red),
+                                    )
+                                  ]
+                                : const [Text('')]),
+                        SizedBox(height: invalidLogin ? 10 : 15),
+                        ElevatedButton(
+                            onPressed: () {
+                              if (loginFormKey.currentState!.validate()) {
+                                _getData();
                               }
-                              return null;
                             },
-                            decoration: InputDecoration(
-                                errorBorder: const OutlineInputBorder(
-                                  borderSide: BorderSide(color: Colours.red),
-                                ),
-                                errorStyle: const TextStyle(color: Colours.red),
-                                label: const Text(
-                                  'Password',
-                                  style: TextStyle(color: Colours.lightGray),
-                                ),
-                                prefixIcon: const Icon(Icons.lock_outline),
-                                suffixIcon: IconButton(
-                                  icon: passVis
-                                      ? const Icon(
-                                          Icons.visibility_off_outlined)
-                                      : const Icon(Icons.visibility_outlined),
-                                  onPressed: () {
-                                    passVis = !passVis;
-                                    setState(() {});
-                                  },
-                                  splashColor: Colors.transparent,
-                                )),
-                          ),
-                          SizedBox(height: invalidLogin ? 10 : 5),
-                          Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: invalidLogin
-                                  ? const [
-                                      Text(
-                                        'Invalid username and/or password.',
-                                        style: TextStyle(color: Colours.red),
-                                      )
-                                    ]
-                                  : const [Text('')]),
-                          SizedBox(height: invalidLogin ? 10 : 15),
-                          ElevatedButton(
-                              onPressed: () {
-                                if (loginFormKey.currentState!.validate()) {
-                                  _getData();
-                                }
-                              },
-                              child: const Text('Login',
-                                  style: TextStyle(color: Colours.lightGray))),
-                        ])))
-            : Center(
-                child: Text('Logged in as $username'),
-              ));
+                            child: const Text('Login',
+                                style: TextStyle(color: Colours.lightGray))),
+                        Center(
+                          child: isLoading
+                              ? const Padding(
+                                  padding: EdgeInsets.symmetric(vertical: 20),
+                                  child: CircularProgressIndicator(),
+                                )
+                              : null,
+                        )
+                      ])))
+          : Center(
+              child: Text('Logged in as $username'),
+            ),
+    );
   }
 }

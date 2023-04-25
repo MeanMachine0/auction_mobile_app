@@ -1,10 +1,8 @@
 // ignore_for_file: avoid_init_to_null
 
-import 'package:auction_mobile_app/pages/item_detail.dart';
 import 'package:auction_mobile_app/pages/login.dart';
-import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
-import 'package:auction_mobile_app/models/items_model.dart';
+import 'package:auction_mobile_app/models/item_model.dart';
 import 'package:auction_mobile_app/services/api_service.dart';
 import 'package:auction_mobile_app/constants.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -22,10 +20,10 @@ class MyListings extends StatefulWidget {
 }
 
 class _MyListingsState extends State<MyListings> {
-  late List<ItemsModel>? _itemsModel = [];
-  late List<ItemsModel>? _endedItemsModel = [];
-  late List<ItemsModel>? _itemsBidOnByMe = [];
-  late List<ItemsModel>? _endedItemsBidOnByMe = [];
+  late List<ItemModel>? _itemsModel = [];
+  late List<ItemModel>? _endedItemsModel = [];
+  late List<ItemModel>? _itemsBidOnByMe = [];
+  late List<ItemModel>? _endedItemsBidOnByMe = [];
   late int? accountId = null;
   late int? myAccountId = null;
   late String? token = null;
@@ -36,6 +34,7 @@ class _MyListingsState extends State<MyListings> {
   bool itemsBidExpanded = false;
   bool endedItemsBidExpanded = false;
   String? downloadURL;
+  bool isLoading = true;
 
   @override
   void initState() {
@@ -44,6 +43,9 @@ class _MyListingsState extends State<MyListings> {
   }
 
   void _getData() async {
+    setState(() {
+      isLoading = true;
+    });
     SharedPreferences prefs = await SharedPreferences.getInstance();
     accountId = widget.accountId ?? prefs.getInt('accountId');
     myAccountId = prefs.getInt('accountId');
@@ -56,13 +58,13 @@ class _MyListingsState extends State<MyListings> {
         token,
         false,
       ))
-          .cast<ItemsModel>();
+          .cast<ItemModel>();
       _endedItemsModel = (await apiService.getAccountItems(
         accountId!,
         token,
         true,
       ))
-          .cast<ItemsModel>();
+          .cast<ItemModel>();
       if (widget.accountId == null) {
         seller = true;
         if (token != null) {
@@ -71,17 +73,21 @@ class _MyListingsState extends State<MyListings> {
             token!,
             false,
           ))
-              .cast<ItemsModel>();
+              .cast<ItemModel>();
           _endedItemsBidOnByMe = (await apiService.getItemsBidOnByMe(
             accountId!,
             token!,
             true,
           ))
-              .cast<ItemsModel>();
+              .cast<ItemModel>();
         }
       }
     }
-    setState(() {});
+    if (mounted) {
+      setState(() {
+        isLoading = false;
+      });
+    }
   }
 
   void _logout() {
@@ -136,19 +142,13 @@ class _MyListingsState extends State<MyListings> {
                               style: TextStyle(color: Colours.lightGray))),
                     )
                   ]),
-        body: token == null && widget.accountId == null
+        body: isLoading
             ? const Center(
-                child: Text('You must be logged in to view this page.'),
+                child: CircularProgressIndicator(),
               )
-            : (_itemsModel == null || _itemsModel!.isEmpty) &&
-                    (_endedItemsModel == null || _endedItemsModel!.isEmpty) &&
-                    (_itemsBidOnByMe == null || _itemsBidOnByMe!.isEmpty) &&
-                    (_endedItemsBidOnByMe == null ||
-                        _endedItemsBidOnByMe!.isEmpty)
+            : token == null && widget.accountId == null
                 ? const Center(
-                    child: CircularProgressIndicator(
-                      color: Colours.lightGray,
-                    ),
+                    child: Text('You must be logged in to view this page.'),
                   )
                 : SingleChildScrollView(
                     child: Padding(

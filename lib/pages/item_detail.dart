@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 
 import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
-import 'package:auction_mobile_app/models/items_model.dart';
+import 'package:auction_mobile_app/models/item_model.dart';
 import 'package:auction_mobile_app/services/api_service.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -21,7 +21,7 @@ class ItemDetail extends StatefulWidget {
 
 class _ItemDetailState extends State<ItemDetail> {
   final bidFormKey = GlobalKey<FormState>();
-  ItemsModel? itemModel;
+  ItemModel? itemModel;
   int? accountId;
   String? token;
   String? username;
@@ -64,8 +64,9 @@ class _ItemDetailState extends State<ItemDetail> {
         downloadURL = await reference.getDownloadURL();
       }
     }
-
-    setState(() {});
+    if (mounted) {
+      setState(() {});
+    }
   }
 
   String formatDateTime(DateTime dateTime) {
@@ -81,9 +82,7 @@ class _ItemDetailState extends State<ItemDetail> {
       ),
       body: itemModel == null
           ? const Center(
-              child: CircularProgressIndicator(
-                color: Colours.lightGray,
-              ),
+              child: CircularProgressIndicator(),
             )
           : SingleChildScrollView(
               child: Column(

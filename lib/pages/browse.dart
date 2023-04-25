@@ -1,7 +1,7 @@
 import 'package:auction_mobile_app/pages/login.dart';
 import 'package:flutter/material.dart';
 
-import 'package:auction_mobile_app/models/items_model.dart';
+import 'package:auction_mobile_app/models/item_model.dart';
 import 'package:auction_mobile_app/pages/item_detail.dart';
 import 'package:auction_mobile_app/services/api_service.dart';
 import 'package:auction_mobile_app/constants.dart';
@@ -21,7 +21,7 @@ class Browse extends StatefulWidget {
 }
 
 class _BrowseState extends State<Browse> {
-  late List<ItemsModel>? _itemsModel = [];
+  late List<ItemModel>? _itemsModel = [];
   late int? accountId = 0;
   late String? token = '';
   late String? username = '';
@@ -33,6 +33,7 @@ class _BrowseState extends State<Browse> {
   String sortBy = 'Price';
   bool ascending = true;
   String? downloadURL;
+  bool isLoading = true;
 
   @override
   void initState() {
@@ -41,9 +42,15 @@ class _BrowseState extends State<Browse> {
   }
 
   void _getData() async {
+    setState(() {
+      isLoading = true;
+    });
     SharedPreferences prefs = await SharedPreferences.getInstance();
     accountId = prefs.getInt('accountId');
     token = prefs.getString('token');
+    if (mounted) {
+      setState(() {});
+    }
     username = prefs.getString('username');
     password = prefs.getString('password');
     String category =
@@ -54,7 +61,11 @@ class _BrowseState extends State<Browse> {
     String _sortBy = Dicts.sorters[sortBy]!;
     _itemsModel = (await ApiService().getItems(widget._home, widget._home,
         searchBool, search, category, condition, _sortBy, ascending));
-    setState(() {});
+    if (mounted) {
+      setState(() {
+        isLoading = false;
+      });
+    }
   }
 
   void _logout() {
@@ -221,12 +232,14 @@ class _BrowseState extends State<Browse> {
           ),
           const SizedBox(height: 10),
           Expanded(
-            child: _itemsModel!.isEmpty
-                ? const Center(
-                    child:
-                        Text('No Listings to View in this Category-Condition.'))
-                : ItemCardList(
-                    itemsModel: _itemsModel!, accountId: accountId ?? 0),
+            child: isLoading
+                ? const Center(child: CircularProgressIndicator())
+                : _itemsModel!.isEmpty
+                    ? const Center(
+                        child: Text(
+                            'No Listings to View in this Category-Condition.'))
+                    : ItemCardList(
+                        itemsModel: _itemsModel!, accountId: accountId ?? 0),
           ),
         ],
       ),
