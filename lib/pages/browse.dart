@@ -22,10 +22,9 @@ class Browse extends StatefulWidget {
 
 class _BrowseState extends State<Browse> {
   late List<ItemModel>? _itemsModel = [];
-  late int? accountId = 0;
   late String? token = '';
+  late int? accountId = 0;
   late String? username = '';
-  late String? password = '';
   bool searchBool = false;
   String search = '';
   int categoryIndex = 0;
@@ -45,14 +44,7 @@ class _BrowseState extends State<Browse> {
     setState(() {
       isLoading = true;
     });
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    accountId = prefs.getInt('accountId');
-    token = prefs.getString('token');
-    if (mounted) {
-      setState(() {});
-    }
-    username = prefs.getString('username');
-    password = prefs.getString('password');
+    await getCredentials();
     String category =
         Dicts.categories[Lists.categories[categoryIndex]] ?? 'all';
     String condition =
@@ -68,11 +60,15 @@ class _BrowseState extends State<Browse> {
     }
   }
 
-  void _logout() {
-    if (token != null) {
-      ApiService().logout(token);
-      _getData();
+  Future<void> getCredentials() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    if (mounted) {
+      setState(() {
+        token = prefs.getString('token');
+      });
     }
+    accountId = prefs.getInt('accountId');
+    username = prefs.getString('username');
   }
 
   @override
@@ -92,7 +88,12 @@ class _BrowseState extends State<Browse> {
                           elevation: MaterialStateProperty.resolveWith<double?>(
                               (_) => 0),
                         ),
-                        onPressed: () => _logout(),
+                        onPressed: () {
+                          if (token != null) {
+                            ApiService().logout(token);
+                            _getData();
+                          }
+                        },
                         child: const Text('Logout',
                             style: TextStyle(color: Colours.lightGray))),
                   ),

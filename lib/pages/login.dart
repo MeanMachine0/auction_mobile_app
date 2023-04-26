@@ -46,7 +46,6 @@ class _LoginState extends State<Login> {
         await prefs.setInt('accountId', int.parse(_IdToken![0]));
         await prefs.setString('token', _IdToken![1]);
         await prefs.setString('username', usernameController.text);
-        await prefs.setString('password', passwordController.text);
         accountId = prefs.getInt('accountId');
         token = prefs.getString('token');
         username = prefs.getString('username');

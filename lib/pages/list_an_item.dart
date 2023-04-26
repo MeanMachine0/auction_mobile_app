@@ -77,8 +77,8 @@ class _ListAnItemState extends State<ListAnItem> {
   ];
   bool acceptReturns = false;
   DateTime endDate = DateTime(0);
-  late int? accountId = null;
   late String? token = null;
+  late int? accountId = null;
   late String? username = null;
   File? imageFile;
   String imageErrorMessage = 'Please select or take a picture.';
@@ -95,12 +95,7 @@ class _ListAnItemState extends State<ListAnItem> {
     setState(() {
       isLoading = true;
     });
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    accountId = prefs.getInt('accountId');
-    setState(() {
-      token = prefs.getString('token');
-    });
-    username = prefs.getString('username');
+    getCredentials();
     if (mounted) {
       setState(() {
         isLoading = false;
@@ -108,11 +103,15 @@ class _ListAnItemState extends State<ListAnItem> {
     }
   }
 
-  void _logout() {
-    if (token != null) {
-      ApiService().logout(token);
-      _getData();
+  Future<void> getCredentials() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    if (mounted) {
+      setState(() {
+        token = prefs.getString('token');
+      });
     }
+    accountId = prefs.getInt('accountId');
+    username = prefs.getString('username');
   }
 
   Future<void> uploadImage(File file, int itemId) async {
@@ -166,7 +165,12 @@ class _ListAnItemState extends State<ListAnItem> {
                                 MaterialStateProperty.resolveWith<double?>(
                                     (_) => 0),
                           ),
-                          onPressed: () => _logout(),
+                          onPressed: () {
+                            if (token != null) {
+                              ApiService().logout(token);
+                              _getData();
+                            }
+                          },
                           child: const Text('Logout',
                               style: TextStyle(color: Colours.lightGray))),
                     ),

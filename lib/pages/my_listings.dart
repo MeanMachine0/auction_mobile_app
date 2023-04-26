@@ -24,9 +24,9 @@ class _MyListingsState extends State<MyListings> {
   late List<ItemModel>? _endedItemsModel = [];
   late List<ItemModel>? _itemsBidOnByMe = [];
   late List<ItemModel>? _endedItemsBidOnByMe = [];
+  late String? token = null;
   late int? accountId = null;
   late int? myAccountId = null;
-  late String? token = null;
   late String? username = null;
   bool seller = false;
   bool itemsExpanded = false;
@@ -46,13 +46,7 @@ class _MyListingsState extends State<MyListings> {
     setState(() {
       isLoading = true;
     });
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    accountId = widget.accountId ?? prefs.getInt('accountId');
-    myAccountId = prefs.getInt('accountId');
-    setState(() {
-      token = prefs.getString('token');
-    });
-    username = prefs.getString('username');
+    getCredentials();
     if (accountId != null) {
       ApiService apiService = ApiService();
       _itemsModel = (await apiService.getAccountItems(
@@ -92,11 +86,15 @@ class _MyListingsState extends State<MyListings> {
     }
   }
 
-  void _logout() {
-    if (token != null) {
-      ApiService().logout(token);
-      _getData();
+  Future<void> getCredentials() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    if (mounted) {
+      setState(() {
+        token = prefs.getString('token');
+      });
     }
+    accountId = prefs.getInt('accountId');
+    username = prefs.getString('username');
   }
 
   @override
@@ -117,7 +115,10 @@ class _MyListingsState extends State<MyListings> {
                                     (_) => 0),
                           ),
                           onPressed: () {
-                            _logout();
+                            if (token != null) {
+                              ApiService().logout(token);
+                              _getData();
+                            }
                           },
                           child: const Text('Logout',
                               style: TextStyle(color: Colours.lightGray))),
