@@ -97,7 +97,9 @@ class _ListAnItemState extends State<ListAnItem> {
     });
     SharedPreferences prefs = await SharedPreferences.getInstance();
     accountId = prefs.getInt('accountId');
-    token = prefs.getString('token');
+    setState(() {
+      token = prefs.getString('token');
+    });
     username = prefs.getString('username');
     if (mounted) {
       setState(() {

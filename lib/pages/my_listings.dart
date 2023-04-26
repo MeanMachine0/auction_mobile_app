@@ -49,7 +49,9 @@ class _MyListingsState extends State<MyListings> {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     accountId = widget.accountId ?? prefs.getInt('accountId');
     myAccountId = prefs.getInt('accountId');
-    token = prefs.getString('token');
+    setState(() {
+      token = prefs.getString('token');
+    });
     username = prefs.getString('username');
     if (accountId != null) {
       ApiService apiService = ApiService();
