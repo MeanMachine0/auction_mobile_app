@@ -380,6 +380,9 @@ class _ItemDetailState extends State<ItemDetail> {
                                                 if (bidFormKey.currentState!
                                                         .validate() &&
                                                     token != null) {
+                                                  setState(() {
+                                                    isLoading = true;
+                                                  });
                                                   ApiService apiService =
                                                       ApiService();
                                                   double bid = double.parse(
