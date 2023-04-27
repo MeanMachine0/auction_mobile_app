@@ -126,16 +126,12 @@ class _ItemDetailState extends State<ItemDetail> {
                                         ],
                                       ),
                                       Row(
-                                        children: double.parse(
-                                                    itemModel!.postageCost) ==
-                                                0
-                                            ? [const Text('P&P: free')]
-                                            : [
-                                                Text(
-                                                  'P&P: £${itemModel!.postageCost}',
-                                                  style: Elements.cardText,
-                                                )
-                                              ],
+                                        children: [
+                                          Text(
+                                            'P&P: ${double.parse(itemModel!.postageCost) == 0 ? 'free' : '£${itemModel!.postageCost}'} ',
+                                            style: Elements.cardText,
+                                          )
+                                        ],
                                       ),
                                       Row(
                                         children: [
