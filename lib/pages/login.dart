@@ -1,3 +1,4 @@
+import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:flutter/material.dart';
 
 import 'package:auction_mobile_app/services/api_service.dart';
@@ -53,6 +54,8 @@ class _LoginState extends State<Login> {
         passwordController.text = '';
         invalidLogin = false;
         if (token != null) {
+          final FirebaseAnalytics analytics = FirebaseAnalytics.instance;
+          await analytics.logLogin();
           // ignore: use_build_context_synchronously
           Navigator.pop(context, true);
         }

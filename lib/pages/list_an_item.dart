@@ -95,15 +95,6 @@ class _ListAnItemState extends State<ListAnItem> {
     setState(() {
       isLoading = true;
     });
-    getCredentials();
-    if (mounted) {
-      setState(() {
-        isLoading = false;
-      });
-    }
-  }
-
-  Future<void> getCredentials() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     if (mounted) {
       setState(() {
@@ -112,6 +103,11 @@ class _ListAnItemState extends State<ListAnItem> {
     }
     accountId = prefs.getInt('accountId');
     username = prefs.getString('username');
+    if (mounted) {
+      setState(() {
+        isLoading = false;
+      });
+    }
   }
 
   Future<void> uploadImage(File file, int itemId) async {

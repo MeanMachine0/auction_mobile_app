@@ -41,10 +41,29 @@ class _BrowseState extends State<Browse> {
   }
 
   void _getData() async {
-    setState(() {
-      isLoading = true;
-    });
-    await getCredentials();
+    if (mounted) {
+      setState(() {
+        isLoading = true;
+      });
+    }
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    try {
+      int? notificationPage = prefs.getInt('notificationPage');
+      bool? goToListing = prefs.getBool('goToListing');
+      if (goToListing!) {
+        await prefs.setBool('goToListing', false);
+        Navigator.of(context).push(MaterialPageRoute(
+            builder: (_) => ItemDetail(itemId: notificationPage!)));
+      }
+      // ignore: empty_catches
+    } catch (e) {}
+    if (mounted) {
+      setState(() {
+        token = prefs.getString('token');
+      });
+    }
+    accountId = prefs.getInt('accountId');
+    username = prefs.getString('username');
     String category =
         Dicts.categories[Lists.categories[categoryIndex]] ?? 'all';
     String condition =
@@ -58,17 +77,6 @@ class _BrowseState extends State<Browse> {
         isLoading = false;
       });
     }
-  }
-
-  Future<void> getCredentials() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    if (mounted) {
-      setState(() {
-        token = prefs.getString('token');
-      });
-    }
-    accountId = prefs.getInt('accountId');
-    username = prefs.getString('username');
   }
 
   @override

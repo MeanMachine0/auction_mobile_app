@@ -41,8 +41,12 @@ class _ItemDetailState extends State<ItemDetail> {
 
   void _getData() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
+    if (mounted) {
+      setState(() {
+        token = prefs.getString('token');
+      });
+    }
     accountId = prefs.getInt('accountId');
-    token = prefs.getString('token');
     username = prefs.getString('username');
     ApiService apiService = ApiService();
     itemModel = await apiService.getItem(widget._itemId, token);

@@ -1,13 +1,27 @@
 import 'dart:developer';
 import 'dart:ui';
 
+import 'package:auction_mobile_app/services/api_service.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:auction_mobile_app/pages/base.dart';
 import 'package:auction_mobile_app/constants.dart';
 import 'package:intl/intl.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+
+Future<void> firebaseMessagingBackgroundHandler(RemoteMessage message) async {
+  if (message.notification != null) {
+    if (message.notification!.title == 'Outbidded!') {
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      await prefs.setInt('notificationPage', int.parse(message.data['itemId']));
+      await prefs.setBool('goToListing', true);
+    }
+  }
+}
 
 Future<void> main() async {
   Intl.defaultLocale = 'en-GB';
@@ -21,6 +35,25 @@ Future<void> main() async {
     FirebaseCrashlytics.instance.recordError(error, stack, fatal: true);
     return true;
   };
+
+  FirebaseMessaging firebaseMessaging = FirebaseMessaging.instance;
+  String? fcmToken = await firebaseMessaging.getToken();
+  if (fcmToken != null) {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    await prefs.setString('fcmToken', fcmToken);
+  }
+  firebaseMessaging.onTokenRefresh.listen((fcmToken) {}).onError((err) {});
+  FirebaseMessaging.onMessage.listen((RemoteMessage message) async {
+    if (message.notification != null) {
+      if (message.notification!.title == 'Outbidded!') {
+        SharedPreferences prefs = await SharedPreferences.getInstance();
+        await prefs.setInt(
+            'notificationPage', int.parse(message.data['itemId']));
+        await prefs.setBool('goToListing', true);
+      }
+    }
+  });
+  FirebaseMessaging.onBackgroundMessage(firebaseMessagingBackgroundHandler);
   runApp(const MyApp());
 }
 

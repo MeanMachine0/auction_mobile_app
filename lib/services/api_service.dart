@@ -10,7 +10,13 @@ class ApiService {
   static String baseUrl = 'https://meanmachine0.pythonanywhere.com/api/';
   Future<List<String>?> login(String username, String password) async {
     try {
-      Map<String, dynamic> data = {'username': username, 'password': password};
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      String? fcmToken = prefs.getString('fcmToken');
+      Map<String, dynamic> data = {
+        'username': username,
+        'password': password,
+        'fcmToken': fcmToken
+      };
       var url = Uri.parse('${baseUrl}login/');
       var response = await http.post(url,
           body: jsonEncode(data),
@@ -30,7 +36,11 @@ class ApiService {
   void logout(token) async {
     try {
       SharedPreferences prefs = await SharedPreferences.getInstance();
+      String? fcmToken = prefs.getString('fcmToken');
       await prefs.clear();
+      if (fcmToken != null) {
+        await prefs.setString('fcmToken', fcmToken);
+      }
       var url = Uri.parse('${baseUrl}logout/');
       await http.post(url, headers: {'Authorization': 'Token $token'});
     } catch (e) {

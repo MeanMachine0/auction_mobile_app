@@ -46,7 +46,14 @@ class _MyListingsState extends State<MyListings> {
     setState(() {
       isLoading = true;
     });
-    getCredentials();
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    if (mounted) {
+      setState(() {
+        token = prefs.getString('token');
+      });
+    }
+    accountId = prefs.getInt('accountId');
+    username = prefs.getString('username');
     if (accountId != null) {
       ApiService apiService = ApiService();
       _itemsModel = (await apiService.getAccountItems(
@@ -84,17 +91,6 @@ class _MyListingsState extends State<MyListings> {
         isLoading = false;
       });
     }
-  }
-
-  Future<void> getCredentials() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    if (mounted) {
-      setState(() {
-        token = prefs.getString('token');
-      });
-    }
-    accountId = prefs.getInt('accountId');
-    username = prefs.getString('username');
   }
 
   @override
