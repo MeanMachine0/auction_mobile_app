@@ -13,12 +13,16 @@ import 'package:intl/intl.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-Future<void> firebaseMessagingBackgroundHandler(RemoteMessage message) async {
+import 'pages/item_detail.dart';
+
+final GlobalKey<NavigatorState> _navigatorKey = GlobalKey<NavigatorState>();
+
+Future<void> onNotification(RemoteMessage message) async {
   if (message.notification != null) {
     if (message.notification!.title == 'Outbidded!') {
-      SharedPreferences prefs = await SharedPreferences.getInstance();
-      await prefs.setInt('notificationPage', int.parse(message.data['itemId']));
-      await prefs.setBool('goToListing', true);
+      _navigatorKey.currentState?.push(MaterialPageRoute(
+          builder: (_) =>
+              ItemDetail(itemId: int.parse(message.data['itemId']))));
     }
   }
 }
@@ -42,18 +46,18 @@ Future<void> main() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     await prefs.setString('fcmToken', fcmToken);
   }
-  firebaseMessaging.onTokenRefresh.listen((fcmToken) {}).onError((err) {});
-  FirebaseMessaging.onMessage.listen((RemoteMessage message) async {
-    if (message.notification != null) {
-      if (message.notification!.title == 'Outbidded!') {
-        SharedPreferences prefs = await SharedPreferences.getInstance();
-        await prefs.setInt(
-            'notificationPage', int.parse(message.data['itemId']));
-        await prefs.setBool('goToListing', true);
-      }
+  RemoteMessage? message = await firebaseMessaging.getInitialMessage();
+  if (message != null) {
+    if (message.notification!.title == 'Outbidded!') {
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      await prefs.setInt('outbiddedId', int.parse(message.data['itemId']));
     }
-  });
-  FirebaseMessaging.onBackgroundMessage(firebaseMessagingBackgroundHandler);
+  }
+  FirebaseMessaging.onMessageOpenedApp.listen(onNotification);
+  firebaseMessaging.onTokenRefresh.listen((fcmToken) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    await prefs.setString('fcmToken', fcmToken);
+  }).onError((err) {});
   runApp(const MyApp());
 }
 
@@ -63,6 +67,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Auction App',
+      navigatorKey: _navigatorKey,
       localizationsDelegates: const [
         GlobalMaterialLocalizations.delegate,
         GlobalWidgetsLocalizations.delegate,

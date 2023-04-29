@@ -47,16 +47,12 @@ class _BrowseState extends State<Browse> {
       });
     }
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    try {
-      int? notificationPage = prefs.getInt('notificationPage');
-      bool? goToListing = prefs.getBool('goToListing');
-      if (goToListing!) {
-        await prefs.setBool('goToListing', false);
-        Navigator.of(context).push(MaterialPageRoute(
-            builder: (_) => ItemDetail(itemId: notificationPage!)));
-      }
-      // ignore: empty_catches
-    } catch (e) {}
+    int? outbiddedId = prefs.getInt('outbiddedId');
+    if (outbiddedId != null) {
+      prefs.remove('outbiddedId');
+      Navigator.of(context).push(
+          MaterialPageRoute(builder: (_) => ItemDetail(itemId: outbiddedId)));
+    }
     if (mounted) {
       setState(() {
         token = prefs.getString('token');
