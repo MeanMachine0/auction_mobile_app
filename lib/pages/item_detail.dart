@@ -56,18 +56,10 @@ class _ItemDetailState extends State<ItemDetail> {
         : await apiService.amITheBuyer(itemModel!.id, token, false);
     try {
       Reference reference = FirebaseStorage.instance.refFromURL(
-          '${FirebaseConstants.uploadedImages}${itemModel!.id}/smallerImage.jpeg');
+          '${FirebaseConstants.uploadedImages}${itemModel!.id}/smallerImage');
       downloadURL = await reference.getDownloadURL();
     } catch (e) {
-      try {
-        Reference reference = FirebaseStorage.instance.refFromURL(
-            '${FirebaseConstants.uploadedImages}${itemModel!.id}/smallerImage.HEIC');
-        downloadURL = await reference.getDownloadURL();
-      } catch (e) {
-        Reference reference = FirebaseStorage.instance.refFromURL(
-            '${FirebaseConstants.uploadedImages}${itemModel!.id}/smallerImage.HEIF');
-        downloadURL = await reference.getDownloadURL();
-      }
+      throw Exception('Image not found');
     }
     if (mounted) {
       setState(() {

@@ -20,19 +20,12 @@ class ItemCard extends StatelessWidget {
   Future<String> getDownloadURL(ItemModel item) async {
     String? downloadURL;
     try {
-      Reference reference = FirebaseStorage.instance.refFromURL(
-          '${FirebaseConstants.uploadedImages}${item.id}/thumbNail.jpeg');
+      final FirebaseStorage storage = FirebaseStorage.instance;
+      Reference reference =
+          storage.ref().child('uploads/images/${item.id}/thumbNail');
       downloadURL = await reference.getDownloadURL();
     } catch (e) {
-      try {
-        Reference reference = FirebaseStorage.instance.refFromURL(
-            '${FirebaseConstants.uploadedImages}${item.id}/thumbNail.HEIC');
-        downloadURL = await reference.getDownloadURL();
-      } catch (e) {
-        Reference reference = FirebaseStorage.instance.refFromURL(
-            '${FirebaseConstants.uploadedImages}${item.id}/thumbNail.HEIF');
-        downloadURL = await reference.getDownloadURL();
-      }
+      throw Exception('Image not found');
     }
     return downloadURL;
   }
