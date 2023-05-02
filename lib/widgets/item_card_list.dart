@@ -21,7 +21,7 @@ class ItemCardList extends StatelessWidget {
       itemBuilder: (context, index) {
         return Padding(
             padding: const EdgeInsets.symmetric(
-              horizontal: 20,
+              horizontal: 10,
               vertical: 2,
             ),
             child: ItemCard(

@@ -20,7 +20,7 @@ class ItemCardRow extends StatelessWidget {
         child: Text(
           _text,
           overflow: TextOverflow.ellipsis,
-          maxLines: 1,
+          maxLines: 2,
           textAlign: TextAlign.start,
           style: _isBold ? Elements.boldCardText : Elements.cardText,
         ),
