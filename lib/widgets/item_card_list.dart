@@ -7,27 +7,21 @@ class ItemCardList extends StatelessWidget {
     super.key,
     required List<ItemModel> itemsModel,
     required int accountId,
-    bool scrollable = true,
   })  : _itemsModel = itemsModel,
-        _accountId = accountId,
-        _scrollable = scrollable;
+        _accountId = accountId;
 
   final List<ItemModel>? _itemsModel;
   final int _accountId;
-  final bool _scrollable;
 
   @override
   Widget build(BuildContext context) {
     return ListView.builder(
       shrinkWrap: true,
-      physics: _scrollable
-          ? const AlwaysScrollableScrollPhysics()
-          : const NeverScrollableScrollPhysics(),
       itemCount: _itemsModel!.length,
       itemBuilder: (context, index) {
         return Padding(
-            padding: EdgeInsets.symmetric(
-              horizontal: _scrollable ? 20 : 0,
+            padding: const EdgeInsets.symmetric(
+              horizontal: 20,
               vertical: 2,
             ),
             child: ItemCard(
