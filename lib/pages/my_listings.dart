@@ -29,10 +29,7 @@ class _MyListingsState extends State<MyListings> {
   late int? myAccountId = null;
   late String? username = null;
   bool seller = false;
-  bool itemsExpanded = false;
-  bool endedItemsExpanded = false;
-  bool itemsBidExpanded = false;
-  bool endedItemsBidExpanded = false;
+  List<bool> expanded = [false, false, false, false];
   String? downloadURL;
   bool isLoading = true;
 
@@ -53,17 +50,19 @@ class _MyListingsState extends State<MyListings> {
       });
     }
     accountId = prefs.getInt('accountId');
+    myAccountId = accountId;
+    accountId ?? widget.accountId;
     username = prefs.getString('username');
-    if (accountId != null) {
-      ApiService apiService = ApiService();
+    ApiService apiService = ApiService();
+    if (widget.accountId != null || accountId != null) {
       _itemsModel = (await apiService.getAccountItems(
-        accountId!,
+        (widget.accountId ?? accountId)!,
         token,
         false,
       ))
           .cast<ItemModel>();
       _endedItemsModel = (await apiService.getAccountItems(
-        accountId!,
+        (widget.accountId ?? accountId)!,
         token,
         true,
       ))
@@ -95,178 +94,183 @@ class _MyListingsState extends State<MyListings> {
 
   @override
   Widget build(BuildContext context) {
+    double usableHeight = MediaQuery.of(context).size.height -
+        MediaQuery.of(context).padding.top -
+        MediaQuery.of(context).padding.bottom;
     return Scaffold(
-        appBar: AppBar(
-            title: Text(widget.accountId == null
-                ? 'My Listings'
-                : '${widget._username}\'s Listings'),
-            actions: token != null
-                ? [
-                    Padding(
-                      padding: const EdgeInsets.all(3),
-                      child: ElevatedButton(
-                          style: ButtonStyle(
-                            elevation:
-                                MaterialStateProperty.resolveWith<double?>(
-                                    (_) => 0),
-                          ),
-                          onPressed: () {
-                            if (token != null) {
-                              ApiService().logout(token);
-                              _getData();
-                            }
-                          },
-                          child: const Text('Logout',
-                              style: TextStyle(color: Colours.lightGray))),
-                    ),
-                  ]
-                : [
-                    Padding(
-                      padding: const EdgeInsets.all(3),
-                      child: ElevatedButton(
-                          style: ButtonStyle(
-                            elevation:
-                                MaterialStateProperty.resolveWith<double?>(
-                                    (_) => 0),
-                          ),
-                          onPressed: () async {
-                            final result = await Navigator.of(context).push(
-                                MaterialPageRoute(
-                                    builder: (_) => const Login()));
-                            if (result == true) {
-                              _getData();
-                            }
-                          },
-                          child: const Text('Login',
-                              style: TextStyle(color: Colours.lightGray))),
-                    )
-                  ]),
-        body: isLoading
-            ? const Center(
-                child: CircularProgressIndicator(),
-              )
-            : token == null && widget.accountId == null
-                ? const Center(
-                    child: Text('You must be logged in to view this page.'),
+      appBar: AppBar(
+          title: Text(widget.accountId == null
+              ? 'My Listings'
+              : '${widget._username}\'s Listings'),
+          actions: token != null
+              ? [
+                  Padding(
+                    padding: const EdgeInsets.all(3),
+                    child: ElevatedButton(
+                        style: ButtonStyle(
+                          elevation: MaterialStateProperty.resolveWith<double?>(
+                              (_) => 0),
+                        ),
+                        onPressed: () {
+                          if (token != null) {
+                            ApiService().logout(token);
+                            _getData();
+                          }
+                        },
+                        child: const Text('Logout',
+                            style: TextStyle(color: Colours.lightGray))),
+                  ),
+                ]
+              : [
+                  Padding(
+                    padding: const EdgeInsets.all(3),
+                    child: ElevatedButton(
+                        style: ButtonStyle(
+                          elevation: MaterialStateProperty.resolveWith<double?>(
+                              (_) => 0),
+                        ),
+                        onPressed: () async {
+                          final result = await Navigator.of(context).push(
+                              MaterialPageRoute(builder: (_) => const Login()));
+                          if (result == true) {
+                            _getData();
+                          }
+                        },
+                        child: const Text('Login',
+                            style: TextStyle(color: Colours.lightGray))),
                   )
-                : SingleChildScrollView(
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 20),
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.start,
+                ]),
+      body: isLoading
+          ? const Center(
+              child: CircularProgressIndicator(),
+            )
+          : token == null && widget.accountId == null
+              ? const Center(
+                  child: Text('You must be logged in to view this page.'),
+                )
+              : Column(
+                  children: [
+                    ExpansionPanelList(
+                        expandedHeaderPadding: const EdgeInsets.all(0),
+                        elevation: 0,
+                        dividerColor: Colours.lightGray,
+                        expansionCallback: (int index, bool isExpanded) {
+                          setState(() {
+                            for (int i = 0; i < 4; i++) {
+                              if (i == index) {
+                                expanded[i] = !expanded[i];
+                              } else {
+                                expanded[i] = false;
+                              }
+                            }
+                          });
+                        },
                         children: [
-                          ExpansionPanelList(
-                              expandedHeaderPadding: const EdgeInsets.all(0),
-                              elevation: 0,
-                              dividerColor: Colours.lightGray,
-                              expansionCallback: (int index, bool isExpanded) {
-                                setState(() {
-                                  if (index == 0) {
-                                    itemsExpanded = !itemsExpanded;
-                                  }
-                                  if (index == 1) {
-                                    endedItemsExpanded = !endedItemsExpanded;
-                                  }
-                                  if (index == 2) {
-                                    itemsBidExpanded = !itemsBidExpanded;
-                                  }
-                                  if (index == 3) {
-                                    endedItemsBidExpanded =
-                                        !endedItemsBidExpanded;
-                                  }
-                                });
+                          ExpansionPanel(
+                            canTapOnHeader: true,
+                            backgroundColor: Colours.deepGray,
+                            headerBuilder:
+                                (BuildContext context, bool isExpanded) {
+                              return ListTile(
+                                title: Text(
+                                    'Active Listings (${_itemsModel!.length})',
+                                    overflow: TextOverflow.ellipsis,
+                                    style: Elements.subHeader),
+                              );
+                            },
+                            body: _itemsModel!.isEmpty
+                                ? const Center(
+                                    child: Text('No Listings to View.'))
+                                : SizedBox(
+                                    height: widget.accountId == null
+                                        ? usableHeight - 385
+                                        : usableHeight - 190,
+                                    child: ItemCardList(
+                                      itemsModel: _itemsModel!,
+                                      accountId: myAccountId ?? 0,
+                                    ),
+                                  ),
+                            isExpanded: expanded[0],
+                          ),
+                          ExpansionPanel(
+                            canTapOnHeader: true,
+                            backgroundColor: Colours.deepGray,
+                            headerBuilder:
+                                (BuildContext context, bool isExpanded) {
+                              return ListTile(
+                                title: Text(
+                                    'Inactive Listings (${_endedItemsModel!.length})',
+                                    overflow: TextOverflow.ellipsis,
+                                    style: Elements.subHeader),
+                              );
+                            },
+                            body: _endedItemsModel!.isEmpty
+                                ? const Center(
+                                    child: Text('No Listings to View.'))
+                                : SizedBox(
+                                    height: widget.accountId == null
+                                        ? usableHeight - 400
+                                        : usableHeight - 190,
+                                    child: ItemCardList(
+                                      itemsModel: _endedItemsModel!,
+                                      accountId: myAccountId ?? 0,
+                                    ),
+                                  ),
+                            isExpanded: expanded[1],
+                          ),
+                          if (widget.accountId == null)
+                            ExpansionPanel(
+                              canTapOnHeader: true,
+                              backgroundColor: Colours.deepGray,
+                              headerBuilder:
+                                  (BuildContext context, bool isExpanded) {
+                                return ListTile(
+                                  title: Text(
+                                      'Active Listings Bid on by Me (${_itemsBidOnByMe!.length})',
+                                      overflow: TextOverflow.ellipsis,
+                                      style: Elements.subHeader),
+                                );
                               },
-                              children: [
-                                ExpansionPanel(
-                                  canTapOnHeader: true,
-                                  backgroundColor: Colours.deepGray,
-                                  headerBuilder:
-                                      (BuildContext context, bool isExpanded) {
-                                    return ListTile(
-                                      title: Text(
-                                          'Active Listings (${_itemsModel!.length})',
-                                          style: Elements.subHeader),
-                                    );
-                                  },
-                                  body: _itemsModel!.isEmpty
-                                      ? const Center(
-                                          child: Text('No Listings to View.'))
-                                      : ItemCardList(
-                                          itemsModel: _itemsModel!,
-                                          accountId: myAccountId ?? 0,
-                                          scrollable: false,
-                                        ),
-                                  isExpanded: itemsExpanded,
-                                ),
-                                ExpansionPanel(
-                                  canTapOnHeader: true,
-                                  backgroundColor: Colours.deepGray,
-                                  headerBuilder:
-                                      (BuildContext context, bool isExpanded) {
-                                    return ListTile(
-                                      title: Text(
-                                          'Inactive Listings (${_endedItemsModel!.length})',
-                                          style: Elements.subHeader),
-                                    );
-                                  },
-                                  body: _endedItemsModel!.isEmpty
-                                      ? const Center(
-                                          child: Text('No Listings to View.'))
-                                      : ItemCardList(
-                                          itemsModel: _endedItemsModel!,
-                                          accountId: myAccountId ?? 0,
-                                          scrollable: false,
-                                        ),
-                                  isExpanded: endedItemsExpanded,
-                                ),
-                                if (widget.accountId == null)
-                                  ExpansionPanel(
-                                    canTapOnHeader: true,
-                                    backgroundColor: Colours.deepGray,
-                                    headerBuilder: (BuildContext context,
-                                        bool isExpanded) {
-                                      return ListTile(
-                                        title: Text(
-                                            'Active Listings Bid on by Me (${_itemsBidOnByMe!.length})',
-                                            style: Elements.subHeader),
-                                      );
-                                    },
-                                    body: _itemsBidOnByMe!.isEmpty
-                                        ? const Center(
-                                            child: Text('No Listings to View.'))
-                                        : ItemCardList(
-                                            itemsModel: _itemsBidOnByMe!,
-                                            accountId: myAccountId ?? 0,
-                                            scrollable: false,
-                                          ),
-                                    isExpanded: itemsBidExpanded,
-                                  ),
-                                if (widget.accountId == null)
-                                  ExpansionPanel(
-                                    canTapOnHeader: true,
-                                    backgroundColor: Colours.deepGray,
-                                    headerBuilder: (BuildContext context,
-                                        bool isExpanded) {
-                                      return ListTile(
-                                        title: Text(
-                                            'Inactive Listings Bid on by Me (${_endedItemsBidOnByMe!.length})',
-                                            style: Elements.subHeader),
-                                      );
-                                    },
-                                    body: _endedItemsBidOnByMe!.isEmpty
-                                        ? const Center(
-                                            child: Text('No Listings to View.'))
-                                        : ItemCardList(
-                                            itemsModel: _endedItemsBidOnByMe!,
-                                            accountId: myAccountId ?? 0,
-                                            scrollable: false,
-                                          ),
-                                    isExpanded: endedItemsBidExpanded,
-                                  ),
-                              ]),
-                        ],
-                      ),
-                    ),
-                  ));
+                              body: _itemsBidOnByMe!.isEmpty
+                                  ? const Center(
+                                      child: Text('No Listings to View.'))
+                                  : SizedBox(
+                                      height: usableHeight - 400,
+                                      child: ItemCardList(
+                                        itemsModel: _itemsBidOnByMe!,
+                                        accountId: myAccountId ?? 0,
+                                      ),
+                                    ),
+                              isExpanded: expanded[2],
+                            ),
+                          if (widget.accountId == null)
+                            ExpansionPanel(
+                              canTapOnHeader: true,
+                              backgroundColor: Colours.deepGray,
+                              headerBuilder:
+                                  (BuildContext context, bool isExpanded) {
+                                return ListTile(
+                                  title: Text(
+                                      'Inactive Listings Bid on by Me (${_endedItemsBidOnByMe!.length})',
+                                      overflow: TextOverflow.ellipsis,
+                                      style: Elements.subHeader),
+                                );
+                              },
+                              body: _endedItemsBidOnByMe!.isEmpty
+                                  ? const Center(
+                                      child: Text('No Listings to View.'))
+                                  : SizedBox(
+                                      height: usableHeight - 385,
+                                      child: ItemCardList(
+                                        itemsModel: _endedItemsBidOnByMe!,
+                                        accountId: myAccountId ?? 0,
+                                      ),
+                                    ),
+                              isExpanded: expanded[3],
+                            ),
+                        ]),
+                  ],
+                ),
+    );
   }
 }
