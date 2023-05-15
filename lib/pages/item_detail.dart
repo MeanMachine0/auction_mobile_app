@@ -90,7 +90,7 @@ class _ItemDetailState extends State<ItemDetail> {
                   child: Column(
                     children: [
                       Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 20),
+                        padding: const EdgeInsets.symmetric(horizontal: 10),
                         child: Card(
                           child: Padding(
                             padding: const EdgeInsets.all(10),
@@ -271,7 +271,7 @@ class _ItemDetailState extends State<ItemDetail> {
                       ),
                       Center(
                         child: Padding(
-                          padding: const EdgeInsets.fromLTRB(20, 15, 20, 0),
+                          padding: const EdgeInsets.fromLTRB(10, 15, 10, 0),
                           child: Card(
                             child: Padding(
                               padding: const EdgeInsets.all(10),
@@ -304,7 +304,7 @@ class _ItemDetailState extends State<ItemDetail> {
                       const SizedBox(height: 20),
                       if (downloadURL != null)
                         Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 20),
+                          padding: const EdgeInsets.symmetric(horizontal: 10),
                           child: Image.network(
                             downloadURL!,
                             loadingBuilder: Widgets().customLoadingBuilder,
@@ -323,7 +323,7 @@ class _ItemDetailState extends State<ItemDetail> {
                                             Padding(
                                               padding:
                                                   const EdgeInsets.symmetric(
-                                                      horizontal: 20),
+                                                      horizontal: 10),
                                               child: TextFormField(
                                                 controller: bidController,
                                                 keyboardType:

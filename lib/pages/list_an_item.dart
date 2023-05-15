@@ -116,12 +116,12 @@ class _ListAnItemState extends State<ListAnItem> {
       final smallerImageFile = file;
       Reference smallerImageStorageReference = FirebaseStorage.instance
           .ref()
-          .child('uploads/images/$itemId/smallerImage$ext');
+          .child('uploads/images/$itemId/smallerImage');
       await smallerImageStorageReference.putFile(smallerImageFile);
       final thumbNailFile = file;
       Reference thumbNailStorageReference = FirebaseStorage.instance
           .ref()
-          .child('uploads/images/$itemId/thumbNail$ext');
+          .child('uploads/images/$itemId/thumbNail');
       await thumbNailStorageReference.putFile(thumbNailFile);
     } else {
       final image = img.decodeImage(file.readAsBytesSync());
@@ -129,19 +129,19 @@ class _ListAnItemState extends State<ListAnItem> {
       final smallerImage =
           width > 800 ? img.copyResize(image, width: 800) : image;
       File smallerImageFile = File(
-          '/data/user/0/com.example.auction_mobile_app/cache/smallerImage.jpeg');
+          '/data/user/0/com.example.auction_mobile_app/cache/smallerImage');
       smallerImageFile.writeAsBytesSync(img.encodeJpg(smallerImage));
       Reference smallerImageStorageReference = FirebaseStorage.instance
           .ref()
-          .child('uploads/images/$itemId/smallerImage.jpeg');
+          .child('uploads/images/$itemId/smallerImage');
       await smallerImageStorageReference.putFile(smallerImageFile);
       final thumbNail = width > 400 ? img.copyResize(image, width: 400) : image;
-      File thumbNailFile = File(
-          '/data/user/0/com.example.auction_mobile_app/cache/thumbNail.jpeg');
+      File thumbNailFile =
+          File('/data/user/0/com.example.auction_mobile_app/cache/thumbNail');
       thumbNailFile.writeAsBytesSync(img.encodeJpg(thumbNail));
       Reference thumbNailStorageReference = FirebaseStorage.instance
           .ref()
-          .child('uploads/images/$itemId/thumbNail.jpeg');
+          .child('uploads/images/$itemId/thumbNail');
       await thumbNailStorageReference.putFile(thumbNailFile);
     }
   }
@@ -202,7 +202,7 @@ class _ListAnItemState extends State<ListAnItem> {
                   )
                 : SingleChildScrollView(
                     child: Padding(
-                    padding: const EdgeInsets.all(20),
+                    padding: const EdgeInsets.all(10),
                     child: Form(
                       key: listFormKey,
                       autovalidateMode: AutovalidateMode.disabled,
