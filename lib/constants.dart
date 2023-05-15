@@ -15,6 +15,7 @@ class Colours {
 
 class Regexes {
   static var money = RegExp(r'^\d{0,7}\.?\d{0,2}');
+  static var moneyCheck = RegExp(r'^\d{0,7}(?:\.\d{2})?$');
 }
 
 class Lists {

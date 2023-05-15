@@ -367,6 +367,8 @@ class _ItemDetailState extends State<ItemDetail> {
                                               onPressed: () async {
                                                 if (bidFormKey.currentState!
                                                         .validate() &&
+                                                    Regexes.moneyCheck.hasMatch(
+                                                        bidController.text) &&
                                                     token != null) {
                                                   setState(() {
                                                     isLoading = true;
@@ -383,6 +385,13 @@ class _ItemDetailState extends State<ItemDetail> {
                                                   messageColour =
                                                       Colours.lightGray;
                                                   _getData();
+                                                } else if (!Regexes.moneyCheck
+                                                    .hasMatch(
+                                                        bidController.text)) {
+                                                  setState(() {
+                                                    message = 'Invalid format.';
+                                                    messageColour = Colours.red;
+                                                  });
                                                 }
                                               },
                                               child: const Text('Submit Bid',
