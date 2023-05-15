@@ -26,7 +26,7 @@ A Flutter app that fetches JSON data from a REST API built in a Django web app v
 - To improve my API development skills.
 - To learn how to integrate firebase into a mobile app.
 
-###Screenshots
+### Screenshots
 
 ![Browse](https://firebasestorage.googleapis.com/v0/b/auction-mobile-app.appspot.com/o/readMeImages%2Fbrowse.png?alt=media&token=be0bbb81-88c5-4cfb-9843-63ce12b67c4c)
 
