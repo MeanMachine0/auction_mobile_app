@@ -101,7 +101,7 @@ class _MyListingsState extends State<MyListings> {
       appBar: AppBar(
           title: Text(widget.accountId == null
               ? 'My Listings'
-              : '${widget._username}\'s Listings'),
+              : '${widget._username}\'${widget._username!.substring(widget._username!.length - 1) == 's' ? '' : 's'} Listings'),
           actions: token != null
               ? [
                   Padding(
