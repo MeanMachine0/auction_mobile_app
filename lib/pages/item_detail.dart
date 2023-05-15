@@ -373,11 +373,9 @@ class _ItemDetailState extends State<ItemDetail> {
                                                   });
                                                   ApiService apiService =
                                                       ApiService();
-                                                  double bid = double.parse(
-                                                      bidController.text);
                                                   message = await apiService
                                                       .submitBid(
-                                                    bid,
+                                                    bidController.text,
                                                     widget._itemId,
                                                     accountId!,
                                                     token!,

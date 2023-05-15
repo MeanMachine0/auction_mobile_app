@@ -155,12 +155,13 @@ class ApiService {
   }
 
   Future<String> submitBid(
-      double bid, int itemId, int accountId, String token) async {
+      String bid, int itemId, int accountId, String token) async {
+    double dBid = double.parse(bid);
     try {
       var url = Uri.parse('${baseUrl}items/$itemId/bid/');
       Map<String, dynamic> data = {
         'accountId': accountId,
-        'bid': bid,
+        'bid': dBid,
       };
       var response = await http.post(url, body: json.encode(data), headers: {
         'Authorization': 'Token $token',
@@ -171,9 +172,9 @@ class ApiService {
         int buyerId = body['buyer'];
         double price = double.parse(body['price']);
         double minBid = price + double.parse(body['bidIncrement']);
-        if (price == bid && buyerId == accountId) {
+        if (price == dBid && buyerId == accountId) {
           return 'Bid of £$bid submitted.';
-        } else if (bid < minBid) {
+        } else if (dBid < minBid) {
           return 'Could not submit bid; bid < £$minBid.';
         }
         return 'Something went wrong - please try again in a moment.';
