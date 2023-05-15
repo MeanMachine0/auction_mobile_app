@@ -12,13 +12,16 @@ A Flutter app that fetches JSON data from a REST API built in a Django web app v
 ### When logged in (in addition to when not logged in)
 - Bid on active items.
 - List an item with an image.
-- View your own profile (includes your own listings and items you have previously bidded on).
+- View your own profile (includes your own listings and items you have bidded on).
+- Receive notifications corresponding to your listings and items you have bidded on.
 
 ## Firebase Integration
 - Stores a significantly downscaled image (browsing view) and a moderately downscaled image (listing view) of items.
+- Cloud messaging (notifications).
 - App distribution - testing on both android and ios.
 - Crashlytics - logs crash reports.
 - Monitor performance stats.
+- Analytics.
 
 ## Aims
 - To broaden my knowledge of mobile software development.
