@@ -1,5 +1,6 @@
 # auction_mobile_app
 A Flutter app that fetches JSON data from a REST API built in a Django web app via token authentication.
+
 ![App Icon](https://firebasestorage.googleapis.com/v0/b/auction-mobile-app.appspot.com/o/readMeImages%2Flogo.png?alt=media&token=096751d4-5e89-4264-a0b3-3ac014669698)
 
 ## Functions
