@@ -304,7 +304,7 @@ class _ItemDetailState extends State<ItemDetail> {
                       const SizedBox(height: 20),
                       if (downloadURL != null)
                         Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 10),
+                          padding: const EdgeInsets.symmetric(horizontal: 13),
                           child: Image.network(
                             downloadURL!,
                             loadingBuilder: Widgets().customLoadingBuilder,
