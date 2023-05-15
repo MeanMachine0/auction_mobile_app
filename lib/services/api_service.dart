@@ -48,6 +48,19 @@ class ApiService {
     }
   }
 
+  Future<String> getUsername(int accountId, String token) async {
+    try {
+      var url = Uri.parse('${baseUrl}users/$accountId/');
+      var response = await http.get(url,
+          headers: {'username': 'true', 'Authorization': 'Token $token'});
+      var jsonResponse = json.decode(response.body);
+      return jsonResponse['username'];
+    } catch (e) {
+      log(e.toString());
+      return '';
+    }
+  }
+
   Future<AccountModel?> getAccount(int accountId) async {
     try {
       var url = Uri.parse('${baseUrl}accounts/$accountId/');

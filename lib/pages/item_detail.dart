@@ -171,13 +171,22 @@ class _ItemDetailState extends State<ItemDetail> {
                                                 GestureDetector(
                                                   onTap: itemModel!.buyer !=
                                                           null
-                                                      ? () {
+                                                      ? () async {
+                                                          String buyerUsername =
+                                                              await ApiService()
+                                                                  .getUsername(
+                                                                      itemModel!
+                                                                          .buyer!,
+                                                                      token!);
                                                           Navigator.of(context).push(
                                                               MaterialPageRoute(
                                                                   builder: (_) =>
                                                                       MyListings(
-                                                                          accountId:
-                                                                              itemModel!.buyer)));
+                                                                        accountId:
+                                                                            itemModel!.buyer,
+                                                                        username:
+                                                                            buyerUsername,
+                                                                      )));
                                                         }
                                                       : null,
                                                   child: Row(
@@ -225,6 +234,15 @@ class _ItemDetailState extends State<ItemDetail> {
                                                     )
                                                   ],
                                       ),
+                                      if (itemModel!.destinationAddress != null)
+                                        Row(
+                                          children: [
+                                            Text(
+                                              "Deliver to: ${itemModel!.destinationAddress}",
+                                              style: Elements.cardText,
+                                            )
+                                          ],
+                                        ),
                                       GestureDetector(
                                         onTap: IAmTheSeller
                                             ? null
