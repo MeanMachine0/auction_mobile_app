@@ -9,7 +9,7 @@ A Flutter app that fetches JSON data from a REST API built in a Django web app v
 - View active items and their corresponding details and images.
 - View users' profiles (includes their listings).
 
-### When logged in (in addition to when not logged in)
+### When logged in
 - Bid on active items.
 - List an item with an image.
 - View your own profile (includes your own listings and items you have bidded on).
